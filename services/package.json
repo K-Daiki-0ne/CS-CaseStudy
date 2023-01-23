@@ -2,6 +2,14 @@
   "name": "services",
   "version": "1.0.0",
   "description": "case study server",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "nodemon index.ts",
+    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "migration": "mikro-orm migration:create"
+  },
   "main": "index.js",
   "author": "K_Daiki",
   "license": "MIT",
