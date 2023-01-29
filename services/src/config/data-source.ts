@@ -15,3 +15,14 @@ export const AppDataSource = new DataSource({
     migrations: [],
     subscribers: [],
 })
+
+export const initialize = () => {
+    AppDataSource.initialize()
+        .then(() => {
+            console.log('database connection ...OK');
+        })
+        .catch((err) => {
+            console.log('database connection ...NO');
+            console.error(err);
+        })
+}
