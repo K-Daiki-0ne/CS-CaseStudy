@@ -21,9 +21,6 @@ export class StudyHistory {
     @Index()
     studyEndTime!: Date
 
-    @Column("varchar", { length: 2 })
-    studyContent!: string;
-
     @Column()
     studyCommentId!: number;
 }
