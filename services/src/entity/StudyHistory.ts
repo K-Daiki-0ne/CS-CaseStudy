@@ -1,25 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm"
 
 @Entity()
 export class StudyHistory {
 
    @Column()
+   @Index()
     userId: number
 
     @PrimaryGeneratedColumn()
     studyId: number
 
-    @Column()
+    @Column("varchar", { length: 2 })
     studyCategory!: number
 
-    @Column()
+    @Column("date")
+    @Index()
     studyStartTime!: Date
 
-    @Column()
+    @Column("date")
+    @Index()
     studyEndTime!: Date
-
-    @Column()
-    studyContent!: string;
 
     @Column()
     studyCommentId!: number;
