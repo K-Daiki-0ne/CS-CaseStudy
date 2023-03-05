@@ -1,16 +1,30 @@
 import { AppDataSource } from "../config/data-source"
 import { User } from "../entity/User";
 
-AppDataSource.initialize().then(async () => {
+export class UserModel {
+    public createUser() {
+        
+    }
+    
+    public async readUser(username: string, password: string) {
+        const findUser = await AppDataSource
+            .getRepository(User)
+            .createQueryBuilder('user')
+            .where('user.username = :username ', {username: username})
+            .where('user.password = :password ', {password: password})
+            .getOne()
+        
+        if(findUser?.userId == 0) {
+           return; 
+        }
+        return findUser;
+    }
 
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await AppDataSource.manager.save(user)
+    public async updateUser() {
 
-    const users = await AppDataSource.manager.find(User);
+    }
 
-    console.log('user info:', users);
+    public async deleteUser() {
 
-}).catch(error => console.log(error))
+    }
+}
