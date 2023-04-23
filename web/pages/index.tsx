@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
+import { Layuot } from '../components/Layout';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 const Home = () => {
   return (
-    <Container maxWidth="lg">
+    <Layuot>
       <Box
         sx={{
           my: 4,
@@ -19,7 +20,7 @@ const Home = () => {
           Material UI - Next.js example in TypeScript
         </Typography>
       </Box>
-    </Container>
+    </Layuot>
   );
 }
 
