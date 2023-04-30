@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Container from '@mui/material/Container';
 import { Layuot } from '../components/Layout';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -16,9 +15,16 @@ const Home = () => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Material UI - Next.js example in TypeScript
+        <Typography variant="h3" component="h1" gutterBottom>
+          Case Study
         </Typography>
+        <Typography variant="body1" gutterBottom>
+          CaseStudyはあなたの学習をサポートします。
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          CaseStudyを使うことであなたの行動は可視化されます。
+        </Typography>
+
       </Box>
     </Layuot>
   );
