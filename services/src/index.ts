@@ -22,7 +22,7 @@ const main = async () => {
         app,
         cors: false,
     });
-    app.listen(() => console.log('Server listning ...OK'));
+    app.listen(4000, () => console.log('Server listning ...OK'));
 };
 
 main().catch((err) => {
