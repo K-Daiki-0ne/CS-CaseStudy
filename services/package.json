@@ -9,18 +9,21 @@
       "dev": "nodemon src/index.ts",
       "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
       "migration": "mikro-orm migration:create",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "typeorm": "typeorm-ts-node-commonjs -d ./src/config/data-source.ts"
    },
    "main": "index.js",
    "author": "K_Daiki",
    "license": "MIT",
    "dependencies": {
+      "apollo-server-express": "^3.12.0",
       "dotenv": "^16.0.3",
       "express": "^4.18.2",
+      "graphql": "^16.6.0",
       "mysql": "^2.14.1",
       "mysql2": "^3.0.1",
       "reflect-metadata": "^0.1.13",
       "ts-node": "^10.9.1",
+      "type-graphql": "^1.1.1",
       "typeorm": "0.3.11",
       "typescript": "^4.9.4"
    },
