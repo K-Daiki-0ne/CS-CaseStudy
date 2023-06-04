@@ -1,0 +1,32 @@
+{
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "editor.fontSize": 16,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "settingsSync.ignoredExtensions": [],
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "extensions.autoUpdate": false,
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace"
+  },
+  "prettier.jsxSingleQuote": true,
+  "prettier.documentSelectors": ["TypeScript"],
+  "prettier.singleQuote": true,
+  "redhat.telemetry.enabled": true,
+  "terminal.integrated.fontFamily": "monospace",
+  "editor.tabSize": 2,
+  "editor.fontFamily": "Ricty Diminished",
+  "window.zoomLevel": -1,
+  "terminal.integrated.fontSize": 14,
+  "editor.formatOnSave": true,
+  "prettier.requirePragma": true,
+  "vsicons.dontShowNewVersionMessage": true,
+  "bracketPairColorizer.depreciation-notice": false,
+  "workbench.colorTheme": "GitHub Dark",
+  "editor.detectIndentation": false,
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "editor.fontLigatures": false
+}
