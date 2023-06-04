@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Layuot } from '../components/Layout';
 import { Header } from '../components/Header/Header'
-import { Paper, Box } from '@mui/material'
+import { Paper, Box, Grid, Typography } from '@mui/material'
 
 
 const Home = () => {
@@ -29,7 +29,25 @@ const Home = () => {
             backgroundColor: 'rgba(0,0,0,.3)',
           }}
         />
-      </Paper>
+          <Grid container>
+            <Grid item md={6}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  p: { xs: 3, md: 6 },
+                  pr: { md: 0 },
+                }}
+              >
+                <Typography component="h1" variant="h3" color="inherit" gutterBottom>
+                  aaa
+                </Typography>
+                <Typography variant="h5" color="inherit" paragraph>
+                  bbb
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+        </Paper>
     </Layuot>
   );
 }
