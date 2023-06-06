@@ -1,6 +1,9 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import ReactMarkdown from 'markdown-to-jsx';
 
+const MarkdownListItem = (props: any) => {
+  return <Box component="li" sx={{ mt: 1, typography: 'body1' }} {...props} />;
+}
 const options = {
   overrides: {
     h1: {
@@ -30,6 +33,9 @@ const options = {
     p: {
       component: Typography,
       props: { paragraph: true },
+    },
+    li: {
+      component: MarkdownListItem,
     },
   },
 };
