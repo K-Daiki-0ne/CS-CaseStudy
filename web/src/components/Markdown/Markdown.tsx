@@ -1,5 +1,9 @@
-import { Typography } from '@mui/material';
+import { Box, Typography, Divider } from '@mui/material';
 import ReactMarkdown from 'markdown-to-jsx';
+
+const MarkdownListItem = (props: any) => {
+  return <Box component="li" sx={{ mt: 1, typography: 'body1' }} {...props} />;
+}
 
 const options = {
   overrides: {
@@ -31,9 +35,18 @@ const options = {
       component: Typography,
       props: { paragraph: true },
     },
+    li: {
+      component: MarkdownListItem,
+    },
   },
 };
 
 export const Markdown = (props: any) => {
-    return <ReactMarkdown options={options} {...props} />;
+    return (
+      <div>
+        <Typography variant="h6" gutterBottom>CaseStudyについて</Typography>
+        <Divider />
+        <ReactMarkdown options={options} {...props} />
+      </div>
+    )
 }
