@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Toolbar, Button, Typography } from '@mui/material';
+import { Toolbar, Button, Typography, AppBar } from '@mui/material';
 
 type HeaderProps = {
   title: string
@@ -7,12 +7,12 @@ type HeaderProps = {
 
 export const Header: FC<HeaderProps> = (props) => {
   return (
-    <>
-      <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }} >
-        <Button size="small">Subscribe</Button>
+    <AppBar component='nav' >
+      <Toolbar >
+        {/* <Button size="small">Subscribe</Button> */}
         <Typography
           component="h2"
-          variant="h5"
+          variant="h4"
           color="inherit"
           align="center"
           noWrap
@@ -20,10 +20,10 @@ export const Header: FC<HeaderProps> = (props) => {
         >
           {props.title}
         </Typography>
-        <Button variant="outlined" size="small">
+        <Button variant="text" color='inherit'>
           Sign up
         </Button>
       </Toolbar>
-    </>
+    </AppBar>
   )
 }
