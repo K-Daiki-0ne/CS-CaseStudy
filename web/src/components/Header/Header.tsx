@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useRouter } from 'next/router';
 
 type HeaderProps = {
   title: string
@@ -16,6 +17,7 @@ type HeaderProps = {
 
 export const Header: FC<HeaderProps> = (props) => {
   const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <AppBar component='nav' >
@@ -65,6 +67,7 @@ export const Header: FC<HeaderProps> = (props) => {
               width: 180,
             },
           }}
+          onClick={() => router.push('/login')}
         >
           Sign up
         </Button>

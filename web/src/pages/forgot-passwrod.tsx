@@ -28,7 +28,7 @@ const ForgotPassword: NextPage = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Sign Up  
+          パスワード再設定
         </Typography>
         <Box component="form" noValidate sx={{ mt: 3}}>
           <TextField
@@ -39,6 +39,7 @@ const ForgotPassword: NextPage = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            inputProps={{ maxLength: 50, pattern: "^[a-zA-Z0-9_]+$" }}
           />
           <Button
             type="submit"
