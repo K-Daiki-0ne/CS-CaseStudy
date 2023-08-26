@@ -13,8 +13,9 @@ const Home = () => {
         sx={{
           position: 'relative',
           backgroundColor: 'grey.800',
+          marginTop: 10,
           color: '#fff',
-          mb: 4,
+          mb: 3,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',

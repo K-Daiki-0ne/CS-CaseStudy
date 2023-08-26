@@ -1,18 +1,55 @@
-import { FC } from 'react';
-import { Toolbar, Button, Typography } from '@mui/material';
+import { FC, useState } from 'react';
+import { 
+  Toolbar,
+  Button,
+  Typography,
+  AppBar,
+  Drawer,
+  IconButton 
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useRouter } from 'next/router';
 
 type HeaderProps = {
   title: string
 }
 
 export const Header: FC<HeaderProps> = (props) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
+
   return (
-    <>
-      <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }} >
-        <Button size="small">Subscribe</Button>
+    <AppBar component='nav' >
+      <Toolbar >
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="end"
+          onClick={() => setOpen(true)}
+          sx={{ ...(open && { display: 'none' }) }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Drawer
+          sx={{
+            width: 180,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: 180,
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <IconButton onClick={() => setOpen(false)}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Drawer>
         <Typography
           component="h2"
-          variant="h5"
+          variant="h4"
           color="inherit"
           align="center"
           noWrap
@@ -20,10 +57,21 @@ export const Header: FC<HeaderProps> = (props) => {
         >
           {props.title}
         </Typography>
-        <Button variant="outlined" size="small">
+        <Button 
+          variant="text" 
+          color='inherit'
+          sx={{
+            width: 180,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: 180,
+            },
+          }}
+          onClick={() => router.push('/login')}
+        >
           Sign up
         </Button>
       </Toolbar>
-    </>
+    </AppBar>
   )
 }
