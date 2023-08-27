@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { useRouter } from 'next/router'
 import { useState } from 'react';
 import {
   Box,
@@ -6,7 +7,6 @@ import {
   Alert,
   TextField,
   Button,
-  IconButton
 } from '@mui/material';
 import { Layuot } from '../components/Layout';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -18,6 +18,7 @@ const SuccessSendMail =(): JSX.Element => {
 
 const ForgotPassword: NextPage = () => {
   const [sendEmail, setSendEmail] = useState<boolean>(false)
+  const router = useRouter();
 
   return (
     <Layuot>
@@ -62,15 +63,12 @@ const ForgotPassword: NextPage = () => {
           >
             Sign Up
           </Button>
-          {/* <IconButton>
-            <ArrowBackIosIcon />
-
-          </IconButton> */}
           <Button
             variant="text"
             color='inherit'
             fullWidth
             sx={{ mt:1, mb: 1 }}
+            onClick={() => router.push('/login')}
           >
             <ArrowBackIosIcon />
             <Typography>
