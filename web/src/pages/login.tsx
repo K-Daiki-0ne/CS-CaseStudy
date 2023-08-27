@@ -21,7 +21,7 @@ const Login: NextPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">Login</Typography>
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>Login</Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
