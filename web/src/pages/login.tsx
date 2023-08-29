@@ -8,11 +8,12 @@ import {
   Link
 } from '@mui/material';
 import { Layuot } from '../components/Layout';
-
+import { Header } from '../components/Header/Header'
 
 const Login: NextPage = () => {
   return (
     <Layuot>
+      <Header title='CaseStudy' page='login' />
       <Box
         sx={{
           marginTop: 30,

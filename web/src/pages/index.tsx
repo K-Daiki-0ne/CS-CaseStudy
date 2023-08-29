@@ -8,7 +8,7 @@ import { homePage } from '../markdown/homePage';
 const Home = () => {
   return (
     <Layuot>
-      <Header title='CaseStudy' />
+      <Header title='CaseStudy' page='home' />
       <Paper 
         sx={{
           position: 'relative',
