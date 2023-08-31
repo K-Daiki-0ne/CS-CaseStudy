@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import { Layuot } from '../../components/Layout';
 import { Typography, Box, Tabs, Tab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid'
+import { StudyReport } from '../../components/StudyReport/StudyReport'
 
 type TabPanelProps = {
   children: ReactNode
@@ -62,7 +63,7 @@ const Main: NextPage = () => {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <Typography>Tab 1</Typography>
+          <StudyReport />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StudyGrid />
