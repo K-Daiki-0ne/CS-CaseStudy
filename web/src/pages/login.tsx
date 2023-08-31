@@ -8,11 +8,12 @@ import {
   Link
 } from '@mui/material';
 import { Layuot } from '../components/Layout';
-
+import { Header } from '../components/Header/Header'
 
 const Login: NextPage = () => {
   return (
     <Layuot>
+      <Header title='CaseStudy' page='login' />
       <Box
         sx={{
           marginTop: 30,
@@ -21,7 +22,7 @@ const Login: NextPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">Login</Typography>
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>Login</Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"

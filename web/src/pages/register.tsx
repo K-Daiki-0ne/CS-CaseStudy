@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { Layuot } from '../components/Layout';
-import { Box, Typography, TextField, Button, Select, MenuItem, Link, OutlinedInput } from '@mui/material';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
 const Register: NextPage = () => {
   return (
@@ -13,48 +13,33 @@ const Register: NextPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
-          Sign Up  
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+          新規会員登録
         </Typography>
         <Box component="form" noValidate sx={{ mt: 3}}>
           <TextField
             margin='normal'
             autoComplete="given-name"
-            name="username"
-            required
-            fullWidth
-            id="username"
-            label="User Name"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
+            name="email"
             required
             fullWidth
             id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="new-password"
+            label="メールアドレス"
+            autoFocus
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 1, mb: 1 }}
+            sx={{ mt: 2, mb: 1 }}
           >
-            Sign Up
+            認証メールを送信する
           </Button>
-        </Box>        
+          <Typography sx={{ mt: 2, mb: 1 }}>
+            アカウントをお持ちですか？
+            <Link href='/login'>ログインする</Link>
+          </Typography>
+        </Box>
       </Box>
     </Layuot>
   )

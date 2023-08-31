@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { useRouter } from 'next/router'
 import { useState } from 'react';
 import {
   Box,
@@ -8,6 +9,8 @@ import {
   Button,
 } from '@mui/material';
 import { Layuot } from '../components/Layout';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const SuccessSendMail =(): JSX.Element => {
   return <Alert severity="success">mailが送信されました</Alert>
@@ -15,6 +18,7 @@ const SuccessSendMail =(): JSX.Element => {
 
 const ForgotPassword: NextPage = () => {
   const [sendEmail, setSendEmail] = useState<boolean>(false)
+  const router = useRouter();
 
   return (
     <Layuot>
@@ -27,16 +31,26 @@ const ForgotPassword: NextPage = () => {
           width: 'auto',
         }}
       >
-        <Typography component="h1" variant="h5">
+        <ErrorOutlineIcon 
+          sx={{
+            color: 'primary.main',
+            width: '15%',
+            height: '15%'
+          }}
+        />
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold', mt: 1, mb: 1 }}>
           パスワード再設定
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 3}}>
+        <Typography component='p' sx={{ mt: 1, mb: 1 }}>
+          ご入力いただいたメールアドレスに、パスワード再設定用のリンクをおくります。
+        </Typography>
+        <Box component="form" noValidate sx={{ mt: 1 , alignItems: 'center'}}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="メールアドレス"
             name="email"
             autoComplete="email"
             inputProps={{ maxLength: 50, pattern: "^[a-zA-Z0-9_]+$" }}
@@ -49,7 +63,19 @@ const ForgotPassword: NextPage = () => {
           >
             Sign Up
           </Button>
-        </Box>        
+          <Button
+            variant="text"
+            color='inherit'
+            fullWidth
+            sx={{ mt:1, mb: 1 }}
+            onClick={() => router.push('/login')}
+          >
+            <ArrowBackIosIcon />
+            <Typography>
+              Loginに戻る
+            </Typography>
+          </Button>
+        </Box>
       </Box>
     </Layuot>
   )
