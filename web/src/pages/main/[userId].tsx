@@ -1,9 +1,10 @@
 import { NextPage } from 'next';
 import { ReactNode, useState } from 'react';
 import { Layuot } from '../../components/Layout';
-import { Typography, Box, Tabs, Tab } from '@mui/material';
-import { StudyGrid } from '../../components/StudyGrid/StudyGrid'
-import { StudyReport } from '../../components/StudyReport/StudyReport'
+import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
+import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
+import { StudyReport } from '../../components/StudyReport/StudyReport';
+import CreateIcon from '@mui/icons-material/Create';
 
 type TabPanelProps = {
   children: ReactNode
@@ -45,16 +46,35 @@ const Main: NextPage = () => {
           mt: 3
         }}
       >
-        <Typography
-          component="h5"
-          variant="h5"
-          align='center'
+        <Box
           sx={{
-            fontWeight: 'bold'
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
           }}
         >
-          ユーザー名
-        </Typography>
+          <Typography
+            component="h5"
+            variant="h5"
+            sx={{
+              fontWeight: 'bold',
+              ml: '30%'
+            }}
+          >
+            ユーザー名
+          </Typography>
+          <Fab 
+            aria-label='create' 
+            size='medium' 
+            color='primary'
+            sx={{
+              ml: '25%'
+            }}
+          >
+            <CreateIcon />
+          </Fab>
+        </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <Tabs value={tabValue} onChange={tabChanged} centered>
             <Tab label='学習レポート' />
