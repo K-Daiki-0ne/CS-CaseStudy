@@ -69,10 +69,14 @@ export const StudyReport = () => {
 
       <Grid container spacing={0}>
         <Grid xs={6}>
-          <Typography>トータルの学習時間</Typography>
+          <Box sx={{ mt: 1 , border: '1px solid grey'}}>
+            <Typography>トータルの学習時間</Typography>
+          </Box>
         </Grid>
         <Grid xs={6}>
-          <Typography>今週の目標設定時間</Typography>
+          <Box sx={{ mt: 1 , border: '1px solid grey'}}>
+            <Typography>トータルの学習時間</Typography>
+          </Box>
         </Grid>
       </Grid>
     </Box>
