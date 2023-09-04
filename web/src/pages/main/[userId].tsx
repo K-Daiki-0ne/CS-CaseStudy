@@ -4,7 +4,8 @@ import { Layuot } from '../../components/Layout';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
 import { StudyReport } from '../../components/StudyReport/StudyReport';
-import CreateIcon from '@mui/icons-material/Create';
+import { UserProfile } from '../../components/UserProfile/UserProfile';
+import AddIcon from '@mui/icons-material/Add';
 
 type TabPanelProps = {
   children: ReactNode
@@ -72,7 +73,7 @@ const Main: NextPage = () => {
               ml: '25%'
             }}
           >
-            <CreateIcon />
+            <AddIcon />
           </Fab>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
@@ -89,7 +90,7 @@ const Main: NextPage = () => {
           <StudyGrid />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <Typography>Tab 3</Typography>
+          <UserProfile />
         </TabPanel>
       </Box>
     </Layuot>
