@@ -33,7 +33,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const Main: NextPage = () => {
-  const [tabValue, setTabValue] = useState<number>(1);
+  const [tabValue, setTabValue] = useState<number>(0);
 
   const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
     setTabValue(newTabValue);
