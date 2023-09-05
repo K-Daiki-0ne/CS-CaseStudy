@@ -1,19 +1,25 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useSearchParams } from "next/navigation";
 import dayjs, { Dayjs } from 'dayjs';
 import { Layuot } from '../../components/Layout';
-import { Box, Typography, Input, InputLabel, Select, MenuItem, TextField , Fab} from '@mui/material';
+import { Box, Typography, Input, InputLabel, Select, MenuItem, TextField , Fab, IconButton } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { SelectChangeEvent } from '@mui/material/Select';
 import SaveIcon from '@mui/icons-material/Save';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Create: NextPage = () => {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [time, setTime] = useState<string>('');
   const [studyTag, setStudyTag] = useState<string>('');
   const [study, setStudy] = useState<string>('');
+
+  const router = useRouter();
+  const userId = useSearchParams().get('userId');
 
   useEffect(() => {
     const today = dayjs()
@@ -27,10 +33,13 @@ const Create: NextPage = () => {
 
   return (
     <Layuot>
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 3 }}>
+        <IconButton onClick={() => router.push(`/main/${userId}`)}>
+          <ArrowBackIosIcon />
+        </IconButton>
         <Typography sx={{ textAlign: 'center' }}>学習内容を記録</Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <InputLabel sx={{ mt:5 }} shrink htmlFor="study-day-input" size='normal'>
+          <InputLabel sx={{ mt:3 }} shrink htmlFor="study-day-input" size='normal'>
             学習日
           </InputLabel>
           <DateTimePicker 
@@ -41,7 +50,7 @@ const Create: NextPage = () => {
             views={['year', 'month', 'day', 'hours', 'minutes']}
           />
         </LocalizationProvider>
-        <InputLabel sx={{ mt:4 }} shrink htmlFor="study-day-input" size='normal'>
+        <InputLabel sx={{ mt:3 }} shrink htmlFor="study-day-input" size='normal'>
           学習時間
         </InputLabel>
         <Input
@@ -51,7 +60,7 @@ const Create: NextPage = () => {
           type='time'
           fullWidth
         />
-        <InputLabel sx={{ mt:4 }} shrink htmlFor="study-day-input" size='normal'>
+        <InputLabel sx={{ mt:3 }} shrink htmlFor="study-day-input" size='normal'>
           学習タグ
         </InputLabel>
         <Select
@@ -68,7 +77,7 @@ const Create: NextPage = () => {
           <MenuItem value={20}>Twenty</MenuItem>
           <MenuItem value={30}>Thirty</MenuItem>
         </Select>
-        <InputLabel sx={{ mt:4 }} shrink htmlFor="study-day-input" size='normal'>
+        <InputLabel sx={{ mt:3 }} shrink htmlFor="study-day-input" size='normal'>
           学習内容
         </InputLabel>
         <TextField 
@@ -80,7 +89,7 @@ const Create: NextPage = () => {
           multiline
         />
       </Box>
-      <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Box sx={{ textAlign: 'center', mt: 3 }}>
         <Fab variant="extended" color="primary" >
           <SaveIcon sx={{ mr: 1 }} />
           記録する
