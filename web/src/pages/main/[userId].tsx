@@ -44,11 +44,6 @@ const Main: NextPage = () => {
     setTabValue(newTabValue);
   }
 
-  const goCreatePage = () => {
-    console.log('')
-    router.push(`/create/${userId}`)
-  }
-
   return (
     <Layuot>
       <Box
@@ -81,7 +76,7 @@ const Main: NextPage = () => {
             sx={{
               ml: '25%'
             }}
-            onClick={goCreatePage}
+            onClick={() => router.push(`/create/${userId}`)}
           >
             <AddIcon />
           </Fab>
