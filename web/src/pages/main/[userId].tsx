@@ -1,5 +1,7 @@
-import { NextPage } from 'next';
 import { ReactNode, useState } from 'react';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useSearchParams } from "next/navigation";
 import { Layuot } from '../../components/Layout';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
@@ -35,9 +37,16 @@ function TabPanel(props: TabPanelProps) {
 
 const Main: NextPage = () => {
   const [tabValue, setTabValue] = useState<number>(0);
+  const router = useRouter();
+  const userId = useSearchParams().get('userId');
 
   const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
     setTabValue(newTabValue);
+  }
+
+  const goCreatePage = () => {
+    console.log('')
+    router.push(`/create/${userId}`)
   }
 
   return (
@@ -72,6 +81,7 @@ const Main: NextPage = () => {
             sx={{
               ml: '25%'
             }}
+            onClick={goCreatePage}
           >
             <AddIcon />
           </Fab>
