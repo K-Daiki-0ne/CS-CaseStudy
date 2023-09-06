@@ -5,17 +5,17 @@ const columns = [
   { 
     field: 'id',
     headerName: 'ID',
-    width: 90
+    width: 0
   },
   {
     field: 'Study',
-    headerName: 'Study',
-    width: 150
+    headerName: '学習',
+    width: 80
   },
   {
     field: 'Date',
-    headerName: 'Date',
-    width: 150
+    headerName: '日付',
+    width: 120
   },
   {
     field: 'Time',
@@ -26,7 +26,7 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1, Study: 'Snow',      Date: 'Jon', Time: 35 },
+  { id: 1, Study: 'Snow',      Date: '2022年5月12日', Time: 35 },
   { id: 2, Study: 'Lannister', Date: 'Cersei', Time: 42 },
   { id: 3, Study: 'Lannister', Date: 'Jaime', Time: 45 },
   { id: 4, Study: 'Stark',     Date: 'Arya', Time: 16 },
@@ -46,13 +46,14 @@ export const StudyGrid = () => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 100,
             },
           },
         }}
         pageSizeOptions={[5]}
         checkboxSelection
-        disableRowSelectionOnClick
+        autoHeight
+        autoPageSize
       />
     </Box>
   );
