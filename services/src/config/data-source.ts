@@ -1,17 +1,14 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm";
-import {DATABASE_HOST, DATABASE_PORT, DATABASE_USERNAME, DATABASE_PASSEORD, DATABASE_DATABASE} from '../utils/constant';
 import { User, StudyCategory, StudyComment, StudyHistory, UserProfession } from "../entity"
 
 export const AppDataSource = new DataSource({
     type: 'mysql',
-    host: DATABASE_HOST,
-    port: Number(DATABASE_PORT),
-    username: DATABASE_USERNAME,
-    password: DATABASE_PASSEORD,
-    database: DATABASE_DATABASE,
-    synchronize: true,
-    logging: false,
+    host: 'localhost',
+    port: 3306,
+    username: 'admin',
+    password: 'casestudy',
+    database: 'casestudy',
     entities: [User,StudyCategory,StudyComment,StudyHistory,UserProfession],
     migrations: ["migration/*.ts"],
     subscribers: [],

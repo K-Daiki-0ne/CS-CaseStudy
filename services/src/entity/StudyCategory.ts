@@ -1,7 +1,10 @@
-import { Entity, Column, Index } from "typeorm"
+import { Entity, Column, Index, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class StudyCategory {
+
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @Index()
@@ -10,7 +13,7 @@ export class StudyCategory {
   @Column("varchar", { length: 2 })
   studyCategoryId: string;
 
-  @Column("nvarchar", { length: 50 })
+  @Column("nvarchar", { length: 20 })
   studyCategory: string;
 
 }

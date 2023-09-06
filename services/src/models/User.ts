@@ -3,7 +3,7 @@ import { User } from "../entity/User";
 
 export class UserModel {
     public createUser() {
-        
+          
     }
     
     public async readUser(username: string, password: string) {

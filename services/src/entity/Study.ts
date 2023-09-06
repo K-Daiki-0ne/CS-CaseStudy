@@ -11,15 +11,11 @@ export class Study {
     studyId: number
 
     @Column("varchar", { length: 2 })
-    studyCategory!: number
+    studyCategory!: string
 
     @Column("date")
     @Index()
-    studyStartTime: Date
-
-    @Column("date")
-    @Index()
-    studyEndTime: Date
+    studyTime: Date
 
     @Column()
     studyCommentId: number;

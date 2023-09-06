@@ -1,7 +1,10 @@
-import { Entity, Column, Index } from "typeorm"
+import { Entity, Column, Index, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class UserProfession {
+
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @Index()

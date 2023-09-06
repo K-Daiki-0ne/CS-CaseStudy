@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm"
 
 @Entity()
 export class StudyComment {
+
   @PrimaryGeneratedColumn()
   studyCommentId: number;
 
