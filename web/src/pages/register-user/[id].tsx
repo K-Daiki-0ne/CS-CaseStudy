@@ -4,6 +4,7 @@ import { Box, Typography, Stepper, Step, StepLabel, Button } from '@mui/material
 import { Layuot } from '../../components/Layout';
 import { Header } from '../../components/Header/Header';
 import { UserInfo } from '../../components/UserInfo/UserInfo'
+import { StudySetting } from '../../components/StudySetting/StudySetting';
 
 const steps = ['ユーザー情報設定', '学習設定'];
 
@@ -60,7 +61,7 @@ const RegisterUser: NextPage = () => {
                 </>
               ) : (
                 <>
-                  <Typography>2個目</Typography>
+                  <StudySetting />
                 </>
               )}
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
