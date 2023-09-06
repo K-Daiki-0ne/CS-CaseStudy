@@ -3,6 +3,8 @@ import { NextPage } from 'next';
 import { Box, Typography, Stepper, Step, StepLabel, Button } from '@mui/material';
 import { Layuot } from '../../components/Layout';
 import { Header } from '../../components/Header/Header';
+import { UserInfo } from '../../components/UserInfo/UserInfo'
+import { StudySetting } from '../../components/StudySetting/StudySetting';
 
 const steps = ['ユーザー情報設定', '学習設定'];
 
@@ -32,8 +34,8 @@ const RegisterUser: NextPage = () => {
           activeStep={currentStep} 
           sx={{ 
             mt: 5, 
-            width: '50%', 
-            ml: '25%' 
+            width: '70%', 
+            ml: '15%' 
           }}
         >
           {steps.map((label) => {
@@ -55,11 +57,11 @@ const RegisterUser: NextPage = () => {
             <Box sx={{ width: '100%', mt: 5 }}>
               { currentStep === 0 ? (
                 <>
-                  <Typography>1個目</Typography>
+                  <UserInfo />
                 </>
               ) : (
                 <>
-                  <Typography>2個目</Typography>
+                  <StudySetting />
                 </>
               )}
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -72,9 +74,9 @@ const RegisterUser: NextPage = () => {
                   Back
                 </Button>
               <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleNext}>
-                {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button>
+                <Button onClick={handleNext}>
+                  {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
               </Box>
             </Box>
           </>
