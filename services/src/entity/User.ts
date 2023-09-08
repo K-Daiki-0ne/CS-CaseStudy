@@ -1,28 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, Index } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn()
-    userId: number
+    @PrimaryGeneratedColumn('uuid')
+    userId: string;
 
-    @PrimaryColumn()
-    @Index()
-    userName: string
+    @Column({ type: 'nvarchar', length: 20 })
+    userName!: string
 
     @Column("varchar", { length: 20 })
     @Index()
-    password: string
+    password!: string
 
-    @Column()
-    professionId!: number
+    @Column({ unique: true })
+    @Index()
+    email!: string
 
-    @Column()
-    age!: number
+    @Column({ type: 'varchar', length: 2 })
+    professionId: string
 
-    @Column()
-    createdAt!: Date;
+    @Column({ type: 'int', length: 3 })
+    age: number
 
-    @Column()
-    updatedAt!: Date;
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
