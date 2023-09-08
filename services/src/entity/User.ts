@@ -14,7 +14,6 @@ export class User {
     password!: string
 
     @Column({ unique: true })
-    @Index()
     email!: string
 
     @Column({ type: 'varchar', length: 2 })
