@@ -30,7 +30,7 @@ export class StudyHistory {
   @Column()
   studyTagId: number;
 
-  @Column()
+  @Column({ type: 'text' })
   studyContent: string;
 
   @CreateDateColumn()
