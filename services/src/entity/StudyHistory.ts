@@ -23,8 +23,11 @@ export class StudyHistory {
   @Index()
   studyYear: number;
 
+  @Column({ type: 'int' })
+  studyDate: number;
+
   // time/minute
-  @Column({ type: 'int', length: 4 })
+  @Column({ type: 'int' })
   studyTime: number;
 
   @Column()
