@@ -1,30 +1,46 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
+import { ObjectType, Field } from "type-graphql";
+import { 
+  Entity, 
+  PrimaryGeneratedColumn, 
+  Column, 
+  CreateDateColumn, 
+  UpdateDateColumn, 
+  Index 
+} from "typeorm"
 
+@ObjectType()
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn('uuid')
-    userId: string;
+  @Field()
+  @PrimaryGeneratedColumn('uuid')
+  userId: string;
 
-    @Column({ type: 'nvarchar', length: 20 })
-    userName!: string
+  @Field()
+  @Column({ type: 'nvarchar', length: 20 })
+  userName!: string
 
-    @Column("varchar", { length: 20 })
-    @Index()
-    password!: string
+  @Column("varchar", { length: 20 })
+  @Index()
+  password!: string
 
-    @Column({ unique: true })
-    email!: string
+  @Field()
+  @Column({ unique: true })
+  email!: string
 
-    @Column({ type: 'varchar', length: 2 })
-    professionId: string
+  @Field()
+  @Column({ type: 'varchar', length: 2 })
+  professionId: string
 
-    @Column({ type: 'int' })
-    age: number
+  @Field()
+  @Column({ type: 'int' })
+  age: number
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @Field(() => String)
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
