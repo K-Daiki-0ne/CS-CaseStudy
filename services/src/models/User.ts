@@ -16,7 +16,7 @@ type UpdateUserType = {
   professionId?: string;
 }
 
-export class UserModel {
+class UserModel {
   // キー情報からユーザーを作成する
   // 登録用のメール送信後に自動でユーザーを作成する
   public async createUser(email: string) {
@@ -78,5 +78,6 @@ export class UserModel {
       userName: findUser.userName,
     };
   }
-
 }
+
+export default new UserModel;
