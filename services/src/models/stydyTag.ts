@@ -9,14 +9,16 @@ class StudyTagModel {
     this.studyTag = AppDataSource.getRepository(StudyTag);
   }
 
-  public async createTag(key: string, label: string) {
+  public async createTag(userId: string, key: string, label: string) {
     if (key == '' && label == '') return false;
 
     try {
       await this.studyTag.insert({
+        userId: userId,
         studyTagKey: key,
-        studyTagLabel: label
-      })  
+        studyTagLabel: label,
+        show: true
+      })
     } catch(e) {
       console.error('タグの登録に失敗:', e);
       return false;
@@ -39,7 +41,7 @@ class StudyTagModel {
     }
   }
 
-  public async readMultiStudyTag(userId: string) {
+  public async readMultiStudyTag(userId: string): Promise<StudyTag[]> {
     try {
       const studyTags = await this.studyTag.find({
         where: {
@@ -50,7 +52,7 @@ class StudyTagModel {
       return studyTags;
     } catch (e) {
       console.error('タグの複数検索に失敗:', e)
-      return;
+      return [];
     }
   }
 
