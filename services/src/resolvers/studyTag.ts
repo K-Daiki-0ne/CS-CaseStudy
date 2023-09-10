@@ -1,23 +1,6 @@
-import { Mutation, Arg, Resolver, InputType, Query, Field } from 'type-graphql';
+import { Mutation, Arg, Resolver, Query } from 'type-graphql';
 import { StudyTag } from '../entity';
 import StudyTagModel from '../models/stydyTag';
-
-@InputType()
-class StudyTagInput {
-
-  @Field()
-  userId: string;
-
-  @Field()
-  studyTagKey: string;
-
-  @Field()
-  studyLabel: string;
-
-  @Field()
-  show: boolean;
-}
-
 
 @Resolver(StudyTag)
 export class StudyTagResolver {
