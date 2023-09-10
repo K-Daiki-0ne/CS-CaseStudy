@@ -68,10 +68,20 @@ class StudyModel {
     return true;
   }
 
-  public async readStudy(userId: string) {
-    if (userId == '') return {};
+  public async readSingleStudy(id: number): Promise<Study | null> {
+    const study: Study | null = await this.studyRepo.findOne({
+      where: {
+        studyId: id
+      }
+    })
 
-    const studies = await this.studyRepo.find({
+    return study
+  }
+
+  public async readStudy(userId: string): Promise<Study[]> {
+    if (userId == '') return [];
+
+    const studies: Study[] = await this.studyRepo.find({
       where: {
         userId: userId
       }

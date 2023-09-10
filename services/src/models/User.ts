@@ -1,3 +1,4 @@
+import { Repository } from 'typeorm'
 import { AppDataSource } from "../config/data-source"
 import { User } from "../entity/User";
 
@@ -5,18 +6,16 @@ type CreateUserType = {
   userId: string;
   userName: string;
   password: string;
-  professionId: string;
-}
-
-type UpdateUserType = {
-  userId: string;
-  password?: string;
-  userName?: string;
-  email?: string;
   professionId?: string;
 }
 
 class UserModel {
+  private userRepo: Repository<User>
+
+  constructor() {
+    this.userRepo = AppDataSource.getRepository(User);
+  }
+
   // キー情報からユーザーを作成する
   // 登録用のメール送信後に自動でユーザーを作成する
   public async createUser(email: string) {
@@ -73,10 +72,17 @@ class UserModel {
 
     if (findUser == null) return;
 
-    return {
-      userId: findUser.userId,
-      userName: findUser.userName,
-    };
+    return findUser;
+  }
+
+  public async readUser(userId: string) {
+    const user = await this.userRepo.find({
+      where: {
+        userId: userId
+      }
+    })
+
+    return user
   }
 }
 
