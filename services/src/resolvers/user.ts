@@ -83,8 +83,6 @@ export class UserResolver {
     @Arg('email') email: string, 
     @Arg('password') password: string
   ): Promise<UserResponse> {
-    console.log('email', email);
-    console.log('password', password);
     const user = await UserModel.loginUser(email);
     if (!user) {
       return {

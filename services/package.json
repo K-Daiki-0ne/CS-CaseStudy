@@ -9,7 +9,8 @@
       "dev": "nodemon src/index.ts",
       "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
       "migration": "mikro-orm migration:create",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "typeorm": "typeorm-ts-node-commonjs",
+      "test": "jest"
    },
    "main": "index.js",
    "author": "K_Daiki",
