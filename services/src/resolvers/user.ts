@@ -1,5 +1,5 @@
-import { ObjectType, Field, Mutation, Arg, Resolver, InputType } from 'type-graphql';
-import argon2 from 'argon2';
+import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
+// import argon2 from 'argon2';
 import { User } from '../entity';
 import UserModel from '../models/user'
 
@@ -37,12 +37,33 @@ class UserInput {
 
 @Resolver(User)
 export class UserResolver {
+
+  @Query(() => Boolean)
+  async changePassword(@Arg('email') email: string): Promise<Boolean> {
+    // 受け取ったemailを送信するのみ
+    
+
+    return true;
+  }
+
+
+  @Mutation(() => Boolean)
+  async createUser(@Arg('email') email: string): Promise<boolean> {
+    const isSuccess: boolean =  await UserModel.createUser(email);
+
+    if (!isSuccess) {
+      return false
+    }
+
+    // メール用のリンクを送付する
+    return true;
+  }
   
   @Mutation(() => UserResponse)
   async register(
-    @Arg('user') user: UserInput
+    @Arg('user') userInput: UserInput
   ) {
-    const isSuccess: boolean = await UserModel.updateUser(user);
+    const isSuccess: boolean = await UserModel.updateUser(userInput);
     if (!isSuccess) {
       return {
         errors: [{
@@ -52,17 +73,19 @@ export class UserResolver {
       }
     }
 
-    const registerUser = await UserModel.readUser(user.userId);
+    const user = await UserModel.readUser(userInput.userId);
 
-    return { registerUser }
+    return { user }
   }
 
-  @Mutation(() => UserResponse)
+  @Query(() => UserResponse)
   async login(
     @Arg('email') email: string, 
     @Arg('password') password: string
   ): Promise<UserResponse> {
-    const user = await UserModel.loginUser(email, password);
+    console.log('email', email);
+    console.log('password', password);
+    const user = await UserModel.loginUser(email);
     if (!user) {
       return {
         errors: [{
@@ -72,12 +95,11 @@ export class UserResolver {
       }
     }
 
-    const isValid = await argon2.verify(user.password, password);
-    if (!isValid) {
+    if (user.password != password) {
       return {
         errors: [{
           field: 'password',
-          message: 'パスワードに誤りがあります'   
+          message: 'パスワードに誤りがあります'
         }]
       }
     }

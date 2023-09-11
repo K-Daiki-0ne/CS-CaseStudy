@@ -21,16 +21,52 @@ class UserModel {
   public async createUser(email: string) {
     const repo = AppDataSource.getRepository(User);
 
-    if (email == '') return false;
-
     try {
-      await repo.insert({email: email })
+      await repo.insert({ 
+        email: email, 
+        userName: '', 
+        password: '', 
+        professionId: '', 
+        age: 0 
+      })
+
+      console.log('ユーザーの作成に成功しました')
     } catch (e) {
-      console.error('ユーザーの作成に失敗:', e);
-      return false;
+      // 入力されたemailがすでに存在する場合はエラーとする
+      if (e.errno == 1062) {
+        return false;
+      }
     }
 
     return true;
+  }
+
+  public async readUserForEmail(email: string): Promise<string> {
+    if (email == '') return '';
+    
+    const user: User | null = await this.userRepo.findOne({
+      where: {
+        email: email
+      }
+    })
+
+    if (!user) return '';
+
+    return user.userId;
+  }
+
+  public async readUser(userId: string) {
+    const user = await this.userRepo.findOne({
+      where: {
+        userId: userId
+      }
+    })
+
+    if (!user) {
+      return {}
+    }
+
+    return user
   }
 
   // ユーザー情報登録・パスワード再発行・ユーザー情報変更で使用する
@@ -42,18 +78,11 @@ class UserModel {
     }
 
     try {
-      // パスワードが入力された場合は変更のみであるため、パスワードのみを変更する
-      if (user.password != '') {
-        await repo.update({ userId: user.userId }, {
-          password: user.password
-        });
-      } else {
-        await repo.update({ userId: user.userId }, {
-          userName: user.userName,
-          password: user.password,
-          professionId: user.professionId
-        });  
-      }
+      await repo.update({ userId: user.userId }, {
+        userName: user.userName,
+        password: user.password,
+        professionId: user.professionId
+      });  
     } catch(e) {
       console.error('ユーザー情報の更新に失敗:', e);
       return false;
@@ -62,28 +91,16 @@ class UserModel {
     return true;
   }
     
-  public async loginUser(email: string, password: string) {
-    const findUser = await AppDataSource
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .where('user.email = :email ', {email: email})
-      .where('user.password = :password ', {password: password})
-      .getOne()
-
-    if (findUser == null) return;
-
-    return findUser;
-  }
-
-  public async readUser(userId: string) {
-    const user = await this.userRepo.find({
+  public async loginUser(email: string) {
+    const user = await this.userRepo.findOne({
       where: {
-        userId: userId
+        email: email
       }
     })
 
-    return user
+    return user;
   }
+
 }
 
 export default new UserModel;
