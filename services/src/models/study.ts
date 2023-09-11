@@ -37,19 +37,21 @@ class StudyModel {
         studyContent: study.studyContent
       })
 
-      const postStudy = await this.studyRepo
-        .createQueryBuilder('study')
-        .select('study')
-        .from(Study, 'study')
-        .where('study.userId = :userId', { userId: study.userId })
-        .orderBy('study.studyId', 'DESC')
-        .getOne()
+      const postStudy = await this.studyRepo.findOne({
+        where: {
+          userId: study.userId
+        },
+        order: {
+          studyId: 'DESC',
+        }
+      })
       
       if (postStudy == null) {
         console.error('最新の学習情報の取得に失敗')
         return false
       }
       
+      // Studyテーブルの更新完了後に履歴テーブルに更新後データを追加する
       await this.studyHistoryRepo.insert({
         studyId: postStudy?.studyId,
         userId: study.userId,
@@ -101,6 +103,18 @@ class StudyModel {
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
+
+      // Studyテーブルの更新完了後に履歴テーブルに新しい履歴情報を追加する
+      await this.studyHistoryRepo.insert({
+        studyId: study.studyId,
+        userId: study.userId,
+        studyYear: study.studyYear,
+        studyDate: study.studyDate,
+        studyTime: study.studyTime,
+        studyTagId: study.studyTagId,
+        studyContent: study.studyContent,
+        deletedFlg: ''
+      })
     } catch (e) {
       console.error('学習の更新に失敗:', e);
       return false;
@@ -113,18 +127,33 @@ class StudyModel {
     if (studyId == 0) return false;
 
     try {
-      // Studyテーブルからデータを物理削除する
+      // 原本となるstudyを検索して、履歴に必要な必須情報を取得する
+      const study: Study | null = await this.studyRepo.findOne({
+        where: {
+          studyId: studyId
+        }
+      });
+
+      // 削除時点の情報を記録する履歴を作成する
+      await this.studyHistoryRepo.insert({
+        studyId: studyId,
+        userId: study?.userId,
+        deletedFlg: '1',
+        studyYear: study?.studyYear,
+        studyDate: study?.studyDate,
+        studyTime: study?.studyTime,
+        studyTagId: study?.studyTagId,
+        studyContent: study?.studyContent
+      })
+
+      // 履歴情報の作成完了後、原本となるレコードを物理削除する
       await this.studyRepo
-        .createQueryBuilder('study')
+        .createQueryBuilder()
         .delete()
         .from(Study)
         .where('studyId = :studyId', { studyId: studyId })
         .execute()
       
-      // Studyテーブルの削除完了後、履歴テーブルを論理削除する
-      await this.studyHistoryRepo.update( {studyId: studyId }, {
-        deletedFlg: '1'
-      })
     } catch (e) {
       console.error('学習の取消に失敗:', e);
       return false;
