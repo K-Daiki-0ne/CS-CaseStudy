@@ -1,26 +1,44 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Index, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
 
 @Entity()
 export class StudyHistory {
 
-   @Column()
-   @Index()
-    userId: number
+  @PrimaryGeneratedColumn()
+  StudyHistoryId: number;
 
-    @PrimaryGeneratedColumn()
-    studyId: number
+  @PrimaryColumn()
+  studyId: number;
 
-    @Column("varchar", { length: 2 })
-    studyCategory!: number
+  @Column()
+  @PrimaryColumn()
+  userId: string;
 
-    @Column("date")
-    @Index()
-    studyStartTime!: Date
+  @CreateDateColumn()
+  postDate: Date
 
-    @Column("date")
-    @Index()
-    studyEndTime!: Date
+  @Column()
+  deletedFlg: string;
 
-    @Column()
-    studyCommentId!: number;
+  @Column({ type: 'year' })
+  @Index()
+  studyYear: number;
+
+  @Column({ type: 'int' })
+  studyDate: number;
+
+  // time/minute
+  @Column({ type: 'int' })
+  studyTime: number;
+
+  @Column()
+  studyTagId: number;
+
+  @Column({ type: 'text' })
+  studyContent: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
