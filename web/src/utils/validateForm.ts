@@ -29,10 +29,10 @@ export const validateForm = (email: string, password: string, mode: string): Ret
     if (password == '') {
       return {
         field: 'password',
-        message: 'emailが入力されていません'
+        message: 'passwordが入力されていません'
       }
     };
-  }
+  };
 
 
   return null;

@@ -17,6 +17,7 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.14.3",
+    "@mui/lab": "^5.0.0-alpha.144",
     "@mui/material": "^5.11.15",
     "@mui/styled-engine-sc": "^5.11.11",
     "@mui/x-charts": "^6.0.0-alpha.8",
