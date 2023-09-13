@@ -2,10 +2,10 @@ import { gql } from '@apollo/client';
 
 export const LOGIN_USER = gql`
   query Login($email: String!, $password: String!) {
-    login(email: email, password: password) {
+    login(email: $email, password: $password) {
       errors {
         field,
-        errors
+        message
       }
       user {
         userId,
@@ -18,7 +18,7 @@ export const LOGIN_USER = gql`
 `;
 
 export const SINGLE_READ_STUDY = gql`
-  query SigleReadStudy($id: Number!) {
+  query SigleReadStudy($id: Float!) {
     singleReadStudy(id: $id) {
       studyId,
       userId,
@@ -30,8 +30,8 @@ export const SINGLE_READ_STUDY = gql`
 `;
 
 export const MULTI_READ_STUDY = gql`
-  query MultiReadStudy($userId: String!) {
-    multiReadStudy(userId: $userId) {
+  query MultiReadStudy($usreId: String!) {
+    multiReadStudy(usreId: $usreId) {
       studies {
         studyId,
         studyYear,
@@ -45,8 +45,8 @@ export const MULTI_READ_STUDY = gql`
 `;
 
 export const READ_TAGS = gql`
-  query ReadTags($userId: String!) {
-    readTags(userId: $userId) {
+  query ReadTags($user: String!) {
+    readTags(user: $user) {
       userId,
       studyTagKey,
       studyTagLabel,
