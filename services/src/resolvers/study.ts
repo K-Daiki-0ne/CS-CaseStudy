@@ -4,8 +4,8 @@ import StudyModel from '../models/study';
 
 @InputType()
 class StudyInput {
-  @Field()
-  studyId: number;
+  @Field({ nullable: true })
+  studyId?: number;
 
   @Field()
   userId: string;
