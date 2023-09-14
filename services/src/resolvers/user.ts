@@ -1,7 +1,8 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
 // import argon2 from 'argon2';
 import { User } from '../entity';
-import UserModel from '../models/user'
+import UserModel from '../models/user';
+import { sendEmail } from '../utils/sendEmail';
 
 @ObjectType()
 class FieldError {
@@ -46,7 +47,6 @@ export class UserResolver {
     return true;
   }
 
-
   @Mutation(() => Boolean)
   async createUser(@Arg('email') email: string): Promise<boolean> {
     const isSuccess: boolean =  await UserModel.createUser(email);
@@ -55,6 +55,12 @@ export class UserResolver {
       return false
     }
 
+    // ユーザーIDを取得
+    const userId = await UserModel.readUserForEmail(email);
+    await sendEmail(
+      email,
+      `<a href="http://localhost:3000/register-user/${userId}">ユーザー情報入力</a>`
+    )
     // メール用のリンクを送付する
     return true;
   }
