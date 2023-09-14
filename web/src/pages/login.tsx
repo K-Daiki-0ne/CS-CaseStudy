@@ -23,7 +23,7 @@ const Login: NextPage = () => {
 
   const router = useRouter();
 
-  const [login, { loading, data, error }] = useLazyQuery<LoginQuery>(LOGIN_USER, {
+  const [login, { loading }] = useLazyQuery<LoginQuery>(LOGIN_USER, {
     variables: {
       email: user.email,
       password: user.password
@@ -51,7 +51,7 @@ const Login: NextPage = () => {
 
 
     try {
-      await login();
+      const {data, error} = await login();
 
       if (error) {
         console.error('GraphQL featch error => ', error);
