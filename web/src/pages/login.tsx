@@ -13,7 +13,7 @@ import { useLazyQuery } from '@apollo/client';
 import { Layuot } from '../components/Layout';
 import { Header } from '../components/Header/Header';
 import { LoginQuery } from '../generated/graphql';
-import { LOGIN_USER } from '../graphql/queries';
+import { LOGIN_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';
 
 const Login: NextPage = () => {
@@ -36,7 +36,7 @@ const Login: NextPage = () => {
     setFormError({ email: false, password: false });
     setFormLabel({ email: 'email', password: 'password' });
 
-    const validateError = validateForm(user.email, user.password, 'login');
+    const validateError = validateForm(user.email, 'login', user.password);
     //入力内容に誤りがあった場合はエラーとして、後続処理は実施しない。
     if (validateError != null) {
       if (validateError.field == 'email') {

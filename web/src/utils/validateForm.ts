@@ -10,7 +10,7 @@ type ReturnObject = {
  * @param mode 使用機能(login or create or register)
  * @returns ReturnObject or null
  */
-export const validateForm = (email: string, password: string, mode: string): ReturnObject | null => {
+export const validateForm = (email: string, mode: string, password?: string,): ReturnObject | null => {
   if (email == '') {
     return {
       field: 'email',
