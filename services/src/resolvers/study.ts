@@ -41,6 +41,8 @@ export class StudyResolver {
   ): Promise<Boolean> {
     const isSuccess: boolean = await StudyModel.createStudy(study);
 
+    console.log('isSuccess:', isSuccess)
+
     if (!isSuccess) {
       return false
     }
