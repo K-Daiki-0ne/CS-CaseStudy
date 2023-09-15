@@ -55,18 +55,18 @@ class UserModel {
     return user.userId;
   }
 
-  public async readUser(userId: string) {
+  public async readUser(userId: string): Promise<boolean> {
     const user = await this.userRepo.findOne({
       where: {
         userId: userId
       }
     })
 
-    if (!user) {
-      return {}
+    if (user == null) {
+      return false
     }
 
-    return user
+    return true;
   }
 
   // ユーザー情報登録・パスワード再発行・ユーザー情報変更で使用する
