@@ -1,26 +1,46 @@
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { StudyDeleteButton } from '../StudyDeleteButton/StudyDeleteButton';
 
 const columns = [
+  {
+    field: "deleteBtn",
+    headerName: "削除",
+    sortable: false,
+    width: 65,
+    disableClickEventBubbling: true,
+    filterable: false,
+    renderCell: (params: any) => <StudyDeleteButton studyId={params.id} />
+  },
+  {
+    field: "editBtn",
+    headerName: "編集",
+    sortable: false,
+    width: 65,
+    filterable: false,
+    disableClickEventBubbling: true,
+    renderCell: (params: any) => <StudyDeleteButton studyId={params.id}/>
+  },
+
   { 
     field: 'id',
     headerName: 'ID',
-    width: 0
+    hide: true,
+    width: 70
   },
   {
     field: 'Study',
-    headerName: '学習',
-    width: 80
+    headerName: '学習タグ',
+    width: 100
   },
   {
     field: 'Date',
-    headerName: '日付',
+    headerName: '学習日',
     width: 120
   },
   {
     field: 'Time',
-    headerName: 'Time',
-    type: 'number',
+    headerName: '学習時間',
     width: 110
   },
 ];
@@ -50,8 +70,10 @@ export const StudyGrid = () => {
             },
           },
         }}
+        columnVisibilityModel={{ id: false }}
         pageSizeOptions={[5]}
-        checkboxSelection
+        loading={false}
+        checkboxSelection={false}
         autoHeight
         autoPageSize
       />
