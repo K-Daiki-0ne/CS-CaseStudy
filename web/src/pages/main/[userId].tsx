@@ -1,7 +1,10 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useSearchParams } from "next/navigation";
+import { useLazyQuery } from '@apollo/client';
+import { IS_USER } from '../../graphql/graphql';
+import { IsUserQuery } from '../../generated/graphql';
 import { Layuot } from '../../components/Layout';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
@@ -39,6 +42,23 @@ const Main: NextPage = () => {
   const [tabValue, setTabValue] = useState<number>(0);
   const router = useRouter();
   const userId = useSearchParams().get('userId');
+
+  const [isUser] = useLazyQuery<IsUserQuery>(IS_USER, {
+    variables: {
+      userId: userId
+    }
+  });
+
+  useEffect(() => {
+    // ユーザーIDが存在しない場合は当ページを表示しない（不正アクセス対策）
+    const getUser = async () => {
+      const { data } = await isUser();
+      if (!data?.isUser) {
+        router.push('/');
+      }
+    }
+    getUser();
+  }, []);
 
   const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
     setTabValue(newTabValue);
@@ -101,5 +121,10 @@ const Main: NextPage = () => {
     </Layuot>
   )
 }
+
+// SSRで学習内容を取得する
+// export async function getServerSideProps() {
+
+// }
 
 export default Main;

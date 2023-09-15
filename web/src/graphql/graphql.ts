@@ -55,6 +55,12 @@ export const READ_TAGS = gql`
   }
 `;
 
+export const IS_USER = gql`
+  query IsUser($userId: String!) {
+    isUser(userId: $userId)
+  }
+`
+
 export const REGISTER_USER = gql`
   mutation Register($userId: String!, $userName: String!, $password: String!, $professionId: String) {
     register(user: {

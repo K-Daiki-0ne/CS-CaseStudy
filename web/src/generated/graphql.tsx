@@ -74,6 +74,7 @@ export type MutationUpdateStudyArgs = {
 export type Query = {
   __typename?: 'Query';
   changePassword: Scalars['Boolean']['output'];
+  isUser: Scalars['Boolean']['output'];
   login: UserResponse;
   multiReadStudy: StudyMultiResponse;
   readTags: Array<StudyTag>;
@@ -83,6 +84,11 @@ export type Query = {
 
 export type QueryChangePasswordArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryIsUserArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -193,6 +199,13 @@ export type ReadTagsQueryVariables = Exact<{
 
 
 export type ReadTagsQuery = { __typename?: 'Query', readTags: Array<{ __typename?: 'StudyTag', userId: string, studyTagKey: string, studyTagLabel: string, show: boolean }> };
+
+export type IsUserQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type IsUserQuery = { __typename?: 'Query', isUser: boolean };
 
 export type RegisterMutationVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -424,6 +437,39 @@ export function useReadTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<R
 export type ReadTagsQueryHookResult = ReturnType<typeof useReadTagsQuery>;
 export type ReadTagsLazyQueryHookResult = ReturnType<typeof useReadTagsLazyQuery>;
 export type ReadTagsQueryResult = Apollo.QueryResult<ReadTagsQuery, ReadTagsQueryVariables>;
+export const IsUserDocument = gql`
+    query IsUser($userId: String!) {
+  isUser(userId: $userId)
+}
+    `;
+
+/**
+ * __useIsUserQuery__
+ *
+ * To run a query within a React component, call `useIsUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useIsUserQuery(baseOptions: Apollo.QueryHookOptions<IsUserQuery, IsUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsUserQuery, IsUserQueryVariables>(IsUserDocument, options);
+      }
+export function useIsUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsUserQuery, IsUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsUserQuery, IsUserQueryVariables>(IsUserDocument, options);
+        }
+export type IsUserQueryHookResult = ReturnType<typeof useIsUserQuery>;
+export type IsUserLazyQueryHookResult = ReturnType<typeof useIsUserLazyQuery>;
+export type IsUserQueryResult = Apollo.QueryResult<IsUserQuery, IsUserQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($userId: String!, $userName: String!, $password: String!, $professionId: String) {
   register(

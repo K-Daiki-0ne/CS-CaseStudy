@@ -47,6 +47,11 @@ export class UserResolver {
     return true;
   }
 
+  @Query(() => Boolean)
+  async isUser(@Arg('userId') userId: string): Promise<boolean> {
+    return await UserModel.readUser(userId);
+  }
+
   @Mutation(() => Boolean)
   async createUser(@Arg('email') email: string): Promise<boolean> {
     const isSuccess: boolean =  await UserModel.createUser(email);
