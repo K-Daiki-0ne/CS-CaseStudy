@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { StudyDeleteButton } from '../StudyDeleteButton/StudyDeleteButton';
+import { StudyEditButton } from '../StudyEditButton/StudyEditButton'
 
 const columns = [
   {
@@ -19,12 +20,22 @@ const columns = [
     width: 65,
     filterable: false,
     disableClickEventBubbling: true,
-    renderCell: (params: any) => <StudyDeleteButton studyId={params.id}/>
+    renderCell: (params: any) => <StudyEditButton  props={{ 
+      studyId: params.id, 
+      studyDate: params.Date, 
+      studyTime: params.Time, 
+      studyTagId: params.Tagid 
+    }} />
   },
-
   { 
     field: 'id',
     headerName: 'ID',
+    hide: true,
+    width: 70
+  },
+  { 
+    field: 'Tagid',
+    headerName: 'Tag',
     hide: true,
     width: 70
   },
@@ -43,23 +54,28 @@ const columns = [
     headerName: '学習時間',
     width: 110
   },
+  {
+    field: 'Content',
+    headerName: '学習内容',
+    width: 620
+  }
 ];
 
 const rows = [
-  { id: 1, Study: 'Snow',      Date: '2022年5月12日', Time: 35 },
-  { id: 2, Study: 'Lannister', Date: 'Cersei', Time: 42 },
-  { id: 3, Study: 'Lannister', Date: 'Jaime', Time: 45 },
-  { id: 4, Study: 'Stark',     Date: 'Arya', Time: 16 },
-  { id: 5, Study: 'Targaryen', Date: 'Daenerys', Time: null },
-  { id: 6, Study: 'Melisandre', Date: null, Time: 150 },
-  { id: 7, Study: 'Clifford', Date: 'Ferrara', Time: 44 },
-  { id: 8, Study: 'Frances', Date: 'Rossini', Time: 36 },
-  { id: 9, Study: 'Roxie', Date: 'Harvey', Time: 65 },
+  { id: 1, Tagid: 1, Study: 'Snow',      Date: '2022年5月12日', Time: '', Content: '' },
+  { id: 2, Tagid: 2, Study: 'Lannister', Date: 'Cersei', Time: '', Content: '' },
+  { id: 3, Tagid: 3, Study: 'Lannister', Date: 'Jaime', Time: '', Content: '' },
+  { id: 4, Tagid: 4, Study: 'Stark',     Date: 'Arya', Time: '', Content: '' },
+  { id: 5, Tagid: 5, Study: 'Targaryen', Date: 'Daenerys', Time: null, Content: '' },
+  { id: 6, Tagid: 6, Study: 'Melisandre', Date: null, Time: '', Content: '' },
+  { id: 7, Tagid: 7, Study: 'Clifford', Date: 'Ferrara', Time: '', Content: '' },
+  { id: 8, Tagid: 8, Study: 'Frances', Date: 'Rossini', Time: '', Content: '' },
+  { id: 9, Tagid: 9, Study: 'Roxie', Date: 'Harvey', Time: '', Content: '' },
 ];
 
 export const StudyGrid = () => {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -70,7 +86,7 @@ export const StudyGrid = () => {
             },
           },
         }}
-        columnVisibilityModel={{ id: false }}
+        columnVisibilityModel={{ id: false, Tagid: false }}
         pageSizeOptions={[5]}
         loading={false}
         checkboxSelection={false}
