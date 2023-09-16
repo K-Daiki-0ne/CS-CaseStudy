@@ -1,4 +1,5 @@
-import { useState, FC, ChangeEvent } from 'react';
+import { useState, FC, ChangeEvent, FormEvent } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   IconButton,
@@ -18,25 +19,61 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { SelectChangeEvent } from '@mui/material/Select';
 import SaveIcon from '@mui/icons-material/Save';
 import dayjs, { Dayjs } from 'dayjs';
+import { useMutation } from '@apollo/client';
+import { UPDATE_STUDY } from '../../graphql/graphql';
+import { UpdateStudyMutation } from '../../generated/graphql';
 
 type StudyEditProps = {
   props: {
     studyId: number;
+    userId: string;
     studyDate: string;
     studyTime: string;
     studyTagId: number;    
   }
 }
 
-export const StudyEditButton: FC<StudyEditProps> = ( props ) => {
+export const StudyEditButton: FC<StudyEditProps> = ({ props }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [date, setDate] = useState<Dayjs | null>(null);
   const [updateStudy, setUpdateStudy] = useState({ time: '', tagId: '', content: '' });
   const [dateError, setDateError] = useState({ error: false, label: '' });
 
+  const [update] = useMutation<UpdateStudyMutation>(UPDATE_STUDY);
+
   const handleTagChange = (e: SelectChangeEvent) => {
     setUpdateStudy({ ...updateStudy, tagId: e.target.value });
   };
+
+  const handleSaveSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // 学習時間は必須項目であるが、未入力の場合はエラーとなるため、
+    // 当イベントではチェックを実施しない
+    setDateError({ error: false, label: '' });
+    if (date == null) {
+      setDateError({ error: true, label: '学習日を入力してください' });
+      return;
+    }
+
+    try {
+      await update({
+        variables: {
+          studyId: props.studyId,
+          userId: props.userId,
+          studyYear: date?.year(),
+          studyDate: (date?.year() * 10000) + ((date?.month() + 1) * 100) + date?.date(),
+          studyTime: Number(updateStudy.time.replace(':', '')),
+          studyTagId: Number(updateStudy.tagId),
+          studyContent: updateStudy.content
+        }
+      })
+
+      setOpen(false);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <Box component='div'>
@@ -68,7 +105,7 @@ export const StudyEditButton: FC<StudyEditProps> = ( props ) => {
             編集
           </Typography>
           <Typography sx={{ mt: 1 }}>学習内容を編集します</Typography>
-          <Box component='form'>
+          <Box component='form' onSubmit={handleSaveSubmit}>
             <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-day-input" size='normal'>
               学習日
             </InputLabel>
@@ -128,6 +165,7 @@ export const StudyEditButton: FC<StudyEditProps> = ( props ) => {
                 CANCEL
               </Button>
               <Button
+                type='submit'
                 variant='contained'
                 endIcon={<SaveIcon />}
                 sx={{ ml: 2 }}

@@ -21,7 +21,8 @@ const columns = [
     filterable: false,
     disableClickEventBubbling: true,
     renderCell: (params: any) => <StudyEditButton  props={{ 
-      studyId: params.id, 
+      studyId: params.id,
+      userId: params.userId,
       studyDate: params.Date, 
       studyTime: params.Time, 
       studyTagId: params.Tagid 
@@ -30,6 +31,12 @@ const columns = [
   { 
     field: 'id',
     headerName: 'ID',
+    hide: true,
+    width: 70
+  },
+  { 
+    field: 'userId',
+    headerName: 'UserID',
     hide: true,
     width: 70
   },
@@ -62,15 +69,15 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1, Tagid: 1, Study: 'Snow',      Date: '2022年5月12日', Time: '', Content: '' },
-  { id: 2, Tagid: 2, Study: 'Lannister', Date: 'Cersei', Time: '', Content: '' },
-  { id: 3, Tagid: 3, Study: 'Lannister', Date: 'Jaime', Time: '', Content: '' },
-  { id: 4, Tagid: 4, Study: 'Stark',     Date: 'Arya', Time: '', Content: '' },
-  { id: 5, Tagid: 5, Study: 'Targaryen', Date: 'Daenerys', Time: null, Content: '' },
-  { id: 6, Tagid: 6, Study: 'Melisandre', Date: null, Time: '', Content: '' },
-  { id: 7, Tagid: 7, Study: 'Clifford', Date: 'Ferrara', Time: '', Content: '' },
-  { id: 8, Tagid: 8, Study: 'Frances', Date: 'Rossini', Time: '', Content: '' },
-  { id: 9, Tagid: 9, Study: 'Roxie', Date: 'Harvey', Time: '', Content: '' },
+  { id: 1, userId: '', Tagid: 1, Study: 'Snow',      Date: '2022年5月12日', Time: '', Content: '' },
+  { id: 2, userId: '', Tagid: 2, Study: 'Lannister', Date: 'Cersei', Time: '', Content: '' },
+  { id: 3, userId: '', Tagid: 3, Study: 'Lannister', Date: 'Jaime', Time: '', Content: '' },
+  { id: 4, userId: '', Tagid: 4, Study: 'Stark',     Date: 'Arya', Time: '', Content: '' },
+  { id: 5, userId: '', Tagid: 5, Study: 'Targaryen', Date: 'Daenerys', Time: null, Content: '' },
+  { id: 6, userId: '', Tagid: 6, Study: 'Melisandre', Date: null, Time: '', Content: '' },
+  { id: 7, userId: '', Tagid: 7, Study: 'Clifford', Date: 'Ferrara', Time: '', Content: '' },
+  { id: 8, userId: '', Tagid: 8, Study: 'Frances', Date: 'Rossini', Time: '', Content: '' },
+  { id: 9, userId: '', Tagid: 9, Study: 'Roxie', Date: 'Harvey', Time: '', Content: '' },
 ];
 
 export const StudyGrid = () => {
@@ -86,7 +93,7 @@ export const StudyGrid = () => {
             },
           },
         }}
-        columnVisibilityModel={{ id: false, Tagid: false }}
+        columnVisibilityModel={{ id: false, userId: false, Tagid: false }}
         pageSizeOptions={[5]}
         loading={false}
         checkboxSelection={false}
