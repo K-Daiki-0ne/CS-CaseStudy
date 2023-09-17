@@ -1,5 +1,4 @@
 import { useState, MouseEvent, FC } from 'react';
-import { useSearchParams } from "next/navigation";
 import { 
   Box,
   TextField,
@@ -46,14 +45,20 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       setIsEdit(false);
     } else {
       // User情報を更新する
-      await update({
-        variables: {
-          userId: userId,
-          userName: updateUser.username,
-          professionId: Number(updateUser.professionId)
-        }
-      });
-      setIsEdit(true);
+      try {
+        await update({
+          variables: {
+            userId: userId,
+            userName: updateUser.username,
+            password: '',
+            professionId: updateUser.professionId
+          }
+        });
+
+        setIsEdit(true);  
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 
@@ -98,12 +103,12 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           fullWidth
           disabled={isEdit}
         >
-          <MenuItem value=""></MenuItem>
-          <MenuItem value={10}>学生（中学生）</MenuItem>
-          <MenuItem value={11}>学生（高校生）</MenuItem>
-          <MenuItem value={12}>学生（大学生）</MenuItem>
-          <MenuItem value={12}>社会人</MenuItem>
-          <MenuItem value={12}>その他</MenuItem>
+          <MenuItem value='0'></MenuItem>
+          <MenuItem value={'10'}>学生（中学生）</MenuItem>
+          <MenuItem value={'11'}>学生（高校生）</MenuItem>
+          <MenuItem value={'12'}>学生（大学生）</MenuItem>
+          <MenuItem value={'12'}>社会人</MenuItem>
+          <MenuItem value={'13'}>その他</MenuItem>
         </Select>
         <InputLabel id ='study-tag' htmlFor='study-tag-input' sx={{ mt: 1 }} error={ tagError.error }>{ tagError.label }</InputLabel>
         <Paper
