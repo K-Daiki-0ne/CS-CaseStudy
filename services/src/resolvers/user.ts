@@ -29,12 +29,13 @@ class UserInput {
   @Field()
   userName: string;
 
-  @Field()
-  password: string;
+  @Field({ nullable: true })
+  password?: string;
 
   @Field({ nullable: true })
   professionId?: string;
 }
+
 
 @Resolver(User)
 export class UserResolver {
@@ -85,9 +86,32 @@ export class UserResolver {
     }
 
     const user = await UserModel.readUser(userInput.userId);
+    if (!user) {
+      return {
+        errors: [{
+          field: 'register',
+          message: '更新したユーザー情報の取得に失敗'
+        }]
+      }
+    }
 
-    return { user }
+    return { 
+      user: { 
+        userId: userInput.userId, 
+        userName: userInput.userName,
+        email: '',
+        professionId: userInput.professionId
+      }
+    }
   }
+
+  @Mutation(() => Boolean)
+  async update(
+    @Arg('user') userInput: UserInput
+  ): Promise<boolean> {
+    return await UserModel.updateUser(userInput);
+  }
+
 
   @Query(() => UserResponse)
   async login(

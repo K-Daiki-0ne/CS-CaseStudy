@@ -10,6 +10,7 @@ import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
 import { StudyReport } from '../../components/StudyReport/StudyReport';
 import { UserProfile } from '../../components/UserProfile/UserProfile';
+import { Header } from '../../components/Header/Header'
 import AddIcon from '@mui/icons-material/Add';
 
 type TabPanelProps = {
@@ -66,11 +67,8 @@ const Main: NextPage = () => {
 
   return (
     <Layuot>
-      <Box
-        sx={{
-          mt: 3
-        }}
-      >
+      <Header title='CaseStudy' page='create' />
+      <Box sx={{ mt: 10 }}>
         <Box
           sx={{
             display: 'flex',

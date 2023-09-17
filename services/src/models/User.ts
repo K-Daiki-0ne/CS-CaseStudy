@@ -5,7 +5,7 @@ import { User } from "../entity/User";
 type CreateUserType = {
   userId: string;
   userName: string;
-  password: string;
+  password?: string;
   professionId?: string;
 }
 
@@ -78,11 +78,18 @@ class UserModel {
     }
 
     try {
-      await repo.update({ userId: user.userId }, {
-        userName: user.userName,
-        password: user.password,
-        professionId: user.professionId
-      });  
+      if (user.password != '') {
+        await repo.update({ userId: user.userId }, {
+          userName: user.userName,
+          password: user.password,
+          professionId: user.professionId
+        });
+      } else {
+        await repo.update({ userId: user.userId }, {
+          userName: user.userName,
+          professionId: user.professionId
+        });
+      }
     } catch(e) {
       console.error('ユーザー情報の更新に失敗:', e);
       return false;
@@ -90,7 +97,7 @@ class UserModel {
 
     return true;
   }
-    
+
   public async loginUser(email: string) {
     const user = await this.userRepo.findOne({
       where: {
