@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { ApolloProvider } from '@apollo/client';
+import { RecoilRoot } from 'recoil';
 import theme from '../theme';
 import createEmotionCache from '../createEmotionCache';
 import { initializeApollo } from '../libs/apolloClient'
@@ -27,15 +28,17 @@ export default function MyApp(props: MyAppProps) {
   const apolloClient = initializeApollo();
   return (
     <ApolloProvider client={apolloClient}>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </CacheProvider>
+      <RecoilRoot>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </Head>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </CacheProvider>
+      </RecoilRoot>
     </ApolloProvider>
   );
 }
