@@ -4,8 +4,8 @@ import StudyModel from '../models/study';
 
 @InputType()
 class StudyInput {
-  @Field()
-  studyId: number;
+  @Field({ nullable: true })
+  studyId?: number;
 
   @Field()
   userId: string;
@@ -40,6 +40,8 @@ export class StudyResolver {
     @Arg('inputStudy') study: StudyInput
   ): Promise<Boolean> {
     const isSuccess: boolean = await StudyModel.createStudy(study);
+
+    console.log('isSuccess:', isSuccess)
 
     if (!isSuccess) {
       return false
