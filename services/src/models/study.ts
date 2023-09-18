@@ -80,14 +80,25 @@ class StudyModel {
     return study
   }
 
-  public async readStudy(userId: string): Promise<Study[]> {
+  public async readStudy(userId: string) {
     if (userId == '') return [];
 
-    const studies: Study[] = await this.studyRepo.find({
-      where: {
-        userId: userId
-      }
-    })
+    const studies: any = await this.studyRepo.query(`
+      SELECT
+        S.studyId as studyId,
+        S.userId as userId,
+        ST.id as tagId,
+        ST.studyTagLabel as Study,
+        S.studyDate as Date,
+        S.studyTime as Time,
+        S.studyContent as Content
+      FROM study AS S
+      LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
+      WHERE S.userId = '${userId}'
+      ORDER BY S.createdAt DESC;
+    `);
+
+    // 返却するデータ内容を編集する。
 
     return studies;
   }

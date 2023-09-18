@@ -1,6 +1,7 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
 import { Study } from '../entity';
 import StudyModel from '../models/study';
+import { formatDate, formatTime } from '../libs/formatDateAndTime';
 
 @InputType()
 class StudyInput {
@@ -27,9 +28,43 @@ class StudyInput {
 }
 
 @ObjectType()
+class StudyMultiObjectType {
+  @Field()
+  studyId: number;
+
+  @Field()
+  userId: string;
+
+  @Field()
+  tagId: number;
+
+  @Field()
+  Study: string;
+
+  @Field()
+  Date: string;
+
+  @Field()
+  Time: string;
+
+  @Field()
+  Content: string
+}
+
+@ObjectType()
 class StudyMultiResponse {
-  @Field(() => [Study], { nullable: true })
-  studies?: Study[];
+  @Field(() => [StudyMultiObjectType], { nullable: true })
+  studies?: StudyMultiObjectType[];
+}
+
+type ResStudiesType = {
+  studyId: number;
+  userId: string;
+  tagId: number;
+  Study: string;
+  Date: string;
+  Time: string;
+  Content: string;
 }
 
 @Resolver(Study)
@@ -64,18 +99,33 @@ export class StudyResolver {
   ): Promise<StudyMultiResponse> {
 
     //データ取得回避を減らすためにタグ情報は随時取得しない
-    const studies: Study[] = await StudyModel.readStudy(userId);
+    const studies = await StudyModel.readStudy(userId);
 
-    if (studies == undefined) {
+    if (studies.length == 0) {
       return {
         studies: []
       };
     }
     
+    const resStudies: ResStudiesType[]  = []
+
+    // フロントで使用できるようデータ内容を変更する
+    studies.map((data: any) => {
+      const setValue: ResStudiesType = {
+        studyId: data.studyId,
+        userId: data.userId,
+        tagId: data.tagId,
+        Study: data.Study,
+        Date: formatDate(data.Date),
+        Time: formatTime(data.Time),
+        Content: data.Content
+      }
+      resStudies.push(setValue);
+    })
+
     return {
-      studies: studies
+      studies: resStudies
     }
-    
   }
 
   @Mutation(() => Boolean)
