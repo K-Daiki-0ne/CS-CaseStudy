@@ -1,5 +1,4 @@
-import { useState, MouseEvent } from 'react';
-import { useSearchParams } from "next/navigation";
+import { useState, MouseEvent, FC } from 'react';
 import { 
   Box,
   TextField,
@@ -28,31 +27,38 @@ type StudyTag = {
   label: string;
 };
 
-export const UserProfile = () => {
-  const [updateUser, setUpdateUser] = useState({ username: '', professionId: 0, tagName: '', goal: '' });
+type Props = {
+  userId: string
+}
+
+export const UserProfile: FC<Props> = ({ userId }) => {
+  const [updateUser, setUpdateUser] = useState({ username: '', professionId: '0', tagName: '', goal: '' });
   const [tagError, setTagError] = useState({ error: false, label: '学習タグ' });
   const [studyTag, setStudyTag] = useState<StudyTag[]>([]);
   const [isEdit, setIsEdit] = useState<boolean>(true);
-  const [profession, setProfession] = useState<string>('');
 
   const [update] = useMutation<RegisterMutation>(REGISTER_USER);
-  const userId = useSearchParams().get('userId');
 
   const handleModeClick = async (event: any) => {
     event.preventDefault();
     if (isEdit) {
-      // User情報を更新する
-      await update({
-        variables: {
-          userId: userId,
-          userName: updateUser.username,
-          professionId: updateUser.professionId
-        }
-      });
-
       setIsEdit(false);
     } else {
-      setIsEdit(true);
+      // User情報を更新する
+      try {
+        await update({
+          variables: {
+            userId: userId,
+            userName: updateUser.username,
+            password: '',
+            professionId: updateUser.professionId
+          }
+        });
+
+        setIsEdit(true);  
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 
@@ -78,14 +84,13 @@ export const UserProfile = () => {
   return (
     <div>
       <Box sx={{ width: '100%', mt: 2 }}>
-        <InputLabel id='username' htmlFor='user-name-input'>職業</InputLabel>
+        <InputLabel id='username' htmlFor='user-name-input'>ユーザー名</InputLabel>
         <TextField 
           disabled={isEdit}
           required
           id='user-name-input'
           value={updateUser.username}
           onChange={(e) => setUpdateUser({ ...updateUser, username: e.target.value })}
-          defaultValue="ユーザー名"
           sx={{
             width: '100%'
           }}
@@ -93,16 +98,17 @@ export const UserProfile = () => {
         <InputLabel id='user-profession' htmlFor='user-profession-select' sx={{ mt: 1 }} >職業</InputLabel>
         <Select
           id="user-profession-select"
-          value={profession}
-          onChange={(e: SelectChangeEvent) => setUpdateUser({ ...updateUser, professionId: Number(e.target.value) })}
+          value={updateUser.professionId as string}
+          onChange={(e: SelectChangeEvent) => setUpdateUser({ ...updateUser, professionId: e.target.value })}
           fullWidth
+          disabled={isEdit}
         >
-          <MenuItem value=""></MenuItem>
-          <MenuItem value={10}>学生（中学生）</MenuItem>
-          <MenuItem value={11}>学生（高校生）</MenuItem>
-          <MenuItem value={12}>学生（大学生）</MenuItem>
-          <MenuItem value={12}>社会人</MenuItem>
-          <MenuItem value={12}>その他</MenuItem>
+          <MenuItem value='0'></MenuItem>
+          <MenuItem value={'10'}>学生（中学生）</MenuItem>
+          <MenuItem value={'11'}>学生（高校生）</MenuItem>
+          <MenuItem value={'12'}>学生（大学生）</MenuItem>
+          <MenuItem value={'12'}>社会人</MenuItem>
+          <MenuItem value={'13'}>その他</MenuItem>
         </Select>
         <InputLabel id ='study-tag' htmlFor='study-tag-input' sx={{ mt: 1 }} error={ tagError.error }>{ tagError.label }</InputLabel>
         <Paper
@@ -132,6 +138,7 @@ export const UserProfile = () => {
           id='study-tag-input'
           error={tagError.error}
           type='text'
+          disabled={isEdit}
           value={updateUser.tagName}
           onChange={(value) => setUpdateUser({ ...updateUser, tagName: value.target.value })}
           sx={{ mt: 1 }}
@@ -143,6 +150,7 @@ export const UserProfile = () => {
                 onClick={handleClickAddTag}
                 onMouseDown={(event: MouseEvent<HTMLButtonElement>) => event.preventDefault()}
                 edge="end"
+                disabled={isEdit}
               >
                 <AddCircleIcon />
               </IconButton>

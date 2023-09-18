@@ -10,17 +10,21 @@ import {
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useLazyQuery } from '@apollo/client';
+import { useRecoilState } from 'recoil';
 import { Layuot } from '../components/Layout';
 import { Header } from '../components/Header/Header';
 import { LoginQuery } from '../generated/graphql';
 import { LOGIN_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';
+import { userState } from '../store/atoms';
+
 
 const Login: NextPage = () => {
   const [user, setUser] = useState({ email: '', password: '' });
   const [formError, setFormError] = useState({ email: false, password: false });
   const [formLabel, setFormLabel] = useState({ email: 'email', password: 'password' });
 
+  const [,setUserState] = useRecoilState(userState);
   const router = useRouter();
 
   const [login, { loading }] = useLazyQuery<LoginQuery>(LOGIN_USER, {
@@ -68,6 +72,11 @@ const Login: NextPage = () => {
           setFormLabel({ ...formLabel, password: data?.login.errors[0].message });  
         }
       };
+      
+      setUserState({
+        userId: data?.login.user?.userId as string, 
+        userName: data?.login.user?.userName as string
+      });
 
       router.push(`/main/${data?.login.user?.userId}`);
 

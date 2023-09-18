@@ -1,8 +1,8 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useSearchParams } from "next/navigation";
 import dayjs, { Dayjs } from 'dayjs';
+import { useRecoilValue } from 'recoil';
 import { Layuot } from '../../components/Layout';
 import { Header } from '../../components/Header/Header';
 import { Box, Typography, Input, InputLabel, Select, MenuItem, TextField , Fab, IconButton } from '@mui/material';
@@ -15,6 +15,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useMutation } from '@apollo/client';
 import { CREATE_STUDY } from '../../graphql/graphql';
 import { CreateStudyMutation } from '../../generated/graphql';
+import { userInfoState } from '../../store/selectors';
 
 const Create: NextPage = () => {
   const [date, setDate] = useState<Dayjs | null>(null);
@@ -24,8 +25,8 @@ const Create: NextPage = () => {
   const [dateError, setDateError] = useState({ error: false, label: '' });
   const [timeError, setTimeError] = useState({ error: false, label: '' });
 
+  const user = useRecoilValue(userInfoState);
   const router = useRouter();
-  const userId = useSearchParams().get('userId');
 
   const [create] = useMutation<CreateStudyMutation>(CREATE_STUDY);
 
@@ -53,7 +54,7 @@ const Create: NextPage = () => {
     try {
       await create({
         variables: {
-          userId: userId as String,
+          userId: user.userId,
           studyYear: date?.year(),
           studyDate: (date?.year() * 10000) + ((date?.month() + 1) * 100) + date?.date(),
           studyTime: Number(time.replace(':', '')),
@@ -62,7 +63,7 @@ const Create: NextPage = () => {
         }
       });
 
-      router.push(`/main/${userId}`)
+      router.push(`/main/${user.userId}`)
     } catch(e) {
       console.log('error')
       console.error(e);
@@ -76,7 +77,7 @@ const Create: NextPage = () => {
       <Header title='CaseStudy' page='create' />
       <Box component='form' onSubmit={createStudy}>
         <Box sx={{ mt: 10 }}>
-          <IconButton onClick={() => router.push(`/main/${userId}`)}>
+          <IconButton onClick={() => router.push(`/main/${user.userId}`)}>
             <ArrowBackIosIcon />
           </IconButton>
           <Typography sx={{ textAlign: 'center' }}>学習内容を記録</Typography>

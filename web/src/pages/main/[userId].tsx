@@ -3,15 +3,18 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useSearchParams } from "next/navigation";
 import { useLazyQuery } from '@apollo/client';
+import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useRecoilValue } from 'recoil';
 import { IS_USER } from '../../graphql/graphql';
 import { IsUserQuery } from '../../generated/graphql';
 import { Layuot } from '../../components/Layout';
-import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
 import { StudyReport } from '../../components/StudyReport/StudyReport';
 import { UserProfile } from '../../components/UserProfile/UserProfile';
 import { Header } from '../../components/Header/Header'
-import AddIcon from '@mui/icons-material/Add';
+import { userInfoState } from '../../store/selectors';
+
 
 type TabPanelProps = {
   children: ReactNode
@@ -41,12 +44,12 @@ function TabPanel(props: TabPanelProps) {
 
 const Main: NextPage = () => {
   const [tabValue, setTabValue] = useState<number>(0);
+  const user = useRecoilValue(userInfoState);
   const router = useRouter();
-  const userId = useSearchParams().get('userId');
 
   const [isUser] = useLazyQuery<IsUserQuery>(IS_USER, {
     variables: {
-      userId: userId
+      userId: user.userId
     }
   });
 
@@ -87,14 +90,14 @@ const Main: NextPage = () => {
           >
             ユーザー名
           </Typography>
-          <Fab 
+          <Fab
             aria-label='create' 
             size='medium' 
             color='primary'
             sx={{
               ml: '25%'
             }}
-            onClick={() => router.push(`/create/${userId}`)}
+            onClick={() => router.push(`/create/${user.userId}`)}
           >
             <AddIcon />
           </Fab>
@@ -113,7 +116,7 @@ const Main: NextPage = () => {
           <StudyGrid />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <UserProfile />
+          <UserProfile userId={user.userId} />
         </TabPanel>
       </Box>
     </Layuot>
