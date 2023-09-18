@@ -150,6 +150,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 onClick={handleClickAddTag}
                 onMouseDown={(event: MouseEvent<HTMLButtonElement>) => event.preventDefault()}
                 edge="end"
+                disabled={isEdit}
               >
                 <AddCircleIcon />
               </IconButton>
