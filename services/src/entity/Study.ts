@@ -1,26 +1,52 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm"
+import { ObjectType, Field } from "type-graphql";
+import { 
+  Entity, 
+  PrimaryGeneratedColumn, 
+  PrimaryColumn, 
+  Column, 
+  Index, 
+  CreateDateColumn, 
+  UpdateDateColumn 
+} from "typeorm"
 
+@ObjectType()
 @Entity()
 export class Study {
 
-   @Column()
-   @Index()
-    userId: number
+  @Field()
+  @PrimaryGeneratedColumn()
+  studyId!: number;
 
-    @PrimaryGeneratedColumn()
-    studyId: number
+  @Field()
+  @Column()
+  @PrimaryColumn()
+  userId!: string;
 
-    @Column("varchar", { length: 2 })
-    studyCategory!: number
+  @Field()
+  @Column({ type: 'year' })
+  @Index()
+  studyYear!: number;
 
-    @Column("date")
-    @Index()
-    studyStartTime: Date
+  @Field()
+  @Column({ type: 'int' })
+  studyDate: number;
 
-    @Column("date")
-    @Index()
-    studyEndTime: Date
+  @Field()
+  // time/minute
+  @Column({ type: 'int' })
+  studyTime: number;
 
-    @Column()
-    studyCommentId: number;
+  @Field()
+  @Column()
+  studyTagId: number;
+
+  @Field()
+  @Column({ type: 'text' })
+  studyContent: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
