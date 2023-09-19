@@ -9,7 +9,8 @@ import { ApolloProvider } from '@apollo/client';
 import { RecoilRoot } from 'recoil';
 import theme from '../theme';
 import createEmotionCache from '../createEmotionCache';
-import { initializeApollo } from '../libs/apolloClient'
+import { initializeApollo } from '../libs/apolloClient';
+import '../config/recoil';
 
 if (process.env.NODE_ENV == 'development') {  // Adds messages only in a dev environment
   loadDevMessages();

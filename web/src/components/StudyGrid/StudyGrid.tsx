@@ -1,7 +1,13 @@
+import { useState, useEffect, FC } from 'react';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { useQuery } from '@apollo/client';
+import { useRecoilValue } from 'recoil';
+import { MultiReadStudyQuery } from '../../generated/graphql';
+import { MULTI_READ_STUDY } from '../../graphql/graphql'
 import { StudyDeleteButton } from '../StudyDeleteButton/StudyDeleteButton';
-import { StudyEditButton } from '../StudyEditButton/StudyEditButton'
+import { StudyEditButton } from '../StudyEditButton/StudyEditButton';
+import { userInfoState } from '../../store/selectors';
 
 const columns = [
   {
@@ -68,23 +74,24 @@ const columns = [
   }
 ];
 
-const rows = [
-  { id: 1, userId: '', Tagid: 1, Study: 'Snow',      Date: '2022年5月12日', Time: '', Content: '' },
-  { id: 2, userId: '', Tagid: 2, Study: 'Lannister', Date: 'Cersei', Time: '', Content: '' },
-  { id: 3, userId: '', Tagid: 3, Study: 'Lannister', Date: 'Jaime', Time: '', Content: '' },
-  { id: 4, userId: '', Tagid: 4, Study: 'Stark',     Date: 'Arya', Time: '', Content: '' },
-  { id: 5, userId: '', Tagid: 5, Study: 'Targaryen', Date: 'Daenerys', Time: null, Content: '' },
-  { id: 6, userId: '', Tagid: 6, Study: 'Melisandre', Date: null, Time: '', Content: '' },
-  { id: 7, userId: '', Tagid: 7, Study: 'Clifford', Date: 'Ferrara', Time: '', Content: '' },
-  { id: 8, userId: '', Tagid: 8, Study: 'Frances', Date: 'Rossini', Time: '', Content: '' },
-  { id: 9, userId: '', Tagid: 9, Study: 'Roxie', Date: 'Harvey', Time: '', Content: '' },
-];
+type StudyArray = {
+  id: number;
+  userId: string;
+  Tagid: number;
+  Study: string;
+  Date: string;
+  Time: string;
+  Content: string
+}
 
-export const StudyGrid = () => {
+type Props = { props: StudyArray[] }
+
+export const StudyGrid: FC<Props> = ({ props }) => {
+
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
       <DataGrid
-        rows={rows}
+        rows={props}
         columns={columns}
         initialState={{
           pagination: {
@@ -94,8 +101,8 @@ export const StudyGrid = () => {
           },
         }}
         columnVisibilityModel={{ id: false, userId: false, Tagid: false }}
-        pageSizeOptions={[5]}
-        loading={false}
+        // pageSizeOptions={[5]}
+        // loading={loading}
         checkboxSelection={false}
         autoHeight
         autoPageSize

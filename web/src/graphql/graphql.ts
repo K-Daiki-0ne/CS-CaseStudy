@@ -30,16 +30,17 @@ export const SINGLE_READ_STUDY = gql`
 `;
 
 export const MULTI_READ_STUDY = gql`
-  query MultiReadStudy($usreId: String!) {
-    multiReadStudy(usreId: $usreId) {
+  query MultiReadStudy($userId: String!) {
+    multiReadStudy(userId: $userId) {
       studies {
         studyId,
-        studyYear,
-        studyDate,
-        studyTime,
-        studyTagId,
-        studyContent
-      }  
+        userId,
+        tagId,
+        Study,
+        Date,
+        Time,
+        Content
+      }
     }
   }
 `;

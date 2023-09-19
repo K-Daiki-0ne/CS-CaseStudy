@@ -95,7 +95,7 @@ export class StudyResolver {
 
   @Query(() => StudyMultiResponse)
   async multiReadStudy(
-    @Arg('usreId') userId: string
+    @Arg('userId') userId: string
   ): Promise<StudyMultiResponse> {
 
     //データ取得回避を減らすためにタグ情報は随時取得しない
