@@ -37,6 +37,10 @@ export class Study {
   studyTime: number;
 
   @Field()
+  @Column({ type: 'int' })
+  studyMinute: number;
+
+  @Field()
   @Column()
   studyTagId: number;
 

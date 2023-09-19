@@ -33,8 +33,8 @@ export class User {
   professionId: string
 
   @Field()
-  @Column({ type: 'int' })
-  age: number
+  @Column({ type: 'nchar' })
+  goal: string
 
   @Field(() => String)
   @CreateDateColumn()

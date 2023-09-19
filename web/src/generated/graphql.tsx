@@ -31,6 +31,7 @@ export type Mutation = {
   deleteStudy: Scalars['Boolean']['output'];
   deleteStudyTag: Scalars['Boolean']['output'];
   register: UserResponse;
+  update: Scalars['Boolean']['output'];
   updateStudy: Scalars['Boolean']['output'];
 };
 
@@ -67,6 +68,11 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationUpdateArgs = {
+  user: UserInput;
+};
+
+
 export type MutationUpdateStudyArgs = {
   updateStudy: StudyInput;
 };
@@ -99,7 +105,7 @@ export type QueryLoginArgs = {
 
 
 export type QueryMultiReadStudyArgs = {
-  usreId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
 };
 
 
@@ -133,9 +139,20 @@ export type StudyInput = {
   userId: Scalars['String']['input'];
 };
 
+export type StudyMultiObjectType = {
+  __typename?: 'StudyMultiObjectType';
+  Content: Scalars['String']['output'];
+  Date: Scalars['String']['output'];
+  Study: Scalars['String']['output'];
+  Time: Scalars['String']['output'];
+  studyId: Scalars['Float']['output'];
+  tagId: Scalars['Float']['output'];
+  userId: Scalars['String']['output'];
+};
+
 export type StudyMultiResponse = {
   __typename?: 'StudyMultiResponse';
-  studies?: Maybe<Array<Study>>;
+  studies?: Maybe<Array<StudyMultiObjectType>>;
 };
 
 export type StudyTag = {
@@ -159,7 +176,7 @@ export type User = {
 };
 
 export type UserInput = {
-  password: Scalars['String']['input'];
+  password?: InputMaybe<Scalars['String']['input']>;
   professionId?: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
   userName: Scalars['String']['input'];
@@ -187,11 +204,11 @@ export type SigleReadStudyQueryVariables = Exact<{
 export type SigleReadStudyQuery = { __typename?: 'Query', singleReadStudy: { __typename?: 'Study', studyId: number, userId: string, studyYear: number, studyDate: number, studyTime: number } };
 
 export type MultiReadStudyQueryVariables = Exact<{
-  usreId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
 }>;
 
 
-export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'Study', studyId: number, studyYear: number, studyDate: number, studyTime: number, studyTagId: number, studyContent: string }> | null } };
+export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null } };
 
 export type ReadTagsQueryVariables = Exact<{
   user: Scalars['String']['input'];
@@ -210,7 +227,7 @@ export type IsUserQuery = { __typename?: 'Query', isUser: boolean };
 export type RegisterMutationVariables = Exact<{
   userId: Scalars['String']['input'];
   userName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  password?: InputMaybe<Scalars['String']['input']>;
   professionId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -358,15 +375,16 @@ export type SigleReadStudyQueryHookResult = ReturnType<typeof useSigleReadStudyQ
 export type SigleReadStudyLazyQueryHookResult = ReturnType<typeof useSigleReadStudyLazyQuery>;
 export type SigleReadStudyQueryResult = Apollo.QueryResult<SigleReadStudyQuery, SigleReadStudyQueryVariables>;
 export const MultiReadStudyDocument = gql`
-    query MultiReadStudy($usreId: String!) {
-  multiReadStudy(usreId: $usreId) {
+    query MultiReadStudy($userId: String!) {
+  multiReadStudy(userId: $userId) {
     studies {
       studyId
-      studyYear
-      studyDate
-      studyTime
-      studyTagId
-      studyContent
+      userId
+      tagId
+      Study
+      Date
+      Time
+      Content
     }
   }
 }
@@ -384,7 +402,7 @@ export const MultiReadStudyDocument = gql`
  * @example
  * const { data, loading, error } = useMultiReadStudyQuery({
  *   variables: {
- *      usreId: // value for 'usreId'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -471,7 +489,7 @@ export type IsUserQueryHookResult = ReturnType<typeof useIsUserQuery>;
 export type IsUserLazyQueryHookResult = ReturnType<typeof useIsUserLazyQuery>;
 export type IsUserQueryResult = Apollo.QueryResult<IsUserQuery, IsUserQueryVariables>;
 export const RegisterDocument = gql`
-    mutation Register($userId: String!, $userName: String!, $password: String!, $professionId: String) {
+    mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String) {
   register(
     user: {userId: $userId, userName: $userName, password: $password, professionId: $professionId}
   ) {
