@@ -1,12 +1,15 @@
 import { Repository } from 'typeorm'
 import { AppDataSource } from "../config/data-source"
 import { User } from "../entity/User";
+import argon2 from 'argon2';
+
 
 type CreateUserType = {
   userId: string;
   userName: string;
   password?: string;
   professionId?: string;
+  goal?: string;
 }
 
 class UserModel {
@@ -27,7 +30,7 @@ class UserModel {
         userName: '', 
         password: '', 
         professionId: '', 
-        age: 0 
+        goal: '' 
       })
 
       console.log('ユーザーの作成に成功しました')
@@ -79,15 +82,20 @@ class UserModel {
 
     try {
       if (user.password != '') {
+        const password = await argon2.hash(user.password as string);
+        // ユーザー情報の登録時に使用する
         await repo.update({ userId: user.userId }, {
           userName: user.userName,
-          password: user.password,
-          professionId: user.professionId
+          password: password,
+          professionId: user.professionId,
+          goal: user.goal
         });
       } else {
+        // ユーザー情報の編集時に使用
         await repo.update({ userId: user.userId }, {
           userName: user.userName,
-          professionId: user.professionId
+          professionId: user.professionId,
+          goal: user.goal
         });
       }
     } catch(e) {

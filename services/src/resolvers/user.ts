@@ -1,5 +1,5 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
-// import argon2 from 'argon2';
+import argon2 from 'argon2';
 import { User } from '../entity';
 import UserModel from '../models/user';
 import { sendEmail } from '../utils/sendEmail';
@@ -34,6 +34,9 @@ class UserInput {
 
   @Field({ nullable: true })
   professionId?: string;
+
+  @Field({ nullable: true })
+  goal?: string;
 }
 
 
@@ -128,7 +131,8 @@ export class UserResolver {
       }
     }
 
-    if (user.password != password) {
+    const valid = await argon2.verify(user.password, password);
+    if (!valid) {
       return {
         errors: [{
           field: 'password',

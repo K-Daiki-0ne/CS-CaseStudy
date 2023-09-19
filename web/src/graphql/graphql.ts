@@ -11,7 +11,8 @@ export const LOGIN_USER = gql`
         userId,
         userName,
         email,
-        professionId
+        professionId,
+        goal
       }
     }
   }
@@ -63,12 +64,13 @@ export const IS_USER = gql`
 `
 
 export const REGISTER_USER = gql`
-  mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String) {
+  mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String, $goal: String) {
     register(user: {
       userId: $userId,
       userName: $userName,
       password: $password,
       professionId: $professionId
+      goal: $goal
     }) {
       errors {
         field,

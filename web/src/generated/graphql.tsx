@@ -123,6 +123,7 @@ export type Study = {
   studyContent: Scalars['String']['output'];
   studyDate: Scalars['Float']['output'];
   studyId: Scalars['Float']['output'];
+  studyMinute: Scalars['Float']['output'];
   studyTagId: Scalars['Float']['output'];
   studyTime: Scalars['Float']['output'];
   studyYear: Scalars['Float']['output'];
@@ -166,9 +167,9 @@ export type StudyTag = {
 
 export type User = {
   __typename?: 'User';
-  age: Scalars['Float']['output'];
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
+  goal: Scalars['String']['output'];
   professionId: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
   userId: Scalars['String']['output'];
@@ -176,6 +177,7 @@ export type User = {
 };
 
 export type UserInput = {
+  goal?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   professionId?: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
@@ -194,7 +196,7 @@ export type LoginQueryVariables = Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string, email: string, professionId: string } | null } };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string, email: string, professionId: string, goal: string } | null } };
 
 export type SigleReadStudyQueryVariables = Exact<{
   id: Scalars['Float']['input'];
@@ -229,6 +231,7 @@ export type RegisterMutationVariables = Exact<{
   userName: Scalars['String']['input'];
   password?: InputMaybe<Scalars['String']['input']>;
   professionId?: InputMaybe<Scalars['String']['input']>;
+  goal?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -302,6 +305,7 @@ export const LoginDocument = gql`
       userName
       email
       professionId
+      goal
     }
   }
 }
@@ -489,9 +493,9 @@ export type IsUserQueryHookResult = ReturnType<typeof useIsUserQuery>;
 export type IsUserLazyQueryHookResult = ReturnType<typeof useIsUserLazyQuery>;
 export type IsUserQueryResult = Apollo.QueryResult<IsUserQuery, IsUserQueryVariables>;
 export const RegisterDocument = gql`
-    mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String) {
+    mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String, $goal: String) {
   register(
-    user: {userId: $userId, userName: $userName, password: $password, professionId: $professionId}
+    user: {userId: $userId, userName: $userName, password: $password, professionId: $professionId, goal: $goal}
   ) {
     errors {
       field
@@ -523,6 +527,7 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  *      userName: // value for 'userName'
  *      password: // value for 'password'
  *      professionId: // value for 'professionId'
+ *      goal: // value for 'goal'
  *   },
  * });
  */
