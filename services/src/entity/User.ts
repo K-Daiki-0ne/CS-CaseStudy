@@ -20,7 +20,7 @@ export class User {
   @Column({ type: 'nvarchar', length: 20 })
   userName!: string
 
-  @Column("varchar", { length: 20 })
+  @Column("varchar", { length: 100 })
   @Index()
   password!: string
 
