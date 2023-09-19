@@ -103,7 +103,6 @@ class StudyModel {
         ORDER BY S.createdAt DESC;
       `);
 
-      console.log('model studies:', studies)
       // 返却するデータ内容を編集する。
       return studies;
     } catch (e) {
