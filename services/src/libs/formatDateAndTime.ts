@@ -18,15 +18,3 @@ export const formatDate = (date: number): string => {
 
   return formatDate;
 }
-
-export const formatTime = (time: number): string => {
-  let formatTime: string = '';
-
-  if (String(time).length > 3) {
-    formatTime = String(time).substring(0, 2) + '時間' + String(time).substring(2,4) + '分'
-  } else {
-    formatTime = String(time).substring(0, 1) + '時間' + String(time).substring(1,3) + '分'
-  }
-
-  return formatTime;
-}

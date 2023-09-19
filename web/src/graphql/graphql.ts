@@ -91,12 +91,20 @@ export const CREATE_USER = gql`
 `;
 
 export const CREATE_STUDY = gql`
-  mutation CreateStudy($userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyTagId: Float, $studyContent: String) {
-    createStudy(inputStudy: {
+  mutation CreateStudy(
+    $userId: String!, 
+    $studyYear: Float!, 
+    $studyDate: Float!, 
+    $studyTime: Float!, 
+    $studyMinute: Float!, 
+    $studyTagId: Float, 
+    $studyContent: String
+    ) { createStudy(inputStudy: {
       userId: $userId,
       studyYear: $studyYear,
       studyDate: $studyDate,
       studyTime: $studyTime,
+      studyMinute: $studyMinute,
       studyTagId: $studyTagId,
       studyContent: $studyContent
     })
@@ -110,6 +118,7 @@ export const UPDATE_STUDY = gql`
     $studyYear: Float!, 
     $studyDate: Float!, 
     $studyTime: Float!, 
+    $studyMinute: Float!, 
     $studyTagId: Float, 
     $studyContent: String
   ) { updateStudy(updateStudy: {
@@ -118,6 +127,7 @@ export const UPDATE_STUDY = gql`
       studyYear: $studyYear,
       studyDate: $studyDate,
       studyTime: $studyTime,
+      studyMinute: $studyMinute,
       studyTagId: $studyTagId,
       studyContent: $studyContent
     })

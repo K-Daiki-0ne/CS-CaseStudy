@@ -8,6 +8,7 @@ type StudyType = {
   studyYear: number;
   studyDate: number;
   studyTime: number;
+  studyMinute: number;
   studyTagId?: number;
   studyContent?: string;
 }
@@ -33,6 +34,7 @@ class StudyModel {
         studyYear: study.studyYear,
         studyDate: study.studyDate,
         studyTime: study.studyTime,
+        studyMinute: study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
@@ -50,15 +52,16 @@ class StudyModel {
         console.error('最新の学習情報の取得に失敗')
         return false
       }
-      
+
       // Studyテーブルの更新完了後に履歴テーブルに更新後データを追加する
+      // 履歴テーブルの時間はtime + minuteで設定する
       await this.studyHistoryRepo.insert({
         studyId: postStudy?.studyId,
         userId: study.userId,
         deletedFlg: ' ',
         studyYear: study.studyYear,
         studyDate: study.studyDate,
-        studyTime: study.studyTime,
+        studyTime: study.studyTime * 100 + study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
@@ -83,24 +86,29 @@ class StudyModel {
   public async readStudy(userId: string) {
     if (userId == '') return [];
 
-    const studies: any = await this.studyRepo.query(`
-      SELECT
-        S.studyId as studyId,
-        S.userId as userId,
-        ST.id as tagId,
-        ST.studyTagLabel as Study,
-        S.studyDate as Date,
-        S.studyTime as Time,
-        S.studyContent as Content
-      FROM study AS S
-      LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
-      WHERE S.userId = '${userId}'
-      ORDER BY S.createdAt DESC;
-    `);
+    try {
+      const studies: any = await this.studyRepo.query(`
+        SELECT
+          S.studyId as studyId,
+          S.userId as userId,
+          ST.id as tagId,
+          ST.studyTagLabel as Study,
+          S.studyDate as Date,
+          S.studyTime as Time,
+          S.studyMinute as Minutes,
+          S.studyContent as Content
+        FROM study AS S
+        LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
+        WHERE S.userId = '${userId}'
+        ORDER BY S.createdAt DESC;
+      `);
 
-    // 返却するデータ内容を編集する。
-
-    return studies;
+      console.log('model studies:', studies)
+      // 返却するデータ内容を編集する。
+      return studies;
+    } catch (e) {
+      console.error('readStudy:', e);
+    }
   }
 
   public async updateStudy(study: StudyType) {
@@ -111,11 +119,13 @@ class StudyModel {
         studyYear: study.studyYear,
         studyDate: study.studyDate,
         studyTime: study.studyTime,
+        studyMinute: study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
 
       // Studyテーブルの更新完了後に履歴テーブルに新しい履歴情報を追加する
+      study.studyTime = study.studyTime * 100 + study.studyMinute;
       await this.studyHistoryRepo.insert({
         studyId: study.studyId,
         userId: study.userId,
@@ -145,6 +155,7 @@ class StudyModel {
         }
       });
 
+      const studyTimeAndMinutes = Number(study?.studyTime) * 100 + Number(study?.studyMinute);
       // 削除時点の情報を記録する履歴を作成する
       await this.studyHistoryRepo.insert({
         studyId: studyId,
@@ -152,7 +163,7 @@ class StudyModel {
         deletedFlg: '1',
         studyYear: study?.studyYear,
         studyDate: study?.studyDate,
-        studyTime: study?.studyTime,
+        studyTime: studyTimeAndMinutes,
         studyTagId: study?.studyTagId,
         studyContent: study?.studyContent
       })

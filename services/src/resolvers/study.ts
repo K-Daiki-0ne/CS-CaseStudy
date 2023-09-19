@@ -1,7 +1,7 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
 import { Study } from '../entity';
 import StudyModel from '../models/study';
-import { formatDate, formatTime } from '../libs/formatDateAndTime';
+import { formatDate } from '../libs/formatDateAndTime';
 
 @InputType()
 class StudyInput {
@@ -20,6 +20,9 @@ class StudyInput {
   @Field()
   studyTime: number;
 
+  @Field()
+  studyMinute: number;
+  
   @Field({ nullable: true })
   studyTagId?: number;
 
@@ -76,8 +79,6 @@ export class StudyResolver {
   ): Promise<Boolean> {
     const isSuccess: boolean = await StudyModel.createStudy(study);
 
-    console.log('isSuccess:', isSuccess)
-
     if (!isSuccess) {
       return false
     }
@@ -111,13 +112,17 @@ export class StudyResolver {
 
     // フロントで使用できるようデータ内容を変更する
     studies.map((data: any) => {
+      let minute = 0;
+      if (data.Minute != undefined) {
+        minute = data.Minute
+      };
       const setValue: ResStudiesType = {
         studyId: data.studyId,
         userId: data.userId,
         tagId: data.tagId,
         Study: data.Study,
         Date: formatDate(data.Date),
-        Time: formatTime(data.Time),
+        Time: String(data.Time) + '時間' + String(minute) + '分',
         Content: data.Content
       }
       resStudies.push(setValue);
