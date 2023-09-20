@@ -187,8 +187,8 @@ export class StudyResolver {
       const setValue: ResStudiesType = {
         studyId: data.studyId,
         userId: data.userId,
-        tagId: data.tagId,
-        Study: data.Study,
+        tagId: data.tagId != null ? data.tagId : 0,
+        Study: data.Study != null ? data.Study : '',
         Date: formatDate(data.Date),
         Time: String(data.Time) + '時間' + String(minute) + '分',
         Content: data.Content

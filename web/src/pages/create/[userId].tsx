@@ -57,7 +57,8 @@ const Create: NextPage = () => {
           userId: user.userId,
           studyYear: date?.year(),
           studyDate: (date?.year() * 10000) + ((date?.month() + 1) * 100) + date?.date(),
-          studyTime: Number(time.replace(':', '')),
+          studyTime: Number(time.replace(':', '').substring(0, 2)),
+          studyMinute: Number(time.replace(':', '').substring(2, 4)),
           studyTagId: Number(studyTag),
           studyContent: study
         }
@@ -104,12 +105,12 @@ const Create: NextPage = () => {
             id='study-day-input'
             fullWidth
           />
-          <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-day-input" size='normal'>
+          <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-tag-input" size='normal'>
             学習タグ
           </InputLabel>
           <Select
-            labelId="update-study-day-input"
-            id="study-day-input"
+            labelId="update-study-tag-input"
+            id="study-tag-input"
             value={studyTag}
             onChange={handleTagChange}
             sx={{ width: '100%' }}
@@ -121,11 +122,11 @@ const Create: NextPage = () => {
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-          <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-day-input" size='normal'>
+          <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-contet-input" size='normal'>
             学習内容
           </InputLabel>
           <TextField
-            id='update-study-day-input'
+            id='update-study-contet-input'
             fullWidth
             rows={4}
             value={study}
