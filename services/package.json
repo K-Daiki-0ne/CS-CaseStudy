@@ -20,6 +20,7 @@
       "apollo-server-express": "2.16.1",
       "argon2": "^0.31.1",
       "cors": "^2.8.5",
+      "dayjs": "^1.11.10",
       "dotenv": "^16.0.3",
       "express": "4.17.1",
       "graphql": "15.3.0",

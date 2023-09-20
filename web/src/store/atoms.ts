@@ -4,6 +4,7 @@ type UserState = {
   userId: string;
   userName: string;
   professionId?: number;
+  goal?: string; 
 };
 
 type StudyTagState = {

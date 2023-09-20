@@ -11,7 +11,27 @@ export const LOGIN_USER = gql`
         userId,
         userName,
         email,
-        professionId
+        professionId,
+        goal
+      }
+    }
+  }
+`;
+
+export const READ_STUSY_TIME = gql`
+  query ReadStudyTime($userId: String!, $date: Float!) {
+    readStudyTime(userId: $userId, date: $date) {
+      day {
+        time,
+        minute
+      }
+      week {
+        time,
+        minute
+      }
+      month {
+        time,
+        minute
       }
     }
   }
@@ -63,12 +83,13 @@ export const IS_USER = gql`
 `
 
 export const REGISTER_USER = gql`
-  mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String) {
+  mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String, $goal: String) {
     register(user: {
       userId: $userId,
       userName: $userName,
       password: $password,
       professionId: $professionId
+      goal: $goal
     }) {
       errors {
         field,
@@ -89,12 +110,20 @@ export const CREATE_USER = gql`
 `;
 
 export const CREATE_STUDY = gql`
-  mutation CreateStudy($userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyTagId: Float, $studyContent: String) {
-    createStudy(inputStudy: {
+  mutation CreateStudy(
+    $userId: String!, 
+    $studyYear: Float!, 
+    $studyDate: Float!, 
+    $studyTime: Float!, 
+    $studyMinute: Float!, 
+    $studyTagId: Float, 
+    $studyContent: String
+    ) { createStudy(inputStudy: {
       userId: $userId,
       studyYear: $studyYear,
       studyDate: $studyDate,
       studyTime: $studyTime,
+      studyMinute: $studyMinute,
       studyTagId: $studyTagId,
       studyContent: $studyContent
     })
@@ -108,6 +137,7 @@ export const UPDATE_STUDY = gql`
     $studyYear: Float!, 
     $studyDate: Float!, 
     $studyTime: Float!, 
+    $studyMinute: Float!, 
     $studyTagId: Float, 
     $studyContent: String
   ) { updateStudy(updateStudy: {
@@ -116,6 +146,7 @@ export const UPDATE_STUDY = gql`
       studyYear: $studyYear,
       studyDate: $studyDate,
       studyTime: $studyTime,
+      studyMinute: $studyMinute,
       studyTagId: $studyTagId,
       studyContent: $studyContent
     })

@@ -1,7 +1,7 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
 import { Study } from '../entity';
 import StudyModel from '../models/study';
-import { formatDate, formatTime } from '../libs/formatDateAndTime';
+import { formatDate, searchWeekStartEnd } from '../libs/dateFormat';
 
 @InputType()
 class StudyInput {
@@ -20,6 +20,9 @@ class StudyInput {
   @Field()
   studyTime: number;
 
+  @Field()
+  studyMinute: number;
+  
   @Field({ nullable: true })
   studyTagId?: number;
 
@@ -57,6 +60,18 @@ class StudyMultiResponse {
   studies?: StudyMultiObjectType[];
 }
 
+@ObjectType()
+class StudyTimeResponse {
+  @Field(() => StudyTimeType)
+  day: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  week: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  month: StudyTimeType;
+}
+
 type ResStudiesType = {
   studyId: number;
   userId: string;
@@ -67,6 +82,17 @@ type ResStudiesType = {
   Content: string;
 }
 
+@ObjectType()
+class StudyTimeType {
+
+  @Field()
+  time: number;
+
+  @Field()
+  minute: number
+}
+
+
 @Resolver(Study)
 export class StudyResolver {
 
@@ -76,14 +102,34 @@ export class StudyResolver {
   ): Promise<Boolean> {
     const isSuccess: boolean = await StudyModel.createStudy(study);
 
-    console.log('isSuccess:', isSuccess)
-
     if (!isSuccess) {
       return false
     }
 
     return true;
   }
+
+  @Query(() => StudyTimeResponse)
+  async readStudyTime(
+    @Arg('userId') userId: string,
+    @Arg('date') date: number
+  ): Promise<StudyTimeResponse> {
+    const day = await StudyModel.readDayOfStudyTime(userId, date);
+    const week = await StudyModel.readWeekOfStudyTime(
+      userId,
+      searchWeekStartEnd(date).startWeekDay, 
+      searchWeekStartEnd(date).endWeekDay
+    );
+
+    const month = await StudyModel.readMonthOfStudyTime(userId, Math.floor(date / 100));
+
+    return {
+      day,
+      week,
+      month
+    }
+  }
+
 
   @Query(() => Study)
   async singleReadStudy(
@@ -111,13 +157,17 @@ export class StudyResolver {
 
     // フロントで使用できるようデータ内容を変更する
     studies.map((data: any) => {
+      let minute = 0;
+      if (data.Minute != undefined) {
+        minute = data.Minute
+      };
       const setValue: ResStudiesType = {
         studyId: data.studyId,
         userId: data.userId,
         tagId: data.tagId,
         Study: data.Study,
         Date: formatDate(data.Date),
-        Time: formatTime(data.Time),
+        Time: String(data.Time) + '時間' + String(minute) + '分',
         Content: data.Content
       }
       resStudies.push(setValue);
