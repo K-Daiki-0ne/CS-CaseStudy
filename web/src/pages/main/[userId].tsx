@@ -5,17 +5,17 @@ import { useSearchParams } from "next/navigation";
 import { useLazyQuery } from '@apollo/client';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import dayjs from "dayjs";
 import { useRecoilValue } from 'recoil';
 import { initializeApollo } from '../../libs/apolloClient';
-import { MultiReadStudyQuery } from '../../generated/graphql';
-import { MULTI_READ_STUDY } from '../../graphql/graphql'
-import { IS_USER } from '../../graphql/graphql';
-import { IsUserQuery } from '../../generated/graphql';
+import { MULTI_READ_STUDY, IS_USER, READ_STUSY_TIME } from '../../graphql/graphql'
+import { MultiReadStudyQuery, IsUserQuery, ReadStudyTimeQuery} from '../../generated/graphql';
 import { Layuot } from '../../components/Layout';
 import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
 import { StudyReport } from '../../components/StudyReport/StudyReport';
 import { UserProfile } from '../../components/UserProfile/UserProfile';
 import { Header } from '../../components/Header/Header'
+
 import { userInfoState } from '../../store/selectors';
 
 type TabPanelProps = {
@@ -34,7 +34,22 @@ type StudiesType = {
   Content: string
 }
 
-type Props = { studies: StudiesType[] }
+type StudyTimeType = {
+  day: {
+    time: number;
+    minute: number;
+  }
+  week: {
+    time: number;
+    minute: number;
+  }
+  month: {
+    time: number;
+    minute?: number
+  }
+}
+
+type Props = { studies: StudiesType[], time: StudyTimeType }
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -56,14 +71,15 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const Main: NextPage<Props> = ({ studies }) => {
+const Main: NextPage<Props> = ({ studies, time }) => {
   const [tabValue, setTabValue] = useState<number>(0);
   const user = useRecoilValue(userInfoState);
   const router = useRouter();
+  const userId = useSearchParams().get('userId');
 
   const [isUser] = useLazyQuery<IsUserQuery>(IS_USER, {
     variables: {
-      userId: user.userId
+      userId: userId
     }
   });
 
@@ -140,38 +156,73 @@ const Main: NextPage<Props> = ({ studies }) => {
 // SSRで学習内容を取得する
 export async function getServerSideProps(params: any) {
   const apolloClient = initializeApollo();
-  const { data } = await apolloClient.query<MultiReadStudyQuery>({
-    query: MULTI_READ_STUDY,
-    variables: {
-      userId: params.query.userId
-    }
-  });
-
-  if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
-    return {
-      props: []
-    }
-  }
 
   const studiesArray: StudiesType[] = [];
+  let studyTime: StudyTimeType = {
+    day: { 
+      time: 0, 
+      minute: 0 
+    },
+    week: {
+      time: 0,
+      minute: 0
+    },
+    month: {
+      time: 0,
+      minute: 0
+    }
+  };
 
-  // apolloを使用したAPIではデータに不要な項目が追加されるため、
-  // 使用するための一覧で表示できるようデータ内容を修正する
-  data.multiReadStudy.studies.map((data) => {
-    const value: StudiesType = {
-      id: data.studyId,
-      userId: data.userId,
-      Tagid: data.tagId,
-      Study: data.Study,
-      Date: data.Date,
-      Time: data.Time,
-      Content: data.Content
-    };
-    studiesArray.push(value);
-  });
+  try {
+    const { data } = await apolloClient.query<MultiReadStudyQuery>({
+      query: MULTI_READ_STUDY,
+      variables: {
+        userId: params.query.userId
+      }
+    });
+  
+    if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
+      return {
+        props: []
+      }
+    }
+
+    // apolloを使用したAPIではデータに不要な項目が追加されるため、
+    // 使用するための一覧で表示できるようデータ内容を修正する
+    data.multiReadStudy.studies.map((value: any) => {
+      const studyValue: StudiesType = {
+        id: value.studyId,
+        userId: value.userId,
+        Tagid: value.tagId,
+        Study: value.Study,
+        Date: value.Date,
+        Time: value.Time,
+        Content: value.Content
+      };
+      studiesArray.push(studyValue);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
+  try {
+    const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
+    const { data } = await apolloClient.query<ReadStudyTimeQuery>({
+      query: READ_STUSY_TIME,
+      variables: {
+        userId: params.query.userId,
+        date: today
+      }
+    })
+    studyTime.day = data.readStudyTime.day;
+    studyTime.week = data.readStudyTime.week;
+    studyTime.month = data.readStudyTime.month;
+  } catch (e) {
+    console.error(e);
+  }
 
   return {
-    props: { studies: studiesArray }
+    props: { studies: studiesArray, time: studyTime }
   }
 
 }

@@ -106,7 +106,6 @@ class StudyModel {
         LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
         WHERE S.userId = '${userId}'
         ORDER BY S.createdAt DESC;
-        FOR READ ONLY
       `);
 
       // 返却するデータ内容を編集する。
@@ -133,14 +132,10 @@ class StudyModel {
 
     let studyTime: StudyTimeType = { time: 0, minute: 0 };
 
-    if (!dayOfStudyTime) {
-      return studyTime;
-    }
-
     dayOfStudyTime.map((data: any) => {
       studyTime = {
-        time: data.time,
-        minute: data.minute
+        time: data.time != null ? data.time : 0,
+        minute: data.minute != null ? data.time : 0
       }
     });
 
@@ -161,8 +156,8 @@ class StudyModel {
 
       dayOfStudyWeek.map((data: any) => {
         studyTime = {
-          time: data.time,
-          minute: data.minute
+          time: data.time != null ? data.time : 0,
+          minute: data.minute != null ? data.time : 0
         }
       })
     } catch (e) {
@@ -194,8 +189,8 @@ class StudyModel {
 
       dayOfStudyMonth.map((data: any) => {
         studyTime = {
-          time: data.time,
-          minute: data.minute
+          time: data.time != null ? data.time : 0,
+          minute: data.minute != null ? data.minute : 0
         }
       });
     } catch(e) {
