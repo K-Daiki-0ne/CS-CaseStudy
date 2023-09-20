@@ -5,17 +5,40 @@ import Grid from '@mui/material/Unstable_Grid2';
 type StudyTimeboxProps = {
   text: string,
   heder?: boolean
+};
+
+type StudyTimeType = {
+  day: {
+    time: number;
+    minute: number;
+  },
+  week: {
+    time: number;
+    minute: number;
+  },
+  month: {
+    time: number;
+    minute: number;
+  }
+}
+
+type Props = {
+  props: StudyTimeType
 }
 
 const StudyTimebox: FC<StudyTimeboxProps> = ({ text, heder }) => {
   let boxColor = '#FFFFFF';
   let textBold = 'normal';
   let textColor = '#000000';
+  let height = '100%';
+  let fontSize = '1.15rem'
 
   if (heder) {
     boxColor = '#556cd6';
     textBold = 'bold';
-    textColor = 'white'
+    textColor = 'white';
+    height = '60%';
+    fontSize = '0.83rem'
   }
 
   return (
@@ -25,7 +48,7 @@ const StudyTimebox: FC<StudyTimeboxProps> = ({ text, heder }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '70%',
+        height: height,
         backgroundColor: boxColor
       }}>
       <Typography 
@@ -33,7 +56,7 @@ const StudyTimebox: FC<StudyTimeboxProps> = ({ text, heder }) => {
         sx={{
           color: textColor,
           fontWeight: textBold,
-          fontSize: '0.83rem'
+          fontSize: fontSize
         }}
         component='p'
       >
@@ -43,27 +66,27 @@ const StudyTimebox: FC<StudyTimeboxProps> = ({ text, heder }) => {
   )
 }
 
-export const StudyReport = () => {
+export const StudyReport: FC<Props> = ({ props }) => {
   return (
     <Box>
       <Box>
         <Grid container spacing={0}>
           <Grid xs={4}>
             <StudyTimebox text='今日の学習時間' heder/>
-            <StudyTimebox text='8時間' />
+            <StudyTimebox text={`${props.day.time}時間${props.day.minute}分`} />
           </Grid>
           <Grid xs={4}>
             <StudyTimebox text='今週の学習時間' heder/>
-            <StudyTimebox text='56時間' />
+            <StudyTimebox text={`${props.week.time}時間${props.week.minute}分`} />
           </Grid>
           <Grid xs={4}>
             <StudyTimebox text='今月の学習時間' heder/>
-            <StudyTimebox text='230時間' />
+            <StudyTimebox text={`${props.month.time}時間${props.month.minute}分`} />
           </Grid>
         </Grid>
       </Box>
 
-      <Box sx={{ flexGrow: 1, mt: 4 , border: '1px solid grey'}}>
+      <Box sx={{ flexGrow: 1, mt: 6 , border: '1px solid grey'}}>
         <Typography>Chartを設置する</Typography>
       </Box>
 

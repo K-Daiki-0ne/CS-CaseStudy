@@ -8,8 +8,14 @@ type StudyType = {
   studyYear: number;
   studyDate: number;
   studyTime: number;
+  studyMinute: number;
   studyTagId?: number;
   studyContent?: string;
+}
+
+type StudyTimeType = {
+  time: number;
+  minute: number
 }
 
 class StudyModel {
@@ -33,6 +39,7 @@ class StudyModel {
         studyYear: study.studyYear,
         studyDate: study.studyDate,
         studyTime: study.studyTime,
+        studyMinute: study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
@@ -50,15 +57,16 @@ class StudyModel {
         console.error('最新の学習情報の取得に失敗')
         return false
       }
-      
+
       // Studyテーブルの更新完了後に履歴テーブルに更新後データを追加する
+      // 履歴テーブルの時間はtime + minuteで設定する
       await this.studyHistoryRepo.insert({
         studyId: postStudy?.studyId,
         userId: study.userId,
         deletedFlg: ' ',
         studyYear: study.studyYear,
         studyDate: study.studyDate,
-        studyTime: study.studyTime,
+        studyTime: study.studyTime * 100 + study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
@@ -83,27 +91,120 @@ class StudyModel {
   public async readStudy(userId: string) {
     if (userId == '') return [];
 
-    const studies: any = await this.studyRepo.query(`
+    try {
+      const studies: any = await this.studyRepo.query(`
+        SELECT
+          S.studyId as studyId,
+          S.userId as userId,
+          ST.id as tagId,
+          ST.studyTagLabel as Study,
+          S.studyDate as Date,
+          S.studyTime as Time,
+          S.studyMinute as Minutes,
+          S.studyContent as Content
+        FROM study AS S
+        LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
+        WHERE S.userId = '${userId}'
+        ORDER BY S.createdAt DESC;
+      `);
+
+      // 返却するデータ内容を編集する。
+      return studies;
+    } catch (e) {
+      console.error('readStudy:', e);
+    }
+  }
+/**
+ * 現在の年月日から学習した合計時間と合計分を取得
+ * @param {string} userId ユーザーID
+ * @param {number} date   現在年月日
+ * @returns 時間 分
+ */
+  public async readDayOfStudyTime(userId: string, date: number) {
+
+    const dayOfStudyTime = await this.studyRepo.query(`
       SELECT
-        S.studyId as studyId,
-        S.userId as userId,
-        ST.id as tagId,
-        ST.studyTagLabel as Study,
-        S.studyDate as Date,
-        S.studyTime as Time,
-        S.studyContent as Content
-      FROM study AS S
-      LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
-      WHERE S.userId = '${userId}'
-      ORDER BY S.createdAt DESC;
+        SUM(studyTime) AS time,
+        SUM(studyMinute) AS minute
+      FROM study
+      WHERE userId = '${userId}' AND studyDate = '${date}'
     `);
 
-    // 返却するデータ内容を編集する。
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
 
-    return studies;
+    dayOfStudyTime.map((data: any) => {
+      studyTime = {
+        time: data.time != null ? data.time : 0,
+        minute: data.minute != null ? data.time : 0
+      }
+    });
+
+    return studyTime;
+  };
+
+  public async readWeekOfStudyTime(userId: string, weekStart: number, weekEnd: number) {
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
+
+    try {
+      const dayOfStudyWeek = await this.studyRepo.query(`
+        SELECT
+          SUM(studyTime) AS time,
+          SUM(studyMinute) AS minute
+        FROM study
+        WHERE userId = '${userId}' AND studyDate >= ${weekStart} AND studyDate <= ${weekEnd}
+      `);
+
+      dayOfStudyWeek.map((data: any) => {
+        studyTime = {
+          time: data.time != null ? data.time : 0,
+          minute: data.minute != null ? data.time : 0
+        }
+      })
+    } catch (e) {
+      console.error(e);
+    }
+
+    return studyTime;
+  };
+
+  /**
+   * 月間の学習時間を取得する。
+   * @param {string} userId ユーザーID
+   * @param {number} month  年 + 月
+   */
+  public async readMonthOfStudyTime(userId: string, month: number) {
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
+
+    try {
+      const monthStart = month * 100;
+      const monthEnd = month* 100 + 99;
+
+      const dayOfStudyMonth = await this.studyRepo.query(`
+        SELECT
+          SUM(studyTime) as time,
+          SUM(studyMinute) as minute
+        FROM study
+        WHERE userId = '${userId}' AND studyDate >= ${monthStart} AND studyDate <= ${monthEnd}
+      `);
+
+      dayOfStudyMonth.map((data: any) => {
+        studyTime = {
+          time: data.time != null ? data.time : 0,
+          minute: data.minute != null ? data.minute : 0
+        }
+      });
+    } catch(e) {
+      console.error(e);
+    }
+
+    return studyTime;
   }
 
-  public async updateStudy(study: StudyType) {
+  /**
+   * @param {StudyType} study 学習情報
+   * @returns {boolean} 成功ならtrue 失敗ならfalse
+   */
+  public async updateStudy(study: StudyType): Promise<boolean> {
     if (study == undefined) return false;
 
     try {
@@ -111,11 +212,13 @@ class StudyModel {
         studyYear: study.studyYear,
         studyDate: study.studyDate,
         studyTime: study.studyTime,
+        studyMinute: study.studyMinute,
         studyTagId: study.studyTagId,
         studyContent: study.studyContent
       })
 
       // Studyテーブルの更新完了後に履歴テーブルに新しい履歴情報を追加する
+      study.studyTime = study.studyTime * 100 + study.studyMinute;
       await this.studyHistoryRepo.insert({
         studyId: study.studyId,
         userId: study.userId,
@@ -134,7 +237,12 @@ class StudyModel {
     return true;
   }
 
-  public async deleteStudy(studyId: number) {
+  /**
+   * 学習の削除を実施
+   * @param {number} studyId 
+   * @returns {boolean} 成功ならtrue 失敗ならfalse
+   */
+  public async deleteStudy(studyId: number): Promise<boolean> {
     if (studyId == 0) return false;
 
     try {
@@ -145,6 +253,7 @@ class StudyModel {
         }
       });
 
+      const studyTimeAndMinutes = Number(study?.studyTime) * 100 + Number(study?.studyMinute);
       // 削除時点の情報を記録する履歴を作成する
       await this.studyHistoryRepo.insert({
         studyId: studyId,
@@ -152,7 +261,7 @@ class StudyModel {
         deletedFlg: '1',
         studyYear: study?.studyYear,
         studyDate: study?.studyDate,
-        studyTime: study?.studyTime,
+        studyTime: studyTimeAndMinutes,
         studyTagId: study?.studyTagId,
         studyContent: study?.studyContent
       })

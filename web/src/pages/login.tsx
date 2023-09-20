@@ -71,6 +71,8 @@ const Login: NextPage = () => {
           setFormError({ ...formError, password: true });
           setFormLabel({ ...formLabel, password: data?.login.errors[0].message });  
         }
+
+        return;
       };
       
       setUserState({
