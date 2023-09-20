@@ -154,6 +154,9 @@ export async function getServerSideProps(params: any) {
   }
 
   const studiesArray: StudiesType[] = [];
+
+  // apolloを使用したAPIではデータに不要な項目が追加されるため、
+  // 使用するための一覧で表示できるようデータ内容を修正する
   data.multiReadStudy.studies.map((data) => {
     const value: StudiesType = {
       id: data.studyId,

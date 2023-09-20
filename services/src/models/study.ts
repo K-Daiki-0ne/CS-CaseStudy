@@ -13,6 +13,11 @@ type StudyType = {
   studyContent?: string;
 }
 
+type StudyTimeType = {
+  time: number;
+  minute: number
+}
+
 class StudyModel {
   studyRepo: Repository<Study>
   studyHistoryRepo: Repository<StudyHistory>
@@ -101,6 +106,7 @@ class StudyModel {
         LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
         WHERE S.userId = '${userId}'
         ORDER BY S.createdAt DESC;
+        FOR READ ONLY
       `);
 
       // 返却するデータ内容を編集する。
@@ -109,8 +115,101 @@ class StudyModel {
       console.error('readStudy:', e);
     }
   }
+/**
+ * 現在の年月日から学習した合計時間と合計分を取得
+ * @param {string} userId ユーザーID
+ * @param {number} date   現在年月日
+ * @returns 時間 分
+ */
+  public async readDayOfStudyTime(userId: string, date: number) {
 
-  public async updateStudy(study: StudyType) {
+    const dayOfStudyTime = await this.studyRepo.query(`
+      SELECT
+        SUM(studyTime) AS time,
+        SUM(studyMinute) AS minute
+      FROM study
+      WHERE userId = '${userId}' AND studyDate = '${date}'
+    `);
+
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
+
+    if (!dayOfStudyTime) {
+      return studyTime;
+    }
+
+    dayOfStudyTime.map((data: any) => {
+      studyTime = {
+        time: data.time,
+        minute: data.minute
+      }
+    });
+
+    return studyTime;
+  };
+
+  public async readWeekOfStudyTime(userId: string, weekStart: number, weekEnd: number) {
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
+
+    try {
+      const dayOfStudyWeek = await this.studyRepo.query(`
+        SELECT
+          SUM(studyTime) AS time,
+          SUM(studyMinute) AS minute
+        FROM study
+        WHERE userId = '${userId}' AND studyDate >= ${weekStart} AND studyDate <= ${weekEnd}
+      `);
+
+      dayOfStudyWeek.map((data: any) => {
+        studyTime = {
+          time: data.time,
+          minute: data.minute
+        }
+      })
+    } catch (e) {
+      console.error(e);
+    }
+
+    return studyTime;
+  };
+
+  /**
+   * 月間の学習時間を取得する。
+   * @param {string} userId ユーザーID
+   * @param {number} month  年 + 月
+   */
+  public async readMonthOfStudyTime(userId: string, month: number) {
+    let studyTime: StudyTimeType = { time: 0, minute: 0 };
+
+    try {
+      const monthStart = month * 100;
+      const monthEnd = month* 100 + 99;
+
+      const dayOfStudyMonth = await this.studyRepo.query(`
+        SELECT
+          SUM(studyTime) as time,
+          SUM(studyMinute) as minute
+        FROM study
+        WHERE userId = '${userId}' AND studyDate >= ${monthStart} AND studyDate <= ${monthEnd}
+      `);
+
+      dayOfStudyMonth.map((data: any) => {
+        studyTime = {
+          time: data.time,
+          minute: data.minute
+        }
+      });
+    } catch(e) {
+      console.error(e);
+    }
+
+    return studyTime;
+  }
+
+  /**
+   * @param {StudyType} study 学習情報
+   * @returns {boolean} 成功ならtrue 失敗ならfalse
+   */
+  public async updateStudy(study: StudyType): Promise<boolean> {
     if (study == undefined) return false;
 
     try {
@@ -143,7 +242,12 @@ class StudyModel {
     return true;
   }
 
-  public async deleteStudy(studyId: number) {
+  /**
+   * 学習の削除を実施
+   * @param {number} studyId 
+   * @returns {boolean} 成功ならtrue 失敗ならfalse
+   */
+  public async deleteStudy(studyId: number): Promise<boolean> {
     if (studyId == 0) return false;
 
     try {

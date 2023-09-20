@@ -1,7 +1,7 @@
 import { ObjectType, Field, Mutation, Arg, Resolver, InputType, Query } from 'type-graphql';
 import { Study } from '../entity';
 import StudyModel from '../models/study';
-import { formatDate } from '../libs/formatDateAndTime';
+import { formatDate, searchWeekStartEnd } from '../libs/dateFormat';
 
 @InputType()
 class StudyInput {
@@ -60,6 +60,18 @@ class StudyMultiResponse {
   studies?: StudyMultiObjectType[];
 }
 
+@ObjectType()
+class StudyTimeResponse {
+  @Field(() => StudyTimeType)
+  day: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  week: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  month: StudyTimeType;
+}
+
 type ResStudiesType = {
   studyId: number;
   userId: string;
@@ -69,6 +81,17 @@ type ResStudiesType = {
   Time: string;
   Content: string;
 }
+
+@ObjectType()
+class StudyTimeType {
+
+  @Field()
+  time: number;
+
+  @Field()
+  minute: number
+}
+
 
 @Resolver(Study)
 export class StudyResolver {
@@ -85,6 +108,28 @@ export class StudyResolver {
 
     return true;
   }
+
+  @Query(() => StudyTimeResponse)
+  async readSutdyTime(
+    @Arg('userId') userId: string,
+    @Arg('date') date: number
+  ): Promise<StudyTimeResponse> {
+    const day = await StudyModel.readDayOfStudyTime(userId, date);
+    const week = await StudyModel.readWeekOfStudyTime(
+      userId,
+      searchWeekStartEnd(date).startWeekDay, 
+      searchWeekStartEnd(date).endWeekDay
+    );
+
+    const month = await StudyModel.readMonthOfStudyTime(userId, Math.floor(date / 100));
+
+    return {
+      day,
+      week,
+      month
+    }
+  }
+
 
   @Query(() => Study)
   async singleReadStudy(
