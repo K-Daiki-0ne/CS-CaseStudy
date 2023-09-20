@@ -45,7 +45,7 @@ type StudyTimeType = {
   }
   month: {
     time: number;
-    minute?: number
+    minute: number
   }
 }
 
@@ -140,7 +140,7 @@ const Main: NextPage<Props> = ({ studies, time }) => {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <StudyReport />
+          <StudyReport props={time} />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StudyGrid props={studies} />
