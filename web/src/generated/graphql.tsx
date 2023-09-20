@@ -83,6 +83,7 @@ export type Query = {
   isUser: Scalars['Boolean']['output'];
   login: UserResponse;
   multiReadStudy: StudyMultiResponse;
+  readStudyTime: StudyTimeResponse;
   readTags: Array<StudyTag>;
   singleReadStudy: Study;
 };
@@ -105,6 +106,12 @@ export type QueryLoginArgs = {
 
 
 export type QueryMultiReadStudyArgs = {
+  userId: Scalars['String']['input'];
+};
+
+
+export type QueryReadStudyTimeArgs = {
+  date: Scalars['Float']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -134,6 +141,7 @@ export type StudyInput = {
   studyContent?: InputMaybe<Scalars['String']['input']>;
   studyDate: Scalars['Float']['input'];
   studyId?: InputMaybe<Scalars['Float']['input']>;
+  studyMinute: Scalars['Float']['input'];
   studyTagId?: InputMaybe<Scalars['Float']['input']>;
   studyTime: Scalars['Float']['input'];
   studyYear: Scalars['Float']['input'];
@@ -163,6 +171,19 @@ export type StudyTag = {
   studyTagKey: Scalars['String']['output'];
   studyTagLabel: Scalars['String']['output'];
   userId: Scalars['String']['output'];
+};
+
+export type StudyTimeResponse = {
+  __typename?: 'StudyTimeResponse';
+  day: StudyTimeType;
+  month: StudyTimeType;
+  week: StudyTimeType;
+};
+
+export type StudyTimeType = {
+  __typename?: 'StudyTimeType';
+  minute: Scalars['Float']['output'];
+  time: Scalars['Float']['output'];
 };
 
 export type User = {
@@ -197,6 +218,14 @@ export type LoginQueryVariables = Exact<{
 
 
 export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string, email: string, professionId: string, goal: string } | null } };
+
+export type ReadStudyTimeQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+  date: Scalars['Float']['input'];
+}>;
+
+
+export type ReadStudyTimeQuery = { __typename?: 'Query', readStudyTime: { __typename?: 'StudyTimeResponse', day: { __typename?: 'StudyTimeType', time: number, minute: number }, week: { __typename?: 'StudyTimeType', time: number, minute: number }, month: { __typename?: 'StudyTimeType', time: number, minute: number } } };
 
 export type SigleReadStudyQueryVariables = Exact<{
   id: Scalars['Float']['input'];
@@ -249,6 +278,7 @@ export type CreateStudyMutationVariables = Exact<{
   studyYear: Scalars['Float']['input'];
   studyDate: Scalars['Float']['input'];
   studyTime: Scalars['Float']['input'];
+  studyMinute: Scalars['Float']['input'];
   studyTagId?: InputMaybe<Scalars['Float']['input']>;
   studyContent?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -262,6 +292,7 @@ export type UpdateStudyMutationVariables = Exact<{
   studyYear: Scalars['Float']['input'];
   studyDate: Scalars['Float']['input'];
   studyTime: Scalars['Float']['input'];
+  studyMinute: Scalars['Float']['input'];
   studyTagId?: InputMaybe<Scalars['Float']['input']>;
   studyContent?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -339,6 +370,53 @@ export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Logi
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
+export const ReadStudyTimeDocument = gql`
+    query ReadStudyTime($userId: String!, $date: Float!) {
+  readStudyTime(userId: $userId, date: $date) {
+    day {
+      time
+      minute
+    }
+    week {
+      time
+      minute
+    }
+    month {
+      time
+      minute
+    }
+  }
+}
+    `;
+
+/**
+ * __useReadStudyTimeQuery__
+ *
+ * To run a query within a React component, call `useReadStudyTimeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReadStudyTimeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReadStudyTimeQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useReadStudyTimeQuery(baseOptions: Apollo.QueryHookOptions<ReadStudyTimeQuery, ReadStudyTimeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReadStudyTimeQuery, ReadStudyTimeQueryVariables>(ReadStudyTimeDocument, options);
+      }
+export function useReadStudyTimeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReadStudyTimeQuery, ReadStudyTimeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReadStudyTimeQuery, ReadStudyTimeQueryVariables>(ReadStudyTimeDocument, options);
+        }
+export type ReadStudyTimeQueryHookResult = ReturnType<typeof useReadStudyTimeQuery>;
+export type ReadStudyTimeLazyQueryHookResult = ReturnType<typeof useReadStudyTimeLazyQuery>;
+export type ReadStudyTimeQueryResult = Apollo.QueryResult<ReadStudyTimeQuery, ReadStudyTimeQueryVariables>;
 export const SigleReadStudyDocument = gql`
     query SigleReadStudy($id: Float!) {
   singleReadStudy(id: $id) {
@@ -570,9 +648,9 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const CreateStudyDocument = gql`
-    mutation CreateStudy($userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyTagId: Float, $studyContent: String) {
+    mutation CreateStudy($userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyMinute: Float!, $studyTagId: Float, $studyContent: String) {
   createStudy(
-    inputStudy: {userId: $userId, studyYear: $studyYear, studyDate: $studyDate, studyTime: $studyTime, studyTagId: $studyTagId, studyContent: $studyContent}
+    inputStudy: {userId: $userId, studyYear: $studyYear, studyDate: $studyDate, studyTime: $studyTime, studyMinute: $studyMinute, studyTagId: $studyTagId, studyContent: $studyContent}
   )
 }
     `;
@@ -595,6 +673,7 @@ export type CreateStudyMutationFn = Apollo.MutationFunction<CreateStudyMutation,
  *      studyYear: // value for 'studyYear'
  *      studyDate: // value for 'studyDate'
  *      studyTime: // value for 'studyTime'
+ *      studyMinute: // value for 'studyMinute'
  *      studyTagId: // value for 'studyTagId'
  *      studyContent: // value for 'studyContent'
  *   },
@@ -608,9 +687,9 @@ export type CreateStudyMutationHookResult = ReturnType<typeof useCreateStudyMuta
 export type CreateStudyMutationResult = Apollo.MutationResult<CreateStudyMutation>;
 export type CreateStudyMutationOptions = Apollo.BaseMutationOptions<CreateStudyMutation, CreateStudyMutationVariables>;
 export const UpdateStudyDocument = gql`
-    mutation UpdateStudy($studyId: Float, $userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyTagId: Float, $studyContent: String) {
+    mutation UpdateStudy($studyId: Float, $userId: String!, $studyYear: Float!, $studyDate: Float!, $studyTime: Float!, $studyMinute: Float!, $studyTagId: Float, $studyContent: String) {
   updateStudy(
-    updateStudy: {studyId: $studyId, userId: $userId, studyYear: $studyYear, studyDate: $studyDate, studyTime: $studyTime, studyTagId: $studyTagId, studyContent: $studyContent}
+    updateStudy: {studyId: $studyId, userId: $userId, studyYear: $studyYear, studyDate: $studyDate, studyTime: $studyTime, studyMinute: $studyMinute, studyTagId: $studyTagId, studyContent: $studyContent}
   )
 }
     `;
@@ -634,6 +713,7 @@ export type UpdateStudyMutationFn = Apollo.MutationFunction<UpdateStudyMutation,
  *      studyYear: // value for 'studyYear'
  *      studyDate: // value for 'studyDate'
  *      studyTime: // value for 'studyTime'
+ *      studyMinute: // value for 'studyMinute'
  *      studyTagId: // value for 'studyTagId'
  *      studyContent: // value for 'studyContent'
  *   },

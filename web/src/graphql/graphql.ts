@@ -18,6 +18,25 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const READ_STUSY_TIME = gql`
+  query ReadStudyTime($userId: String!, $date: Float!) {
+    readStudyTime(userId: $userId, date: $date) {
+      day {
+        time,
+        minute
+      }
+      week {
+        time,
+        minute
+      }
+      month {
+        time,
+        minute
+      }
+    }
+  }
+`;
+
 export const SINGLE_READ_STUDY = gql`
   query SigleReadStudy($id: Float!) {
     singleReadStudy(id: $id) {

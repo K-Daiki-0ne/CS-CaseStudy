@@ -110,7 +110,7 @@ export class StudyResolver {
   }
 
   @Query(() => StudyTimeResponse)
-  async readSutdyTime(
+  async readStudyTime(
     @Arg('userId') userId: string,
     @Arg('date') date: number
   ): Promise<StudyTimeResponse> {
