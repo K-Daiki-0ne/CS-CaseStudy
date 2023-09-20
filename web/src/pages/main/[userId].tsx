@@ -174,16 +174,19 @@ export async function getServerSideProps(params: any) {
   };
 
   try {
+    const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
     const { data } = await apolloClient.query<MultiReadStudyQuery>({
       query: MULTI_READ_STUDY,
       variables: {
-        userId: params.query.userId
+        userId: params.query.userId,
+        date: today
       }
     });
   
     if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
       return {
-        props: []
+        props: [],
+        time: studyTime
       }
     }
 
@@ -201,25 +204,15 @@ export async function getServerSideProps(params: any) {
       };
       studiesArray.push(studyValue);
     });
+
+    studyTime.day = data.multiReadStudy.day;
+    studyTime.week = data.multiReadStudy.week;
+    studyTime.month = data.multiReadStudy.month;
+
   } catch (e) {
     console.error(e);
   }
 
-  try {
-    const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
-    const { data } = await apolloClient.query<ReadStudyTimeQuery>({
-      query: READ_STUSY_TIME,
-      variables: {
-        userId: params.query.userId,
-        date: today
-      }
-    })
-    studyTime.day = data.readStudyTime.day;
-    studyTime.week = data.readStudyTime.week;
-    studyTime.month = data.readStudyTime.month;
-  } catch (e) {
-    console.error(e);
-  }
 
   return {
     props: { studies: studiesArray, time: studyTime }

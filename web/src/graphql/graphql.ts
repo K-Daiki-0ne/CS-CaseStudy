@@ -50,8 +50,8 @@ export const SINGLE_READ_STUDY = gql`
 `;
 
 export const MULTI_READ_STUDY = gql`
-  query MultiReadStudy($userId: String!) {
-    multiReadStudy(userId: $userId) {
+  query MultiReadStudy($userId: String!, $date: Float!) {
+    multiReadStudy(userId: $userId, date: $date) {
       studies {
         studyId,
         userId,
@@ -60,6 +60,18 @@ export const MULTI_READ_STUDY = gql`
         Date,
         Time,
         Content
+      },
+      day {
+        time,
+        minute
+      },
+      week {
+        time,
+        minute
+      },
+      month {
+        time,
+        minute
       }
     }
   }

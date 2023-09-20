@@ -58,6 +58,16 @@ class StudyMultiObjectType {
 class StudyMultiResponse {
   @Field(() => [StudyMultiObjectType], { nullable: true })
   studies?: StudyMultiObjectType[];
+
+  @Field(() => StudyTimeType)
+  day: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  week: StudyTimeType;
+
+  @Field(() => StudyTimeType)
+  month: StudyTimeType;
+
 }
 
 @ObjectType()
@@ -141,7 +151,8 @@ export class StudyResolver {
 
   @Query(() => StudyMultiResponse)
   async multiReadStudy(
-    @Arg('userId') userId: string
+    @Arg('userId') userId: string,
+    @Arg('date') date: number
   ): Promise<StudyMultiResponse> {
 
     //データ取得回避を減らすためにタグ情報は随時取得しない
@@ -149,7 +160,19 @@ export class StudyResolver {
 
     if (studies.length == 0) {
       return {
-        studies: []
+        studies: [],
+        day: {
+          time: 0,
+          minute: 0
+        },
+        week: {
+          time: 0,
+          minute: 0,
+        },
+        month: {
+          time: 0,
+          minute: 0
+        }
       };
     }
     
@@ -173,8 +196,20 @@ export class StudyResolver {
       resStudies.push(setValue);
     })
 
+    const day = await StudyModel.readDayOfStudyTime(userId, date);
+    const week = await StudyModel.readWeekOfStudyTime(
+      userId,
+      searchWeekStartEnd(date).startWeekDay, 
+      searchWeekStartEnd(date).endWeekDay
+    );
+
+    const month = await StudyModel.readMonthOfStudyTime(userId, Math.floor(date / 100));
+
     return {
-      studies: resStudies
+      studies: resStudies,
+      day,
+      week,
+      month
     }
   }
 

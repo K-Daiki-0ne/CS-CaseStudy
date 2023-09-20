@@ -106,6 +106,7 @@ export type QueryLoginArgs = {
 
 
 export type QueryMultiReadStudyArgs = {
+  date: Scalars['Float']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -161,7 +162,10 @@ export type StudyMultiObjectType = {
 
 export type StudyMultiResponse = {
   __typename?: 'StudyMultiResponse';
+  day: StudyTimeType;
+  month: StudyTimeType;
   studies?: Maybe<Array<StudyMultiObjectType>>;
+  week: StudyTimeType;
 };
 
 export type StudyTag = {
@@ -236,10 +240,11 @@ export type SigleReadStudyQuery = { __typename?: 'Query', singleReadStudy: { __t
 
 export type MultiReadStudyQueryVariables = Exact<{
   userId: Scalars['String']['input'];
+  date: Scalars['Float']['input'];
 }>;
 
 
-export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null } };
+export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null, day: { __typename?: 'StudyTimeType', time: number, minute: number }, week: { __typename?: 'StudyTimeType', time: number, minute: number }, month: { __typename?: 'StudyTimeType', time: number, minute: number } } };
 
 export type ReadTagsQueryVariables = Exact<{
   user: Scalars['String']['input'];
@@ -457,8 +462,8 @@ export type SigleReadStudyQueryHookResult = ReturnType<typeof useSigleReadStudyQ
 export type SigleReadStudyLazyQueryHookResult = ReturnType<typeof useSigleReadStudyLazyQuery>;
 export type SigleReadStudyQueryResult = Apollo.QueryResult<SigleReadStudyQuery, SigleReadStudyQueryVariables>;
 export const MultiReadStudyDocument = gql`
-    query MultiReadStudy($userId: String!) {
-  multiReadStudy(userId: $userId) {
+    query MultiReadStudy($userId: String!, $date: Float!) {
+  multiReadStudy(userId: $userId, date: $date) {
     studies {
       studyId
       userId
@@ -467,6 +472,18 @@ export const MultiReadStudyDocument = gql`
       Date
       Time
       Content
+    }
+    day {
+      time
+      minute
+    }
+    week {
+      time
+      minute
+    }
+    month {
+      time
+      minute
     }
   }
 }
@@ -485,6 +502,7 @@ export const MultiReadStudyDocument = gql`
  * const { data, loading, error } = useMultiReadStudyQuery({
  *   variables: {
  *      userId: // value for 'userId'
+ *      date: // value for 'date'
  *   },
  * });
  */
