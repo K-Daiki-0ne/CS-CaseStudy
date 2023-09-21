@@ -42,8 +42,7 @@ export type MutationCreateStudyArgs = {
 
 
 export type MutationCreateStudyTagArgs = {
-  tagKey: Scalars['String']['input'];
-  tagLabel: Scalars['String']['input'];
+  studyTags: StudyTagRequest;
   userId: Scalars['String']['input'];
 };
 
@@ -181,6 +180,16 @@ export type StudyTag = {
   studyTagKey: Scalars['String']['output'];
   studyTagLabel: Scalars['String']['output'];
   userId: Scalars['String']['output'];
+};
+
+export type StudyTagRequest = {
+  studyTags?: InputMaybe<Array<StudyTags>>;
+};
+
+export type StudyTags = {
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
+  show?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type StudyTimeResponse = {
@@ -327,8 +336,8 @@ export type DeleteStudyMutation = { __typename?: 'Mutation', deleteStudy: boolea
 
 export type CreateStudyTagMutationVariables = Exact<{
   userId: Scalars['String']['input'];
-  tagKey: Scalars['String']['input'];
-  tagLabel: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
 }>;
 
 
@@ -833,8 +842,11 @@ export type DeleteStudyMutationHookResult = ReturnType<typeof useDeleteStudyMuta
 export type DeleteStudyMutationResult = Apollo.MutationResult<DeleteStudyMutation>;
 export type DeleteStudyMutationOptions = Apollo.BaseMutationOptions<DeleteStudyMutation, DeleteStudyMutationVariables>;
 export const CreateStudyTagDocument = gql`
-    mutation CreateStudyTag($userId: String!, $tagKey: String!, $tagLabel: String!) {
-  createStudyTag(userId: $userId, tagKey: $tagKey, tagLabel: $tagLabel)
+    mutation CreateStudyTag($userId: String!, $key: String!, $label: String!) {
+  createStudyTag(
+    userId: $userId
+    studyTags: {studyTags: [{key: $key, label: $label}]}
+  )
 }
     `;
 export type CreateStudyTagMutationFn = Apollo.MutationFunction<CreateStudyTagMutation, CreateStudyTagMutationVariables>;
@@ -853,8 +865,8 @@ export type CreateStudyTagMutationFn = Apollo.MutationFunction<CreateStudyTagMut
  * const [createStudyTagMutation, { data, loading, error }] = useCreateStudyTagMutation({
  *   variables: {
  *      userId: // value for 'userId'
- *      tagKey: // value for 'tagKey'
- *      tagLabel: // value for 'tagLabel'
+ *      key: // value for 'key'
+ *      label: // value for 'label'
  *   },
  * });
  */
