@@ -24,8 +24,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
-import { IsUserQuery, RegisterMutation } from '../../generated/graphql';
-import { IS_USER, REGISTER_USER } from '../../graphql/graphql';
+import { IsUserQuery, RegisterMutation, CreateStudyTagMutation } from '../../generated/graphql';
+import { IS_USER, REGISTER_USER, CREATE_STUDY_TAG } from '../../graphql/graphql';
 import { initializeApollo } from '../../libs/apolloClient';
 import {
   Layuot,
@@ -55,7 +55,9 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
   const [,setUser] = useRecoilState(userState);
   const userId = useSearchParams().get('id');
   const router = useRouter();
+
   const [register] = useMutation<RegisterMutation>(REGISTER_USER);
+  const [createStudyTag] = useMutation<CreateStudyTagMutation>(CREATE_STUDY_TAG)
 
   const handleClickTagDelete = (deleteTag: StudyTag) => () => {
     setStudyTag((tags) => tags.filter((tag) => tag.key !== deleteTag.key))
@@ -112,6 +114,16 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
       professionId: registerUser.professionId,
       goal: registerUser.goal
     })
+
+    await studyTag.map((tags: StudyTag) => {
+      createStudyTag({
+        variables: {
+          userId: userId,
+          key: String(tags.key),
+          label: tags.label
+        }
+      })
+    });
 
     router.push(`/main/${data?.register.user?.userId}`);
   }
