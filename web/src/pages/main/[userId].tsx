@@ -146,7 +146,7 @@ const Main: NextPage<Props> = ({ studies, time }) => {
           <StudyGrid props={studies} />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <UserProfile userId={user.userId} />
+          <UserProfile userId={userId as string} />
         </TabPanel>
       </Box>
     </Layuot>

@@ -59,6 +59,7 @@ class UserModel {
   }
 
   public async readUser(userId: string): Promise<boolean> {
+    console.log('readUser:', userId)
     const user = await this.userRepo.findOne({
       where: {
         userId: userId

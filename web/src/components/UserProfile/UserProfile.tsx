@@ -2,7 +2,6 @@ import { useState, MouseEvent, FC } from 'react';
 import { 
   Box,
   TextField,
-  Typography,
   InputLabel,
   Select,
   MenuItem,
@@ -21,6 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useMutation } from '@apollo/client';
 import { RegisterMutation  } from '../../generated/graphql';
 import { REGISTER_USER } from '../../graphql/graphql';
+import { professionList } from '../../utils/professinList';
 
 type StudyTag = {
   key: number;
@@ -46,15 +46,17 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     } else {
       // User情報を更新する
       try {
-        await update({
+        const { data } = await update({
           variables: {
             userId: userId,
             userName: updateUser.username,
             password: '',
-            professionId: updateUser.professionId
+            professionId: updateUser.professionId,
+            goal: updateUser.goal
           }
         });
 
+        console.log('data:', data?.register)
         setIsEdit(true);  
       } catch (e) {
         console.error(e)
@@ -104,12 +106,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           fullWidth
           disabled={isEdit}
         >
-          <MenuItem value='0'></MenuItem>
-          <MenuItem value={'10'}>学生（中学生）</MenuItem>
-          <MenuItem value={'11'}>学生（高校生）</MenuItem>
-          <MenuItem value={'12'}>学生（大学生）</MenuItem>
-          <MenuItem value={'12'}>社会人</MenuItem>
-          <MenuItem value={'13'}>その他</MenuItem>
+          {
+            professionList.map((data: { id: string, label: string }) => (
+              <MenuItem value={data.id} key={data.id}>{ data.label }</MenuItem>
+            ))
+          }
         </Select>
         <InputLabel id='study-tag' htmlFor='study-tag-input' sx={{ mt: 1 }} error={ tagError.error }>{ tagError.label }</InputLabel>
         <Paper
@@ -165,6 +166,8 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           multiline
           rows={4}
           fullWidth
+          value={updateUser.goal}
+          onChange={(event) => setUpdateUser({ ...updateUser, goal: event.target.value })}
           sx={{ height: '40px' }}
         />
       </Box>

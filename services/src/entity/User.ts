@@ -33,7 +33,7 @@ export class User {
   professionId: string
 
   @Field()
-  @Column({ type: 'nchar' })
+  @Column({ type: 'text' })
   goal: string
 
   @Field(() => String)
