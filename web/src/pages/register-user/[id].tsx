@@ -81,7 +81,7 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
       return;
     };
 
-    const regex = /^[a-zA-Z0-9.?\/-]$/;
+    const regex = /^[a-zA-Z0-9.?\/-]/;
     if (regex.test(registerUser.confirmPassword)) {
       setPasswordError({ error: true, label: 'パスワードが規約に一致しておりません。' })
       return;
