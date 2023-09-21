@@ -53,7 +53,19 @@ export class UserResolver {
 
   @Query(() => Boolean)
   async isUser(@Arg('userId') userId: string): Promise<boolean> {
-    return await UserModel.readUser(userId);
+    const user = await UserModel.readAlreadyUser(userId);
+
+    // ユーザー情報が存在しない場合
+    if (user == null) {
+      return false;
+    }
+
+    // ユーザーが仮登録の場合
+    if (user.userName == '') {
+      return false;
+    }
+
+    return true;
   }
 
   @Mutation(() => Boolean)

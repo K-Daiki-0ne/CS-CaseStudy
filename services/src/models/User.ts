@@ -72,6 +72,20 @@ class UserModel {
     return true;
   }
 
+  public async readAlreadyUser(userId: string): Promise<User | null> {
+    const user = await this.userRepo.findOne({
+      where: {
+        userId: userId
+      }
+    });
+
+    if (user == null) {
+      return null;
+    };
+
+    return user;
+  }
+
   // ユーザー情報登録・パスワード再発行・ユーザー情報変更で使用する
   // パラメータから処理を分岐する
   public async updateUser(user: CreateUserType) {
