@@ -4,15 +4,13 @@ import { useRouter } from 'next/router'
 import {
   Box,
   Typography,
-  Alert,
-  TextField,
   Button,
   InputLabel,
   Input,
   IconButton,
   InputAdornment
 } from '@mui/material';
-import { Layuot } from '../../components/Layout';
+import { Layuot } from '../../components';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';

@@ -23,13 +23,15 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useMutation } from '@apollo/client';
+import { useRecoilState } from 'recoil';
 import { IsUserQuery, RegisterMutation } from '../../generated/graphql';
 import { IS_USER, REGISTER_USER } from '../../graphql/graphql';
 import { initializeApollo } from '../../libs/apolloClient';
-import { Layuot } from '../../components/Layout';
-import { Header } from '../../components/Header/Header';
+import {
+  Layuot,
+  Header
+} from '../../components'
 import { professionList } from '../../utils/professinList';
-import { useRecoilState } from 'recoil';
 import { userState } from '../../store/atoms';
 
 type StudyTag = {

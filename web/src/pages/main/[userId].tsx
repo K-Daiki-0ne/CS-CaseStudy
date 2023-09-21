@@ -6,7 +6,7 @@ import { useLazyQuery } from '@apollo/client';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from "dayjs";
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { initializeApollo } from '../../libs/apolloClient';
 import { MULTI_READ_STUDY, READ_USER_FOR_USERID } from '../../graphql/graphql'
 import { MultiReadStudyQuery, ReadUserForUserIdQuery } from '../../generated/graphql';
@@ -18,7 +18,6 @@ import {
   Header
 } from '../../components';
 import { userState } from '../../store/atoms';
-import { userInfoState } from '../../store/selectors';
 
 type TabPanelProps = {
   children: ReactNode

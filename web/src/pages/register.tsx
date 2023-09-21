@@ -4,8 +4,7 @@ import { useMutation } from '@apollo/client';
 import { CreateUserMutation } from '../generated/graphql';
 import { CREATE_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';
-import { Layuot } from '../components/Layout';
-import { Header } from '../components/Header/Header';
+import { Layuot, Header } from '../components';
 import { Box, Typography, TextField, Link, Alert } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
