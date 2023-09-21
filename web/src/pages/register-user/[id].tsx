@@ -29,6 +29,8 @@ import { initializeApollo } from '../../libs/apolloClient';
 import { Layuot } from '../../components/Layout';
 import { Header } from '../../components/Header/Header';
 import { professionList } from '../../utils/professinList';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/atoms';
 
 type StudyTag = {
   key: number;
@@ -48,6 +50,7 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
   const [tagError, setTagError] = useState({ error: false, label: '学習タグ' });
   const [studyTag, setStudyTag] = useState<StudyTag[]>([]);
 
+  const [,setUser] = useRecoilState(userState);
   const userId = useSearchParams().get('id');
   const router = useRouter();
   const [register] = useMutation<RegisterMutation>(REGISTER_USER);
@@ -101,7 +104,12 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
       return;
     };
 
-    console.log('Data fetch suceess:', data?.register.user?.userId)
+    setUser({
+      userId: userId as string,
+      userName: registerUser.username,
+      professionId: registerUser.professionId,
+      goal: registerUser.goal
+    })
 
     router.push(`/main/${data?.register.user?.userId}`);
   }

@@ -92,6 +92,23 @@ export const IS_USER = gql`
   query IsUser($userId: String!) {
     isUser(userId: $userId)
   }
+`;
+
+export const READ_USER_FOR_USERID = gql`
+  query ReadUserForUserId($userId: String!) {
+    readUserForUserId(userId: $userId) {
+      errors {
+        field,
+        message
+      }
+      user {
+        userId,
+        userName,
+        professionId,
+        goal
+      }
+    }
+  }
 `
 
 export const REGISTER_USER = gql`

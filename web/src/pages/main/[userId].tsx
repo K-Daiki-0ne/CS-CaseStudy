@@ -6,16 +6,18 @@ import { useLazyQuery } from '@apollo/client';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from "dayjs";
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { initializeApollo } from '../../libs/apolloClient';
-import { MULTI_READ_STUDY, IS_USER, READ_STUSY_TIME } from '../../graphql/graphql'
-import { MultiReadStudyQuery, IsUserQuery, ReadStudyTimeQuery} from '../../generated/graphql';
-import { Layuot } from '../../components/Layout';
-import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
-import { StudyReport } from '../../components/StudyReport/StudyReport';
-import { UserProfile } from '../../components/UserProfile/UserProfile';
-import { Header } from '../../components/Header/Header'
-
+import { MULTI_READ_STUDY, READ_USER_FOR_USERID } from '../../graphql/graphql'
+import { MultiReadStudyQuery, ReadUserForUserIdQuery } from '../../generated/graphql';
+import { 
+  Layuot,
+  StudyGrid,
+  StudyReport,
+  UserProfile,
+  Header
+} from '../../components';
+import { userState } from '../../store/atoms';
 import { userInfoState } from '../../store/selectors';
 
 type TabPanelProps = {
@@ -73,11 +75,11 @@ function TabPanel(props: TabPanelProps) {
 
 const Main: NextPage<Props> = ({ studies, time }) => {
   const [tabValue, setTabValue] = useState<number>(0);
-  const user = useRecoilValue(userInfoState);
+  const [,setUser] = useRecoilState(userState);
   const router = useRouter();
   const userId = useSearchParams().get('userId');
 
-  const [isUser] = useLazyQuery<IsUserQuery>(IS_USER, {
+  const [user] = useLazyQuery<ReadUserForUserIdQuery>(READ_USER_FOR_USERID, {
     variables: {
       userId: userId
     }
@@ -85,11 +87,18 @@ const Main: NextPage<Props> = ({ studies, time }) => {
 
   useEffect(() => {
     // ユーザーIDが存在しない場合は当ページを表示しない（不正アクセス対策）
+    // ページがロードされたことを考慮して、ユーザー情報を再取得する
     const getUser = async () => {
-      const { data } = await isUser();
-      if (!data?.isUser) {
+      const { data } = await user();
+      if (data?.readUserForUserId.errors) {
         router.push('/');
       }
+      setUser({
+        userId: data?.readUserForUserId.user?.userId as string,
+        userName: data?.readUserForUserId.user?.userName as string,
+        professionId: data?.readUserForUserId.user?.professionId != null ? data?.readUserForUserId.user?.professionId : '0',
+        goal: data?.readUserForUserId.user?.goal != null ? data?.readUserForUserId.user?.goal : ''
+      })
     }
     getUser();
   }, []);
@@ -127,7 +136,7 @@ const Main: NextPage<Props> = ({ studies, time }) => {
             sx={{
               ml: '25%'
             }}
-            onClick={() => router.push(`/create/${user.userId}`)}
+            onClick={() => router.push(`/create/${userId as string}`)}
           >
             <AddIcon />
           </Fab>

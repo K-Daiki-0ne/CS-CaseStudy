@@ -68,6 +68,22 @@ export class UserResolver {
     return true;
   }
 
+  @Query(() => UserResponse)
+  async readUserForUserId(@Arg('userId') userId: string): Promise<UserResponse> {
+    const user = await UserModel.readUserForUserId(userId);
+
+    if (user == null) {
+      return {
+        errors: [{
+          field: 'readUserForUserId',
+          message: '入力されたUserは存在しません'
+        }]
+      }
+    };
+
+    return { user };
+  }
+
   @Mutation(() => Boolean)
   async createUser(@Arg('email') email: string): Promise<boolean> {
     const isSuccess: boolean =  await UserModel.createUser(email);

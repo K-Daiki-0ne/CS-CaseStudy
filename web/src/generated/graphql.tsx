@@ -85,6 +85,7 @@ export type Query = {
   multiReadStudy: StudyMultiResponse;
   readStudyTime: StudyTimeResponse;
   readTags: Array<StudyTag>;
+  readUserForUserId: UserResponse;
   singleReadStudy: Study;
 };
 
@@ -119,6 +120,11 @@ export type QueryReadStudyTimeArgs = {
 
 export type QueryReadTagsArgs = {
   user: Scalars['String']['input'];
+};
+
+
+export type QueryReadUserForUserIdArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -259,6 +265,13 @@ export type IsUserQueryVariables = Exact<{
 
 
 export type IsUserQuery = { __typename?: 'Query', isUser: boolean };
+
+export type ReadUserForUserIdQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type ReadUserForUserIdQuery = { __typename?: 'Query', readUserForUserId: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string, professionId: string, goal: string } | null } };
 
 export type RegisterMutationVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -588,6 +601,50 @@ export function useIsUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsU
 export type IsUserQueryHookResult = ReturnType<typeof useIsUserQuery>;
 export type IsUserLazyQueryHookResult = ReturnType<typeof useIsUserLazyQuery>;
 export type IsUserQueryResult = Apollo.QueryResult<IsUserQuery, IsUserQueryVariables>;
+export const ReadUserForUserIdDocument = gql`
+    query ReadUserForUserId($userId: String!) {
+  readUserForUserId(userId: $userId) {
+    errors {
+      field
+      message
+    }
+    user {
+      userId
+      userName
+      professionId
+      goal
+    }
+  }
+}
+    `;
+
+/**
+ * __useReadUserForUserIdQuery__
+ *
+ * To run a query within a React component, call `useReadUserForUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReadUserForUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReadUserForUserIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useReadUserForUserIdQuery(baseOptions: Apollo.QueryHookOptions<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>(ReadUserForUserIdDocument, options);
+      }
+export function useReadUserForUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>(ReadUserForUserIdDocument, options);
+        }
+export type ReadUserForUserIdQueryHookResult = ReturnType<typeof useReadUserForUserIdQuery>;
+export type ReadUserForUserIdLazyQueryHookResult = ReturnType<typeof useReadUserForUserIdLazyQuery>;
+export type ReadUserForUserIdQueryResult = Apollo.QueryResult<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String, $goal: String) {
   register(

@@ -1,4 +1,4 @@
-import { useState, MouseEvent, FC } from 'react';
+import { useState, MouseEvent, FC, useEffect } from 'react';
 import { 
   Box,
   TextField,
@@ -18,6 +18,8 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import { useMutation } from '@apollo/client';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { userState } from '../../store/atoms';
 import { RegisterMutation  } from '../../generated/graphql';
 import { REGISTER_USER } from '../../graphql/graphql';
 import { professionList } from '../../utils/professinList';
@@ -37,7 +39,19 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const [studyTag, setStudyTag] = useState<StudyTag[]>([]);
   const [isEdit, setIsEdit] = useState<boolean>(true);
 
+  const [user, setUser] = useRecoilState(userState);
+  // const user = useRecoilValue(userState);
+
   const [update] = useMutation<RegisterMutation>(REGISTER_USER);
+
+  useEffect(() => {
+    setUpdateUser({
+      ...updateUser,
+      username: user.userName,
+      professionId: user.professionId as string,
+      goal: user.goal as string
+    })
+  }, [])
 
   const handleModeClick = async (event: any) => {
     event.preventDefault();
@@ -46,7 +60,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     } else {
       // User情報を更新する
       try {
-        const { data } = await update({
+        await update({
           variables: {
             userId: userId,
             userName: updateUser.username,
@@ -56,7 +70,13 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           }
         });
 
-        console.log('data:', data?.register)
+        setUser({
+          userId: userId,
+          userName: updateUser.username,
+          professionId: updateUser.professionId,
+          goal: updateUser.goal
+        });
+
         setIsEdit(true);  
       } catch (e) {
         console.error(e)
