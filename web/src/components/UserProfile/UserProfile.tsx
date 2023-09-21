@@ -95,8 +95,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             width: '100%'
           }}
         />
-        <InputLabel id='user-profession' htmlFor='user-profession-select' sx={{ mt: 1 }} >職業</InputLabel>
+        <InputLabel id='user-profession-select' sx={{ mt: 1 }} >職業</InputLabel>
         <Select
+          labelId='user-profession-select'
           id="user-profession-select"
           value={updateUser.professionId as string}
           onChange={(e: SelectChangeEvent) => setUpdateUser({ ...updateUser, professionId: e.target.value })}
@@ -110,7 +111,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           <MenuItem value={'12'}>社会人</MenuItem>
           <MenuItem value={'13'}>その他</MenuItem>
         </Select>
-        <InputLabel id ='study-tag' htmlFor='study-tag-input' sx={{ mt: 1 }} error={ tagError.error }>{ tagError.label }</InputLabel>
+        <InputLabel id='study-tag' htmlFor='study-tag-input' sx={{ mt: 1 }} error={ tagError.error }>{ tagError.label }</InputLabel>
         <Paper
           sx={{
             display: 'flex',
@@ -157,8 +158,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             </InputAdornment>
           }
         />
-        <Typography sx={{ mt: 2 }}>目標設定</Typography>
+        <InputLabel id='study-goal' htmlFor='study-goal-input' sx={{ mt: 1 }}>学習目標</InputLabel>
         <TextField
+          id='study-goal-input'
           disabled={isEdit}
           multiline
           rows={4}
