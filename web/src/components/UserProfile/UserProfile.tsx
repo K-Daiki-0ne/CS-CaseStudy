@@ -18,10 +18,10 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import { useMutation } from '@apollo/client';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { userState } from '../../store/atoms';
-import { RegisterMutation  } from '../../generated/graphql';
-import { REGISTER_USER } from '../../graphql/graphql';
+import { RegisterMutation, CreateStudyTagMutation  } from '../../generated/graphql';
+import { REGISTER_USER, CREATE_STUDY_TAG } from '../../graphql/graphql';
 import { professionList } from '../../utils/professinList';
 
 type StudyTag = {
@@ -43,6 +43,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   // const user = useRecoilValue(userState);
 
   const [update] = useMutation<RegisterMutation>(REGISTER_USER);
+  const [createStudyTag] = useMutation<CreateStudyTagMutation>(CREATE_STUDY_TAG);
 
   useEffect(() => {
     setUpdateUser({
@@ -77,6 +78,19 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           goal: updateUser.goal
         });
 
+        console.log('create-study-tag start')
+        console.log('studyTag:', studyTag)
+
+        await studyTag.map((tags: StudyTag) => {
+          createStudyTag({
+            variables: {
+              userId: userId,
+              key: String(tags.key),
+              label: tags.label
+            }
+          })
+        })
+
         setIsEdit(true);  
       } catch (e) {
         console.error(e)
@@ -90,6 +104,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
 
   const handleClickAddTag = () => {
     setTagError({ error: false, label: '学習タグ' });
+
     if (updateUser.tagName == '') {
       setTagError({ error: true, label: 'タグ名が入力されていません' })
       return;
@@ -100,7 +115,10 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       const currentFinishTag: StudyTag = studyTag[studyTag.length - 1];
       additionalKey = currentFinishTag.key;  
     }
-    setStudyTag([ ...studyTag, { key: additionalKey + 1, label: updateUser.tagName } ])
+
+    if (tagError.error == false) {
+      setStudyTag([ ...studyTag, { key: additionalKey + 1, label: updateUser.tagName } ])
+    };
   }
 
   return (

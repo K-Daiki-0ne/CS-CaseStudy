@@ -42,7 +42,8 @@ export type MutationCreateStudyArgs = {
 
 
 export type MutationCreateStudyTagArgs = {
-  studyTags: StudyTagRequest;
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -180,16 +181,6 @@ export type StudyTag = {
   studyTagKey: Scalars['String']['output'];
   studyTagLabel: Scalars['String']['output'];
   userId: Scalars['String']['output'];
-};
-
-export type StudyTagRequest = {
-  studyTags?: InputMaybe<Array<StudyTags>>;
-};
-
-export type StudyTags = {
-  key: Scalars['String']['input'];
-  label: Scalars['String']['input'];
-  show?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type StudyTimeResponse = {
@@ -843,10 +834,7 @@ export type DeleteStudyMutationResult = Apollo.MutationResult<DeleteStudyMutatio
 export type DeleteStudyMutationOptions = Apollo.BaseMutationOptions<DeleteStudyMutation, DeleteStudyMutationVariables>;
 export const CreateStudyTagDocument = gql`
     mutation CreateStudyTag($userId: String!, $key: String!, $label: String!) {
-  createStudyTag(
-    userId: $userId
-    studyTags: {studyTags: [{key: $key, label: $label}]}
-  )
+  createStudyTag(userId: $userId, key: $key, label: $label)
 }
     `;
 export type CreateStudyTagMutationFn = Apollo.MutationFunction<CreateStudyTagMutation, CreateStudyTagMutationVariables>;

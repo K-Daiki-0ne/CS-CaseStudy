@@ -189,10 +189,8 @@ export const DELETE_STUDY = gql`
 `;
 
 export const CREATE_STUDY_TAG = gql`
-  mutation CreateStudyTag($userId: String!, $key: String!, $label: String!) {
-    createStudyTag(userId: $userId, studyTags: {
-      studyTags: [{ key: $key, label: $label }]
-    })
+  mutation CreateStudyTag($userId: String!, $key: String!, $label: String!  ) {
+    createStudyTag(userId: $userId, key: $key, label: $label)
   }
 `;
 
