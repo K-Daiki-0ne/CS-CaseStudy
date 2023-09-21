@@ -8,8 +8,8 @@ import AddIcon from '@mui/icons-material/Add';
 import dayjs from "dayjs";
 import { useRecoilState } from 'recoil';
 import { initializeApollo } from '../../libs/apolloClient';
-import { MULTI_READ_STUDY, READ_USER_FOR_USERID } from '../../graphql/graphql'
-import { MultiReadStudyQuery, ReadUserForUserIdQuery } from '../../generated/graphql';
+import { MULTI_READ_STUDY, READ_USER_FOR_USERID, READ_TAGS } from '../../graphql/graphql'
+import { MultiReadStudyQuery, ReadUserForUserIdQuery, ReadTagsQuery } from '../../generated/graphql';
 import { 
   Layuot,
   StudyGrid,
@@ -35,6 +35,12 @@ type StudiesType = {
   Content: string
 }
 
+type StudyTagType = {
+  key: number;
+  label: string;
+  show: boolean;
+}
+
 type StudyTimeType = {
   day: {
     time: number;
@@ -50,7 +56,7 @@ type StudyTimeType = {
   }
 }
 
-type Props = { studies: StudiesType[], time: StudyTimeType }
+type Props = { studies: StudiesType[], time: StudyTimeType, tags: StudyTagType[] }
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -72,7 +78,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const Main: NextPage<Props> = ({ studies, time }) => {
+const Main: NextPage<Props> = ({ studies, time, tags }) => {
   const [tabValue, setTabValue] = useState<number>(0);
   const [,setUser] = useRecoilState(userState);
   const router = useRouter();
@@ -164,8 +170,9 @@ const Main: NextPage<Props> = ({ studies, time }) => {
 // SSRで学習内容を取得する
 export async function getServerSideProps(params: any) {
   const apolloClient = initializeApollo();
-
   const studiesArray: StudiesType[] = [];
+  const studyTagsArray: StudyTagType[] = [];
+
   let studyTime: StudyTimeType = {
     day: { 
       time: 0, 
@@ -194,7 +201,8 @@ export async function getServerSideProps(params: any) {
     if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
       return {
         props: [],
-        time: studyTime
+        time: studyTime,
+        tags: []
       }
     }
 
@@ -218,12 +226,48 @@ export async function getServerSideProps(params: any) {
     studyTime.month = data.multiReadStudy.month;
 
   } catch (e) {
+    console.log('MultiReadStudy')
+    console.error(e);
+  };
+
+  try {
+    const { data } = await apolloClient.query<ReadTagsQuery>({
+      query: READ_TAGS,
+      variables: {
+        user: params.query.userId,
+      }
+    });
+
+    if (data.readTags == undefined || data.readTags == null || data.readTags.length == 0) {
+      return {
+        props: studiesArray,
+        time: studyTime,
+        tags: []
+      }
+    };
+
+    data.readTags.map((studyTags: any) => {
+      // __typenameを排除するためにデータを編集する
+      let tagsValue = {
+        key: Number(studyTags.studyTagKey),
+        label: studyTags.studyTagLabel,
+        show: studyTags.show
+      };
+      studyTagsArray.push(tagsValue);
+    })
+
+  } catch (e) {
+    console.log('ReadTag')
     console.error(e);
   }
 
 
   return {
-    props: { studies: studiesArray, time: studyTime }
+    props: { 
+      studies: studiesArray, 
+      time: studyTime,
+      tags: studyTagsArray
+    }
   }
 
 }
