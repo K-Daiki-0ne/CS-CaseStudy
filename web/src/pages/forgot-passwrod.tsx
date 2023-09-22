@@ -1,3 +1,4 @@
+import { FormEvent } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router'
 import { useState } from 'react';
@@ -11,14 +12,43 @@ import {
 import { Layuot } from '../components';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-
-const SuccessSendMail =(): JSX.Element => {
-  return <Alert severity="success">mailが送信されました</Alert>
-}
+import { useMutation } from '@apollo/client';
+import { ChangePasswordMutation } from '../generated/graphql';
+import { CHANGE_PASSWORD } from '../graphql/graphql';
+import { validateForm } from '../utils/validateForm';
 
 const ForgotPassword: NextPage = () => {
-  const [sendEmail, setSendEmail] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>('');
+  const [emailError, setEmailError] = useState({ error: false, label: 'メールアドレス' })
+  const [sendEmail, setSendEmail] = useState<boolean>(false);
   const router = useRouter();
+
+  const [changePassword] = useMutation<ChangePasswordMutation>(CHANGE_PASSWORD);
+
+  const handleSubmitEmail = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setEmailError({ error: false, label: 'メールアドレス' });
+
+    const validateError = validateForm(email, 'change-password');
+    if (validateError != null) {
+      setEmailError({ ...emailError, error: true, label: validateError.message });
+      return;
+    }
+
+    const { data } = await changePassword({
+      variables: {
+        email: email
+      }
+    })
+
+    if (!data?.changePassword) {
+      setEmailError({ ...emailError, error: true, label: 'CaseStudyに登録されていないメールアドレスです' })
+      return;
+    }
+  
+    setSendEmail(true);
+  }
 
   return (
     <Layuot>
@@ -44,15 +74,24 @@ const ForgotPassword: NextPage = () => {
         <Typography component='p' sx={{ mt: 1, mb: 1 }}>
           ご入力いただいたメールアドレスに、パスワード再設定用のリンクをおくります。
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 , alignItems: 'center'}}>
+        {
+          sendEmail
+            ? <Alert severity="success" sx={{ mt: 1, width: '35%' }}>mailが送信されました</Alert> 
+            : undefined
+        }
+        <Box component="form" noValidate sx={{ mt: 1 , alignItems: 'center'}} onSubmit={handleSubmitEmail}>
           <TextField
             margin="normal"
             required
             fullWidth
+            type='email'
             id="email"
-            label="メールアドレス"
+            label={emailError.label}
+            error={emailError.error}
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             inputProps={{ maxLength: 50, pattern: "^[a-zA-Z0-9_]+$" }}
           />
           <Button
@@ -61,7 +100,7 @@ const ForgotPassword: NextPage = () => {
             variant="contained"
             sx={{ mt: 1, mb: 1 }}
           >
-            Sign Up
+            送信
           </Button>
           <Button
             variant="text"

@@ -131,6 +131,12 @@ export const REGISTER_USER = gql`
   }
 `;
 
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($email: String!) {
+    changePassword(email: $email)
+  }
+`
+
 export const CREATE_USER = gql`
   mutation CreateUser($email: String!) {
     createUser(email: $email)
