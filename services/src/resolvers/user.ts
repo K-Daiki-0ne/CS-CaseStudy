@@ -43,10 +43,20 @@ class UserInput {
 @Resolver(User)
 export class UserResolver {
 
-  @Query(() => Boolean)
+  @Mutation(() => Boolean)
   async changePassword(@Arg('email') email: string): Promise<Boolean> {
     // 受け取ったemailを送信するのみ
+    const user = await UserModel.readUserForEmail(email);
     
+    // CaseStudyに登録されていないメールアドレスの場合
+    if (user == '') {
+      return false;
+    };
+
+    await sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${user}">パスワード変更</a>`
+    )
 
     return true;
   }
