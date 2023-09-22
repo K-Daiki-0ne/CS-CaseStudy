@@ -184,6 +184,7 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
                 <ListItem key={data.key}>
                   <Chip
                     label={data.label}
+                    disabled={isEdit}
                     onDelete={handleClickTagDelete(data)}
                   />
                 </ListItem>

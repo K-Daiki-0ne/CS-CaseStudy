@@ -131,6 +131,13 @@ export const REGISTER_USER = gql`
   }
 `;
 
+export const UPDATE_PASSWORD = gql`
+  mutation UpdatePassword($userId: String!, $password: String!) {
+    updatePassword(userId: $userId, password: $password)
+  }
+`;
+
+
 export const CHANGE_PASSWORD = gql`
   mutation ChangePassword($email: String!) {
     changePassword(email: $email)

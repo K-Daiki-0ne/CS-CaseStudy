@@ -61,6 +61,14 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation(() => Boolean)
+  async updatePassword(
+    @Arg('userId') userId: string,
+    @Arg('password') password: string
+  ): Promise<Boolean> {    
+    return await UserModel.updatePassword(userId, password);
+  }
+
   @Query(() => Boolean)
   async isUser(@Arg('userId') userId: string): Promise<boolean> {
     const user = await UserModel.readAlreadyUser(userId);

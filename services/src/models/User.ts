@@ -133,6 +133,21 @@ class UserModel {
     }
 
     return true;
+  };
+
+  public async updatePassword(userId: string, password: string): Promise<boolean> {
+    const hasedPassword = await argon2.hash(password);
+
+    try {
+      await this.userRepo.update({ userId: userId }, {
+        password: hasedPassword
+      });  
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+
+    return true;
   }
 
   public async loginUser(email: string) {
