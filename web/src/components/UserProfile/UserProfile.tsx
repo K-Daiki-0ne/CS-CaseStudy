@@ -27,13 +27,15 @@ import { professionList } from '../../utils/professinList';
 type StudyTag = {
   key: number;
   label: string;
+  show: boolean;
 };
 
 type Props = {
-  userId: string
+  userId: string,
+  tags: StudyTag[]
 }
 
-export const UserProfile: FC<Props> = ({ userId }) => {
+export const UserProfile: FC<Props> = ({ userId, tags }) => {
   const [updateUser, setUpdateUser] = useState({ username: '', professionId: '0', tagName: '', goal: '' });
   const [tagError, setTagError] = useState({ error: false, label: '学習タグ' });
   const [studyTag, setStudyTag] = useState<StudyTag[]>([]);
@@ -51,7 +53,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       username: user.userName,
       professionId: user.professionId as string,
       goal: user.goal as string
-    })
+    });
+
+    setStudyTag(tags);
   }, [])
 
   const handleModeClick = async (event: any) => {
@@ -99,7 +103,18 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   }
 
   const handleClickTagDelete = (deleteTag: StudyTag) => () => {
-    setStudyTag((tags) => tags.filter((tag) => tag.key !== deleteTag.key))
+    const updateStudyTag: StudyTag[] = studyTag.map((tags: StudyTag) => 
+      tags.key === deleteTag.key
+        ? {
+          ...tags,
+          show: false
+        }
+        : {
+          ...tags
+        }
+    );
+
+    setStudyTag(updateStudyTag);
   }
 
   const handleClickAddTag = () => {
@@ -117,7 +132,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     }
 
     if (tagError.error == false) {
-      setStudyTag([ ...studyTag, { key: additionalKey + 1, label: updateUser.tagName } ])
+      setStudyTag([ ...studyTag, { key: additionalKey + 1, label: updateUser.tagName, show: true } ])
     };
   }
 
@@ -164,14 +179,16 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           component="ul"
         >
           { studyTag.map((data: StudyTag) => {
-            return (
-              <ListItem key={data.key}>
-                <Chip
-                  label={data.label}
-                  onDelete={handleClickTagDelete(data)}
-                />
-              </ListItem>
-            );
+            if (data.show) {
+              return (
+                <ListItem key={data.key}>
+                  <Chip
+                    label={data.label}
+                    onDelete={handleClickTagDelete(data)}
+                  />
+                </ListItem>
+              );  
+            }
           })}
         </Paper>
         <OutlinedInput 
