@@ -9,4 +9,5 @@ export * from './StudyReport/StudyReport';
 export * from './StudySetting/StudySetting';
 export * from './UserInfo/UserInfo';
 export * from './UserProfile/UserProfile';
-export * from './StudyChart/StudyChart'
+export * from './StudyChart/StudyChart';
+export * from './StudyTotaltime/StudyTotaltime';

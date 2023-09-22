@@ -24,6 +24,12 @@ ChartJS.register(
 
 const options = {
   maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: true,
+      text: '週間の学習時間',
+    },
+  },
   scales: {
     x: {
       stacked: true
@@ -60,7 +66,7 @@ const data = {
 export const StudyChart = () => {
   return (
     <Box sx={{ flexGrow: 1, border: '1px solid grey'}}>
-      <Bar 
+      <Bar
         data={data}
         options={options} 
         height={250}

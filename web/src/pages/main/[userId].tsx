@@ -16,7 +16,8 @@ import {
   StudyReport,
   UserProfile,
   Header,
-  StudyChart
+  StudyChart,
+  StudyTotaltime
 } from '../../components';
 import { userState } from '../../store/atoms';
 
@@ -158,10 +159,12 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
           <Box component='div'>
             <StudyReport props={time} />
           </Box>
-          <Box component='div' sx={{ mt: 6 }}>
+          <Box component='div' sx={{ mt: 5 }}>
             <StudyChart />
           </Box>
-          
+          <Box component='div' sx={{ mt: 1, border: '1px solid grey' }}>
+            <StudyTotaltime />
+          </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StudyGrid props={studies} />
