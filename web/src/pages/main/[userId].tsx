@@ -15,7 +15,8 @@ import {
   StudyGrid,
   StudyReport,
   UserProfile,
-  Header
+  Header,
+  StudyChart
 } from '../../components';
 import { userState } from '../../store/atoms';
 
@@ -80,11 +81,11 @@ function TabPanel(props: TabPanelProps) {
 
 const Main: NextPage<Props> = ({ studies, time, tags }) => {
   const [tabValue, setTabValue] = useState<number>(0);
-  const [,setUser] = useRecoilState(userState);
+  const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const userId = useSearchParams().get('userId');
 
-  const [user] = useLazyQuery<ReadUserForUserIdQuery>(READ_USER_FOR_USERID, {
+  const [getUser] = useLazyQuery<ReadUserForUserIdQuery>(READ_USER_FOR_USERID, {
     variables: {
       userId: userId
     }
@@ -93,8 +94,8 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
   useEffect(() => {
     // ユーザーIDが存在しない場合は当ページを表示しない（不正アクセス対策）
     // ページがロードされたことを考慮して、ユーザー情報を再取得する
-    const getUser = async () => {
-      const { data } = await user();
+    const getUserInfo = async () => {
+      const { data } = await getUser();
       if (data?.readUserForUserId.errors) {
         router.push('/');
       }
@@ -105,7 +106,7 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
         goal: data?.readUserForUserId.user?.goal != null ? data?.readUserForUserId.user?.goal : ''
       })
     }
-    getUser();
+    getUserInfo();
   }, []);
 
   const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
@@ -132,7 +133,7 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
               ml: '30%'
             }}
           >
-            ユーザー名
+            { user.userName }
           </Typography>
           <Fab
             aria-label='create' 
@@ -154,7 +155,13 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <StudyReport props={time} />
+          <Box component='div'>
+            <StudyReport props={time} />
+          </Box>
+          <Box component='div' sx={{ mt: 6 }}>
+            <StudyChart />
+          </Box>
+          
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StudyGrid props={studies} />
