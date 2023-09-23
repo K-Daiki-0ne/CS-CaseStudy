@@ -13,10 +13,10 @@ export class StudyTagResolver {
   @Mutation(() => Boolean)
   async createStudyTag(
     @Arg('userId') userId: string,
-    @Arg('tagKey') tagKey: string,
-    @Arg('tagLabel') tagLabel: string
+    @Arg('key') key: string,
+    @Arg('label') label: string
   ) {
-    return  await StudyTagModel.createTag(userId, tagKey, tagLabel);
+    return  await StudyTagModel.createTag(userId, key, label);
   }
 
 

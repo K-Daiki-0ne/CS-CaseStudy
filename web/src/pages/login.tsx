@@ -11,8 +11,7 @@ import {
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useLazyQuery } from '@apollo/client';
 import { useRecoilState } from 'recoil';
-import { Layuot } from '../components/Layout';
-import { Header } from '../components/Header/Header';
+import { Layuot, Header } from '../components';
 import { LoginQuery } from '../generated/graphql';
 import { LOGIN_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';

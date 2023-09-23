@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Layuot } from '../components/Layout';
-import { Header } from '../components/Header/Header'
-import { Markdown } from '../components/Markdown/Markdown';
+import { Layuot, Header, Markdown } from '../components';
 import { Paper, Box, Grid, Typography } from '@mui/material';
 import { homePage } from '../markdown/homePage';
 

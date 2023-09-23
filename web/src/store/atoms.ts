@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 type UserState = {
   userId: string;
   userName: string;
-  professionId?: number;
+  professionId?: string;
   goal?: string; 
 };
 
@@ -17,7 +17,7 @@ type StudyTagState = {
 const initialiUser: UserState = {
   userId: '',
   userName: '',
-  professionId: 0,
+  professionId: '',
 };
 
 const initialiStudyTag: StudyTagState[] = [];

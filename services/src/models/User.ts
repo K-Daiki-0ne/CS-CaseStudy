@@ -59,6 +59,7 @@ class UserModel {
   }
 
   public async readUser(userId: string): Promise<boolean> {
+    console.log('readUser:', userId)
     const user = await this.userRepo.findOne({
       where: {
         userId: userId
@@ -70,6 +71,34 @@ class UserModel {
     }
 
     return true;
+  }
+
+  public async readAlreadyUser(userId: string): Promise<User | null> {
+    const user = await this.userRepo.findOne({
+      where: {
+        userId: userId
+      }
+    });
+
+    if (user == null) {
+      return null;
+    };
+
+    return user;
+  }
+
+  public async readUserForUserId(userId: string): Promise<User | null> {
+    const user = await this.userRepo.findOne({
+      where: {
+        userId: userId
+      }
+    });
+
+    if (user == null) {
+      return null;
+    };
+
+    return user;
   }
 
   // ユーザー情報登録・パスワード再発行・ユーザー情報変更で使用する
@@ -100,6 +129,21 @@ class UserModel {
       }
     } catch(e) {
       console.error('ユーザー情報の更新に失敗:', e);
+      return false;
+    }
+
+    return true;
+  };
+
+  public async updatePassword(userId: string, password: string): Promise<boolean> {
+    const hasedPassword = await argon2.hash(password);
+
+    try {
+      await this.userRepo.update({ userId: userId }, {
+        password: hasedPassword
+      });  
+    } catch (e) {
+      console.error(e);
       return false;
     }
 

@@ -22,7 +22,7 @@ export const UserInfo = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography>パスワードは半角英字,数字,記号を組み合わせてご入力してください。</Typography>
-      <FormControl sx={{ mt: 3}}>
+      <FormControl sx={{ mt: 1}}>
           <InputLabel htmlFor="password">パスワード</InputLabel>
           <OutlinedInput
             id="password"
