@@ -43,17 +43,63 @@ class UserInput {
 @Resolver(User)
 export class UserResolver {
 
-  @Query(() => Boolean)
+  @Mutation(() => Boolean)
   async changePassword(@Arg('email') email: string): Promise<Boolean> {
     // 受け取ったemailを送信するのみ
+    const user = await UserModel.readUserForEmail(email);
     
+    // CaseStudyに登録されていないメールアドレスの場合
+    if (user == '') {
+      return false;
+    };
+
+    await sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${user}">パスワード変更</a>`
+    )
 
     return true;
   }
 
+  @Mutation(() => Boolean)
+  async updatePassword(
+    @Arg('userId') userId: string,
+    @Arg('password') password: string
+  ): Promise<Boolean> {    
+    return await UserModel.updatePassword(userId, password);
+  }
+
   @Query(() => Boolean)
   async isUser(@Arg('userId') userId: string): Promise<boolean> {
-    return await UserModel.readUser(userId);
+    const user = await UserModel.readAlreadyUser(userId);
+
+    // ユーザー情報が存在しない場合
+    if (user == null) {
+      return false;
+    }
+
+    // ユーザーが仮登録の場合
+    if (user.userName == '') {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Query(() => UserResponse)
+  async readUserForUserId(@Arg('userId') userId: string): Promise<UserResponse> {
+    const user = await UserModel.readUserForUserId(userId);
+
+    if (user == null) {
+      return {
+        errors: [{
+          field: 'readUserForUserId',
+          message: '入力されたUserは存在しません'
+        }]
+      }
+    };
+
+    return { user };
   }
 
   @Mutation(() => Boolean)

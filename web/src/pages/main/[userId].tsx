@@ -6,17 +6,20 @@ import { useLazyQuery } from '@apollo/client';
 import { Typography, Box, Tabs, Tab, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from "dayjs";
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { initializeApollo } from '../../libs/apolloClient';
-import { MULTI_READ_STUDY, IS_USER, READ_STUSY_TIME } from '../../graphql/graphql'
-import { MultiReadStudyQuery, IsUserQuery, ReadStudyTimeQuery} from '../../generated/graphql';
-import { Layuot } from '../../components/Layout';
-import { StudyGrid } from '../../components/StudyGrid/StudyGrid';
-import { StudyReport } from '../../components/StudyReport/StudyReport';
-import { UserProfile } from '../../components/UserProfile/UserProfile';
-import { Header } from '../../components/Header/Header'
-
-import { userInfoState } from '../../store/selectors';
+import { MULTI_READ_STUDY, READ_USER_FOR_USERID, READ_TAGS } from '../../graphql/graphql'
+import { MultiReadStudyQuery, ReadUserForUserIdQuery, ReadTagsQuery } from '../../generated/graphql';
+import { 
+  Layuot,
+  StudyGrid,
+  StudyReport,
+  UserProfile,
+  Header,
+  StudyChart,
+  StudyTotaltime
+} from '../../components';
+import { userState } from '../../store/atoms';
 
 type TabPanelProps = {
   children: ReactNode
@@ -34,6 +37,12 @@ type StudiesType = {
   Content: string
 }
 
+type StudyTagType = {
+  key: number;
+  label: string;
+  show: boolean;
+}
+
 type StudyTimeType = {
   day: {
     time: number;
@@ -49,7 +58,7 @@ type StudyTimeType = {
   }
 }
 
-type Props = { studies: StudiesType[], time: StudyTimeType }
+type Props = { studies: StudiesType[], time: StudyTimeType, tags: StudyTagType[] }
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -71,13 +80,13 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const Main: NextPage<Props> = ({ studies, time }) => {
+const Main: NextPage<Props> = ({ studies, time, tags }) => {
   const [tabValue, setTabValue] = useState<number>(0);
-  const user = useRecoilValue(userInfoState);
+  const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const userId = useSearchParams().get('userId');
 
-  const [isUser] = useLazyQuery<IsUserQuery>(IS_USER, {
+  const [getUser] = useLazyQuery<ReadUserForUserIdQuery>(READ_USER_FOR_USERID, {
     variables: {
       userId: userId
     }
@@ -85,13 +94,20 @@ const Main: NextPage<Props> = ({ studies, time }) => {
 
   useEffect(() => {
     // ユーザーIDが存在しない場合は当ページを表示しない（不正アクセス対策）
-    const getUser = async () => {
-      const { data } = await isUser();
-      if (!data?.isUser) {
+    // ページがロードされたことを考慮して、ユーザー情報を再取得する
+    const getUserInfo = async () => {
+      const { data } = await getUser();
+      if (data?.readUserForUserId.errors) {
         router.push('/');
       }
+      setUser({
+        userId: data?.readUserForUserId.user?.userId as string,
+        userName: data?.readUserForUserId.user?.userName as string,
+        professionId: data?.readUserForUserId.user?.professionId != null ? data?.readUserForUserId.user?.professionId : '0',
+        goal: data?.readUserForUserId.user?.goal != null ? data?.readUserForUserId.user?.goal : ''
+      })
     }
-    getUser();
+    getUserInfo();
   }, []);
 
   const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
@@ -118,7 +134,7 @@ const Main: NextPage<Props> = ({ studies, time }) => {
               ml: '30%'
             }}
           >
-            ユーザー名
+            { user.userName }
           </Typography>
           <Fab
             aria-label='create' 
@@ -127,7 +143,7 @@ const Main: NextPage<Props> = ({ studies, time }) => {
             sx={{
               ml: '25%'
             }}
-            onClick={() => router.push(`/create/${user.userId}`)}
+            onClick={() => router.push(`/create/${userId as string}`)}
           >
             <AddIcon />
           </Fab>
@@ -140,13 +156,21 @@ const Main: NextPage<Props> = ({ studies, time }) => {
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
-          <StudyReport props={time} />
+          <Box component='div'>
+            <StudyReport props={time} />
+          </Box>
+          <Box component='div' sx={{ mt: 5 }}>
+            <StudyChart />
+          </Box>
+          <Box component='div' sx={{ mt: 1, border: '1px solid grey' }}>
+            <StudyTotaltime />
+          </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StudyGrid props={studies} />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <UserProfile userId={user.userId} />
+          <UserProfile userId={userId as string} tags={tags} />
         </TabPanel>
       </Box>
     </Layuot>
@@ -156,8 +180,9 @@ const Main: NextPage<Props> = ({ studies, time }) => {
 // SSRで学習内容を取得する
 export async function getServerSideProps(params: any) {
   const apolloClient = initializeApollo();
-
   const studiesArray: StudiesType[] = [];
+  const studyTagsArray: StudyTagType[] = [];
+
   let studyTime: StudyTimeType = {
     day: { 
       time: 0, 
@@ -174,16 +199,20 @@ export async function getServerSideProps(params: any) {
   };
 
   try {
+    const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
     const { data } = await apolloClient.query<MultiReadStudyQuery>({
       query: MULTI_READ_STUDY,
       variables: {
-        userId: params.query.userId
+        userId: params.query.userId,
+        date: today
       }
     });
   
     if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
       return {
-        props: []
+        props: [],
+        time: studyTime,
+        tags: []
       }
     }
 
@@ -201,28 +230,54 @@ export async function getServerSideProps(params: any) {
       };
       studiesArray.push(studyValue);
     });
+
+    studyTime.day = data.multiReadStudy.day;
+    studyTime.week = data.multiReadStudy.week;
+    studyTime.month = data.multiReadStudy.month;
+
   } catch (e) {
+    console.log('MultiReadStudy')
     console.error(e);
-  }
+  };
 
   try {
-    const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
-    const { data } = await apolloClient.query<ReadStudyTimeQuery>({
-      query: READ_STUSY_TIME,
+    const { data } = await apolloClient.query<ReadTagsQuery>({
+      query: READ_TAGS,
       variables: {
-        userId: params.query.userId,
-        date: today
+        user: params.query.userId,
       }
+    });
+
+    if (data.readTags == undefined || data.readTags == null || data.readTags.length == 0) {
+      return {
+        props: studiesArray,
+        time: studyTime,
+        tags: []
+      }
+    };
+
+    data.readTags.map((studyTags: any) => {
+      // __typenameを排除するためにデータを編集する
+      let tagsValue = {
+        key: Number(studyTags.studyTagKey),
+        label: studyTags.studyTagLabel,
+        show: studyTags.show
+      };
+      studyTagsArray.push(tagsValue);
     })
-    studyTime.day = data.readStudyTime.day;
-    studyTime.week = data.readStudyTime.week;
-    studyTime.month = data.readStudyTime.month;
+
   } catch (e) {
+    console.log('ReadTag')
     console.error(e);
   }
 
+
   return {
-    props: { studies: studiesArray, time: studyTime }
+    props: { 
+      studies: studiesArray, 
+      time: studyTime,
+      tags: studyTagsArray
+    }
   }
 
 }

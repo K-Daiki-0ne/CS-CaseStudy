@@ -25,6 +25,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword: Scalars['Boolean']['output'];
   createStudy: Scalars['Boolean']['output'];
   createStudyTag: Scalars['Boolean']['output'];
   createUser: Scalars['Boolean']['output'];
@@ -32,7 +33,13 @@ export type Mutation = {
   deleteStudyTag: Scalars['Boolean']['output'];
   register: UserResponse;
   update: Scalars['Boolean']['output'];
+  updatePassword: Scalars['Boolean']['output'];
   updateStudy: Scalars['Boolean']['output'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -42,8 +49,8 @@ export type MutationCreateStudyArgs = {
 
 
 export type MutationCreateStudyTagArgs = {
-  tagKey: Scalars['String']['input'];
-  tagLabel: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -73,24 +80,25 @@ export type MutationUpdateArgs = {
 };
 
 
+export type MutationUpdatePasswordArgs = {
+  password: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateStudyArgs = {
   updateStudy: StudyInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  changePassword: Scalars['Boolean']['output'];
   isUser: Scalars['Boolean']['output'];
   login: UserResponse;
   multiReadStudy: StudyMultiResponse;
   readStudyTime: StudyTimeResponse;
   readTags: Array<StudyTag>;
+  readUserForUserId: UserResponse;
   singleReadStudy: Study;
-};
-
-
-export type QueryChangePasswordArgs = {
-  email: Scalars['String']['input'];
 };
 
 
@@ -106,6 +114,7 @@ export type QueryLoginArgs = {
 
 
 export type QueryMultiReadStudyArgs = {
+  date: Scalars['Float']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -118,6 +127,11 @@ export type QueryReadStudyTimeArgs = {
 
 export type QueryReadTagsArgs = {
   user: Scalars['String']['input'];
+};
+
+
+export type QueryReadUserForUserIdArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -161,7 +175,10 @@ export type StudyMultiObjectType = {
 
 export type StudyMultiResponse = {
   __typename?: 'StudyMultiResponse';
+  day: StudyTimeType;
+  month: StudyTimeType;
   studies?: Maybe<Array<StudyMultiObjectType>>;
+  week: StudyTimeType;
 };
 
 export type StudyTag = {
@@ -236,17 +253,18 @@ export type SigleReadStudyQuery = { __typename?: 'Query', singleReadStudy: { __t
 
 export type MultiReadStudyQueryVariables = Exact<{
   userId: Scalars['String']['input'];
+  date: Scalars['Float']['input'];
 }>;
 
 
-export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null } };
+export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null, day: { __typename?: 'StudyTimeType', time: number, minute: number }, week: { __typename?: 'StudyTimeType', time: number, minute: number }, month: { __typename?: 'StudyTimeType', time: number, minute: number } } };
 
 export type ReadTagsQueryVariables = Exact<{
   user: Scalars['String']['input'];
 }>;
 
 
-export type ReadTagsQuery = { __typename?: 'Query', readTags: Array<{ __typename?: 'StudyTag', userId: string, studyTagKey: string, studyTagLabel: string, show: boolean }> };
+export type ReadTagsQuery = { __typename?: 'Query', readTags: Array<{ __typename?: 'StudyTag', studyTagKey: string, studyTagLabel: string, show: boolean }> };
 
 export type IsUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -254,6 +272,13 @@ export type IsUserQueryVariables = Exact<{
 
 
 export type IsUserQuery = { __typename?: 'Query', isUser: boolean };
+
+export type ReadUserForUserIdQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type ReadUserForUserIdQuery = { __typename?: 'Query', readUserForUserId: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string, professionId: string, goal: string } | null } };
 
 export type RegisterMutationVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -265,6 +290,21 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', userId: string, userName: string } | null } };
+
+export type UpdatePasswordMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type UpdatePasswordMutation = { __typename?: 'Mutation', updatePassword: boolean };
+
+export type ChangePasswordMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: boolean };
 
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -309,8 +349,8 @@ export type DeleteStudyMutation = { __typename?: 'Mutation', deleteStudy: boolea
 
 export type CreateStudyTagMutationVariables = Exact<{
   userId: Scalars['String']['input'];
-  tagKey: Scalars['String']['input'];
-  tagLabel: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
 }>;
 
 
@@ -457,8 +497,8 @@ export type SigleReadStudyQueryHookResult = ReturnType<typeof useSigleReadStudyQ
 export type SigleReadStudyLazyQueryHookResult = ReturnType<typeof useSigleReadStudyLazyQuery>;
 export type SigleReadStudyQueryResult = Apollo.QueryResult<SigleReadStudyQuery, SigleReadStudyQueryVariables>;
 export const MultiReadStudyDocument = gql`
-    query MultiReadStudy($userId: String!) {
-  multiReadStudy(userId: $userId) {
+    query MultiReadStudy($userId: String!, $date: Float!) {
+  multiReadStudy(userId: $userId, date: $date) {
     studies {
       studyId
       userId
@@ -467,6 +507,18 @@ export const MultiReadStudyDocument = gql`
       Date
       Time
       Content
+    }
+    day {
+      time
+      minute
+    }
+    week {
+      time
+      minute
+    }
+    month {
+      time
+      minute
     }
   }
 }
@@ -485,6 +537,7 @@ export const MultiReadStudyDocument = gql`
  * const { data, loading, error } = useMultiReadStudyQuery({
  *   variables: {
  *      userId: // value for 'userId'
+ *      date: // value for 'date'
  *   },
  * });
  */
@@ -502,7 +555,6 @@ export type MultiReadStudyQueryResult = Apollo.QueryResult<MultiReadStudyQuery, 
 export const ReadTagsDocument = gql`
     query ReadTags($user: String!) {
   readTags(user: $user) {
-    userId
     studyTagKey
     studyTagLabel
     show
@@ -570,6 +622,50 @@ export function useIsUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsU
 export type IsUserQueryHookResult = ReturnType<typeof useIsUserQuery>;
 export type IsUserLazyQueryHookResult = ReturnType<typeof useIsUserLazyQuery>;
 export type IsUserQueryResult = Apollo.QueryResult<IsUserQuery, IsUserQueryVariables>;
+export const ReadUserForUserIdDocument = gql`
+    query ReadUserForUserId($userId: String!) {
+  readUserForUserId(userId: $userId) {
+    errors {
+      field
+      message
+    }
+    user {
+      userId
+      userName
+      professionId
+      goal
+    }
+  }
+}
+    `;
+
+/**
+ * __useReadUserForUserIdQuery__
+ *
+ * To run a query within a React component, call `useReadUserForUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReadUserForUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReadUserForUserIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useReadUserForUserIdQuery(baseOptions: Apollo.QueryHookOptions<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>(ReadUserForUserIdDocument, options);
+      }
+export function useReadUserForUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>(ReadUserForUserIdDocument, options);
+        }
+export type ReadUserForUserIdQueryHookResult = ReturnType<typeof useReadUserForUserIdQuery>;
+export type ReadUserForUserIdLazyQueryHookResult = ReturnType<typeof useReadUserForUserIdLazyQuery>;
+export type ReadUserForUserIdQueryResult = Apollo.QueryResult<ReadUserForUserIdQuery, ReadUserForUserIdQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($userId: String!, $userName: String!, $password: String, $professionId: String, $goal: String) {
   register(
@@ -616,6 +712,69 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpdatePasswordDocument = gql`
+    mutation UpdatePassword($userId: String!, $password: String!) {
+  updatePassword(userId: $userId, password: $password)
+}
+    `;
+export type UpdatePasswordMutationFn = Apollo.MutationFunction<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+
+/**
+ * __useUpdatePasswordMutation__
+ *
+ * To run a mutation, you first call `useUpdatePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePasswordMutation, { data, loading, error }] = useUpdatePasswordMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePasswordMutation, UpdatePasswordMutationVariables>(UpdatePasswordDocument, options);
+      }
+export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
+export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
+export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($email: String!) {
+  changePassword(email: $email)
+}
+    `;
+export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>;
+
+/**
+ * __useChangePasswordMutation__
+ *
+ * To run a mutation, you first call `useChangePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changePasswordMutation, { data, loading, error }] = useChangePasswordMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptions<ChangePasswordMutation, ChangePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument, options);
+      }
+export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
+export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
+export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($email: String!) {
   createUser(email: $email)
@@ -758,8 +917,8 @@ export type DeleteStudyMutationHookResult = ReturnType<typeof useDeleteStudyMuta
 export type DeleteStudyMutationResult = Apollo.MutationResult<DeleteStudyMutation>;
 export type DeleteStudyMutationOptions = Apollo.BaseMutationOptions<DeleteStudyMutation, DeleteStudyMutationVariables>;
 export const CreateStudyTagDocument = gql`
-    mutation CreateStudyTag($userId: String!, $tagKey: String!, $tagLabel: String!) {
-  createStudyTag(userId: $userId, tagKey: $tagKey, tagLabel: $tagLabel)
+    mutation CreateStudyTag($userId: String!, $key: String!, $label: String!) {
+  createStudyTag(userId: $userId, key: $key, label: $label)
 }
     `;
 export type CreateStudyTagMutationFn = Apollo.MutationFunction<CreateStudyTagMutation, CreateStudyTagMutationVariables>;
@@ -778,8 +937,8 @@ export type CreateStudyTagMutationFn = Apollo.MutationFunction<CreateStudyTagMut
  * const [createStudyTagMutation, { data, loading, error }] = useCreateStudyTagMutation({
  *   variables: {
  *      userId: // value for 'userId'
- *      tagKey: // value for 'tagKey'
- *      tagLabel: // value for 'tagLabel'
+ *      key: // value for 'key'
+ *      label: // value for 'label'
  *   },
  * });
  */

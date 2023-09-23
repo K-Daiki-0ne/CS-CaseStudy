@@ -50,8 +50,8 @@ export const SINGLE_READ_STUDY = gql`
 `;
 
 export const MULTI_READ_STUDY = gql`
-  query MultiReadStudy($userId: String!) {
-    multiReadStudy(userId: $userId) {
+  query MultiReadStudy($userId: String!, $date: Float!) {
+    multiReadStudy(userId: $userId, date: $date) {
       studies {
         studyId,
         userId,
@@ -60,6 +60,18 @@ export const MULTI_READ_STUDY = gql`
         Date,
         Time,
         Content
+      },
+      day {
+        time,
+        minute
+      },
+      week {
+        time,
+        minute
+      },
+      month {
+        time,
+        minute
       }
     }
   }
@@ -68,7 +80,6 @@ export const MULTI_READ_STUDY = gql`
 export const READ_TAGS = gql`
   query ReadTags($user: String!) {
     readTags(user: $user) {
-      userId,
       studyTagKey,
       studyTagLabel,
       show  
@@ -79,6 +90,23 @@ export const READ_TAGS = gql`
 export const IS_USER = gql`
   query IsUser($userId: String!) {
     isUser(userId: $userId)
+  }
+`;
+
+export const READ_USER_FOR_USERID = gql`
+  query ReadUserForUserId($userId: String!) {
+    readUserForUserId(userId: $userId) {
+      errors {
+        field,
+        message
+      }
+      user {
+        userId,
+        userName,
+        professionId,
+        goal
+      }
+    }
   }
 `
 
@@ -102,6 +130,19 @@ export const REGISTER_USER = gql`
     }
   }
 `;
+
+export const UPDATE_PASSWORD = gql`
+  mutation UpdatePassword($userId: String!, $password: String!) {
+    updatePassword(userId: $userId, password: $password)
+  }
+`;
+
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($email: String!) {
+    changePassword(email: $email)
+  }
+`
 
 export const CREATE_USER = gql`
   mutation CreateUser($email: String!) {
@@ -160,8 +201,8 @@ export const DELETE_STUDY = gql`
 `;
 
 export const CREATE_STUDY_TAG = gql`
-  mutation CreateStudyTag($userId: String!, $tagKey: String!, $tagLabel: String!) {
-    createStudyTag(userId: $userId, tagKey: $tagKey, tagLabel: $tagLabel)
+  mutation CreateStudyTag($userId: String!, $key: String!, $label: String!  ) {
+    createStudyTag(userId: $userId, key: $key, label: $label)
   }
 `;
 

@@ -200,6 +200,10 @@ class StudyModel {
     return studyTime;
   }
 
+  public async readGroupByStudyTag(userId: string, date: number) {
+    
+  };
+
   /**
    * @param {StudyType} study 学習情報
    * @returns {boolean} 成功ならtrue 失敗ならfalse
