@@ -25,6 +25,18 @@ type StudyWeekChartType = {
   backgroundColor: string;
 }
 
+type StudyMonthChartReturnType = {
+  labels: string[],
+  datasets: StudyMonthChartType[]
+}
+
+type StudyMonthChartType = {
+  data: number[],
+  backgroundColor: string[],
+  borderColor: string[],
+  borderWidth: number
+}
+
 class StudyModel {
   studyRepo: Repository<Study>
   studyHistoryRepo: Repository<StudyHistory>
@@ -302,8 +314,71 @@ class StudyModel {
   }
 
 
-  public async readGroupByStudyTag(userId: string, date: number) {
-    
+  /**
+   * 月刊の学習時間をタグ別に取得する
+   * @param userId 
+   * @param month 
+   */
+  public async readStudyMonthChart(userId: string, month: number): Promise<StudyMonthChartReturnType> {
+    let labels: string[] = [];
+    let datasets: StudyMonthChartType[] = [];
+
+    try {
+      const monthStart = month * 100;
+      const monthEnd = month* 100 + 99;
+      const studies = await this.studyRepo.query(`
+        SELECT
+          ST.show,
+          ST.studyTagLabel AS Label,
+          SUM(S.studyTime) AS Time,
+          SUM(S.studyMinute) AS Minute
+        FROM study AS S
+        LEFT JOIN  study_tag AS ST ON S.studyTagId ST.id
+        WHERE S.userId = '${userId}' AND studyDate >= ${monthStart} AND S.studyDate <= ${monthEnd}
+      `);
+
+      // はじめにラベル名の配列を作成する
+      studies.map((study: any, index: number) => {
+        if (study.Label == null || !study.shwo) {
+          labels.push('タグ未設定');
+        } else {
+          labels.push(study.Label);
+        };
+      })
+
+      // 重複しているタグ名（タグ未設定）は削除する
+      labels = labels.filter((value, index) => labels.indexOf(value) === index);
+      const noSettingTag: number = labels.indexOf('タグ未設定');
+
+      // 学習時間と配色を設定する
+      studies.map((study: any, index: number) => {
+
+        const totalTime: number = study.Time + study.Minute / 60
+        // タグ未設定の場合は加算する
+        if (study.Label == null || !study.show) {
+          // 現時点でタグ未設定の学習時間が登録されていない場合
+          if (datasets[0].data[noSettingTag] == -1) {
+            datasets[0].data.push(totalTime);
+            datasets[0].backgroundColor.push(tagColor[index]);
+            datasets[0].borderColor.push(tagColor[index]);  
+          } else {
+            datasets[0].data[noSettingTag] = datasets[0].data[noSettingTag] + totalTime;
+          }
+        } else {
+          datasets[0].data.push(totalTime);
+          datasets[0].backgroundColor.push(tagColor[index]);
+          datasets[0].borderColor.push(tagColor[index]);
+        }
+      })
+
+    } catch (e) {
+      console.error(e);
+    }
+
+    return {
+      labels,
+      datasets
+    }
   };
 
   /**
