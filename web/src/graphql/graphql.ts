@@ -72,7 +72,19 @@ export const MULTI_READ_STUDY = gql`
       month {
         time,
         minute
-      }
+      },
+      weekChart {
+        label,
+        data,
+        backgroundColor
+      },
+      labels,
+      monthChart {
+        data,
+        backgroundColor,
+        borderColor,
+        borderWidth
+      } 
     }
   }
 `;
