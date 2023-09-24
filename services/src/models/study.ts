@@ -27,7 +27,7 @@ type StudyWeekChartType = {
 
 type StudyMonthChartReturnType = {
   labels: string[],
-  datasets: StudyMonthChartType[]
+  monthChart: StudyMonthChartType[]
 }
 
 type StudyMonthChartType = {
@@ -321,7 +321,12 @@ class StudyModel {
    */
   public async readStudyMonthChart(userId: string, month: number): Promise<StudyMonthChartReturnType> {
     let labels: string[] = [];
-    let datasets: StudyMonthChartType[] = [];
+    let monthChart: StudyMonthChartType[] = [{
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }];
 
     try {
       const monthStart = month * 100;
@@ -333,13 +338,15 @@ class StudyModel {
           SUM(S.studyTime) AS Time,
           SUM(S.studyMinute) AS Minute
         FROM study AS S
-        LEFT JOIN  study_tag AS ST ON S.studyTagId ST.id
+        LEFT JOIN  study_tag AS ST ON S.studyTagId = ST.id
         WHERE S.userId = '${userId}' AND studyDate >= ${monthStart} AND S.studyDate <= ${monthEnd}
+        GROUP BY S.studyTagId, ST.studyTagLabel, ST.show
       `);
 
       // はじめにラベル名の配列を作成する
       studies.map((study: any, index: number) => {
-        if (study.Label == null || !study.shwo) {
+        console.log('study:', study)
+        if (study.Label == null || !study.show) {
           labels.push('タグ未設定');
         } else {
           labels.push(study.Label);
@@ -348,36 +355,38 @@ class StudyModel {
 
       // 重複しているタグ名（タグ未設定）は削除する
       labels = labels.filter((value, index) => labels.indexOf(value) === index);
+
+      //フィルタ後にタグ未設定のインデックス値を取得
       const noSettingTag: number = labels.indexOf('タグ未設定');
 
       // 学習時間と配色を設定する
       studies.map((study: any, index: number) => {
 
-        const totalTime: number = study.Time + study.Minute / 60
+        const totalTime: number = Number(study.Time) + Number(study.Minute / 60)
+
         // タグ未設定の場合は加算する
         if (study.Label == null || !study.show) {
           // 現時点でタグ未設定の学習時間が登録されていない場合
-          if (datasets[0].data[noSettingTag] == -1) {
-            datasets[0].data.push(totalTime);
-            datasets[0].backgroundColor.push(tagColor[index]);
-            datasets[0].borderColor.push(tagColor[index]);  
+          if (monthChart[0].data[noSettingTag] == undefined) {
+            monthChart[0].data.push(totalTime);
+            monthChart[0].backgroundColor.push(tagColor[index]);
+            monthChart[0].borderColor.push(tagColor[index]);  
           } else {
-            datasets[0].data[noSettingTag] = datasets[0].data[noSettingTag] + totalTime;
+            monthChart[0].data[noSettingTag] = monthChart[0].data[noSettingTag] + totalTime;
           }
         } else {
-          datasets[0].data.push(totalTime);
-          datasets[0].backgroundColor.push(tagColor[index]);
-          datasets[0].borderColor.push(tagColor[index]);
+          monthChart[0].data.push(totalTime);
+          monthChart[0].backgroundColor.push(tagColor[index]);
+          monthChart[0].borderColor.push(tagColor[index]);
         }
       })
-
     } catch (e) {
       console.error(e);
     }
 
     return {
       labels,
-      datasets
+      monthChart
     }
   };
 

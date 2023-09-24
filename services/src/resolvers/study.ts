@@ -136,7 +136,7 @@ class StudyMonthChart {
   borderColor: string[];
 
   @Field()
-  borderWidth: 1
+  borderWidth: number;
 }
 
 
@@ -255,18 +255,17 @@ export class StudyResolver {
     );
 
     const month = await StudyModel.readMonthOfStudyTime(userId, Math.floor(date / 100));
-
     const weekChart = await StudyModel.readStudyWeekChart(userId, searchWeekStartEnd(date).startWeekDay);
-    console.log(weekChart)
+    const { labels, monthChart } = await StudyModel.readStudyMonthChart(userId, Math.floor(date / 100));
 
     return {
       studies: resStudies,
       day,
       week,
       month,
-      weekChart: [],
-      labels: [],
-      monthChart: []
+      weekChart,
+      labels,
+      monthChart
     }
   }
 
