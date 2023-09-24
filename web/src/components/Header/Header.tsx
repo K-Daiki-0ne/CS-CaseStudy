@@ -33,47 +33,13 @@ export const Header: FC<HeaderProps> = (props) => {
   return (
     <AppBar component='nav' >
       <Toolbar >
-        {
-          isView ? (
-            <div>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="end"
-                onClick={() => setOpen(true)}
-                sx={{ ...(open && { display: 'none' }) }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Drawer
-                sx={{
-                  width: 180,
-                  flexShrink: 0,
-                  '& .MuiDrawer-paper': {
-                    width: 180,
-                  },
-                }}
-                variant="persistent"
-                anchor="left"
-                open={open}
-              >
-                <IconButton onClick={() => setOpen(false)}>
-                  <ChevronLeftIcon />
-                </IconButton>
-              </Drawer>
-            </div>
-          )
-          : (
-            <div></div>
-          )
-        }
         <Typography
           component="h2"
           variant="h4"
           color="inherit"
           align="center"
           noWrap
-          sx={{ flex: 1 }}
+          sx={{ flex: 1, ml: 10 }}
         >
           <Link href='/' variant='h4' underline='none' color='inherit'>
             {props.title}          
@@ -86,10 +52,10 @@ export const Header: FC<HeaderProps> = (props) => {
                 variant="text" 
                 color='inherit'
                 sx={{
-                  width: 180,
+                  width: '100%',
                   flexShrink: 0,
                   '& .MuiDrawer-paper': {
-                    width: 180,
+                    width: '100%',
                   },
                 }}
                 onClick={() => router.push('/login')}

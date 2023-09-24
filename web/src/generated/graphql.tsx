@@ -95,6 +95,7 @@ export type Query = {
   isUser: Scalars['Boolean']['output'];
   login: UserResponse;
   multiReadStudy: StudyMultiResponse;
+  readStudyChart: Scalars['Boolean']['output'];
   readStudyTime: StudyTimeResponse;
   readTags: Array<StudyTag>;
   readUserForUserId: UserResponse;
@@ -115,6 +116,12 @@ export type QueryLoginArgs = {
 
 export type QueryMultiReadStudyArgs = {
   date: Scalars['Float']['input'];
+  userId: Scalars['String']['input'];
+};
+
+
+export type QueryReadStudyChartArgs = {
+  today: Scalars['Float']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -162,6 +169,14 @@ export type StudyInput = {
   userId: Scalars['String']['input'];
 };
 
+export type StudyMonthChart = {
+  __typename?: 'StudyMonthChart';
+  backgroundColor: Array<Scalars['String']['output']>;
+  borderColor: Array<Scalars['String']['output']>;
+  borderWidth: Scalars['Float']['output'];
+  data: Array<Scalars['Float']['output']>;
+};
+
 export type StudyMultiObjectType = {
   __typename?: 'StudyMultiObjectType';
   Content: Scalars['String']['output'];
@@ -176,9 +191,12 @@ export type StudyMultiObjectType = {
 export type StudyMultiResponse = {
   __typename?: 'StudyMultiResponse';
   day: StudyTimeType;
+  labels: Array<Scalars['String']['output']>;
   month: StudyTimeType;
+  monthChart: Array<StudyMonthChart>;
   studies?: Maybe<Array<StudyMultiObjectType>>;
   week: StudyTimeType;
+  weekChart: Array<StudyWeekChart>;
 };
 
 export type StudyTag = {
@@ -201,6 +219,13 @@ export type StudyTimeType = {
   __typename?: 'StudyTimeType';
   minute: Scalars['Float']['output'];
   time: Scalars['Float']['output'];
+};
+
+export type StudyWeekChart = {
+  __typename?: 'StudyWeekChart';
+  backgroundColor: Scalars['String']['output'];
+  data: Array<Scalars['Float']['output']>;
+  label: Scalars['String']['output'];
 };
 
 export type User = {
@@ -257,7 +282,7 @@ export type MultiReadStudyQueryVariables = Exact<{
 }>;
 
 
-export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null, day: { __typename?: 'StudyTimeType', time: number, minute: number }, week: { __typename?: 'StudyTimeType', time: number, minute: number }, month: { __typename?: 'StudyTimeType', time: number, minute: number } } };
+export type MultiReadStudyQuery = { __typename?: 'Query', multiReadStudy: { __typename?: 'StudyMultiResponse', labels: Array<string>, studies?: Array<{ __typename?: 'StudyMultiObjectType', studyId: number, userId: string, tagId: number, Study: string, Date: string, Time: string, Content: string }> | null, day: { __typename?: 'StudyTimeType', time: number, minute: number }, week: { __typename?: 'StudyTimeType', time: number, minute: number }, month: { __typename?: 'StudyTimeType', time: number, minute: number }, weekChart: Array<{ __typename?: 'StudyWeekChart', label: string, data: Array<number>, backgroundColor: string }>, monthChart: Array<{ __typename?: 'StudyMonthChart', data: Array<number>, backgroundColor: Array<string>, borderColor: Array<string>, borderWidth: number }> } };
 
 export type ReadTagsQueryVariables = Exact<{
   user: Scalars['String']['input'];
@@ -519,6 +544,18 @@ export const MultiReadStudyDocument = gql`
     month {
       time
       minute
+    }
+    weekChart {
+      label
+      data
+      backgroundColor
+    }
+    labels
+    monthChart {
+      data
+      backgroundColor
+      borderColor
+      borderWidth
     }
   }
 }
