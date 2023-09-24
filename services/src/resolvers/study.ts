@@ -68,6 +68,14 @@ class StudyMultiResponse {
   @Field(() => StudyTimeType)
   month: StudyTimeType;
 
+  @Field(() => [StudyWeekChart])
+  weekChart: StudyWeekChart[];
+
+  @Field(() => [String])
+  labels: String[]
+
+  @Field(() => [StudyMonthChart])
+  monthChart: StudyMonthChart[]
 }
 
 @ObjectType()
@@ -100,6 +108,35 @@ class StudyTimeType {
 
   @Field()
   minute: number
+}
+
+
+@ObjectType()
+class StudyWeekChart {
+  @Field()
+  label: string;
+
+  @Field(() => [Number])
+  data: Number[];
+
+  @Field()
+  backgroundColor: string;
+}
+
+@ObjectType()
+class StudyMonthChart {
+
+  @Field(() => [Number])
+  data: Number[];
+
+  @Field(() => [String])
+  backgroundColor: string[];
+
+  @Field(() => [String])
+  borderColor: string[];
+
+  @Field()
+  borderWidth: number;
 }
 
 
@@ -141,6 +178,17 @@ export class StudyResolver {
   }
 
 
+  @Query(() => Boolean)
+  async readStudyChart(
+    @Arg('userId') userId: string,
+    @Arg('today') today: number
+  ): Promise<boolean> {
+
+
+
+    return true
+  }
+
   @Query(() => Study)
   async singleReadStudy(
     @Arg('id') id: number
@@ -172,7 +220,10 @@ export class StudyResolver {
         month: {
           time: 0,
           minute: 0
-        }
+        },
+        weekChart: [],
+        labels: [],
+        monthChart: []
       };
     }
     
@@ -204,12 +255,17 @@ export class StudyResolver {
     );
 
     const month = await StudyModel.readMonthOfStudyTime(userId, Math.floor(date / 100));
+    const weekChart = await StudyModel.readStudyWeekChart(userId, searchWeekStartEnd(date).startWeekDay);
+    const { labels, monthChart } = await StudyModel.readStudyMonthChart(userId, Math.floor(date / 100));
 
     return {
       studies: resStudies,
       day,
       week,
-      month
+      month,
+      weekChart,
+      labels,
+      monthChart
     }
   }
 

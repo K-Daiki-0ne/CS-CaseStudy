@@ -58,7 +58,27 @@ type StudyTimeType = {
   }
 }
 
-type Props = { studies: StudiesType[], time: StudyTimeType, tags: StudyTagType[] }
+type WeekChartType = {
+  label: string;
+  data: number[];
+  backgroundColor: string;
+}
+
+type MonthChartType = {
+  data: number[];
+  backgroundColor: string[];
+  borderColor: string[];
+  borderWidth: number;
+}
+
+type Props = { 
+  studies: StudiesType[], 
+  time: StudyTimeType, 
+  tags: StudyTagType[],
+  weekChart: WeekChartType[],
+  labels: string[],
+  monthChart: MonthChartType[]
+}
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -80,7 +100,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const Main: NextPage<Props> = ({ studies, time, tags }) => {
+const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthChart }) => {
   const [tabValue, setTabValue] = useState<number>(0);
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
@@ -160,10 +180,10 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
             <StudyReport props={time} />
           </Box>
           <Box component='div' sx={{ mt: 5 }}>
-            <StudyChart />
+            <StudyChart props={weekChart} />
           </Box>
           <Box component='div' sx={{ mt: 1, border: '1px solid grey' }}>
-            <StudyTotaltime />
+            <StudyTotaltime labels={labels} chart={monthChart} />
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
@@ -180,9 +200,11 @@ const Main: NextPage<Props> = ({ studies, time, tags }) => {
 // SSRで学習内容を取得する
 export async function getServerSideProps(params: any) {
   const apolloClient = initializeApollo();
-  const studiesArray: StudiesType[] = [];
-  const studyTagsArray: StudyTagType[] = [];
-
+  let studiesArray: StudiesType[] = [];
+  let studyTagsArray: StudyTagType[] = [];
+  let weekChart: WeekChartType[] = [];
+  let monthLabel: string[] = [];
+  let monthChart: MonthChartType[] = [];
   let studyTime: StudyTimeType = {
     day: { 
       time: 0, 
@@ -212,7 +234,10 @@ export async function getServerSideProps(params: any) {
       return {
         props: [],
         time: studyTime,
-        tags: []
+        tags: [],
+        weekChart: [],
+        labels: [],
+        monthChart: []
       }
     }
 
@@ -235,6 +260,28 @@ export async function getServerSideProps(params: any) {
     studyTime.week = data.multiReadStudy.week;
     studyTime.month = data.multiReadStudy.month;
 
+    data.multiReadStudy.weekChart.map((week: any) => {
+      const weekChartValue: WeekChartType = {
+        label: week.label,
+        data: week.data,
+        backgroundColor: week.backgroundColor
+      }
+      weekChart.push(weekChartValue);
+    });
+
+    monthLabel = data.multiReadStudy.labels    
+
+    data.multiReadStudy.monthChart.map((month: any) => {
+      const monthValue: MonthChartType = {
+        data: month.data,
+        backgroundColor: month.backgroundColor,
+        borderColor: month.borderColor,
+        borderWidth: 1
+      }
+      monthChart.push(monthValue);
+    });
+
+
   } catch (e) {
     console.log('MultiReadStudy')
     console.error(e);
@@ -252,7 +299,10 @@ export async function getServerSideProps(params: any) {
       return {
         props: studiesArray,
         time: studyTime,
-        tags: []
+        tags: [],
+        weekChart: weekChart,
+        labels: monthLabel,
+        monthChart: monthChart
       }
     };
 
@@ -267,16 +317,17 @@ export async function getServerSideProps(params: any) {
     })
 
   } catch (e) {
-    console.log('ReadTag')
     console.error(e);
   }
-
 
   return {
     props: { 
       studies: studiesArray, 
       time: studyTime,
-      tags: studyTagsArray
+      tags: studyTagsArray,
+      weekChart: weekChart,
+      labels: monthLabel,
+      monthChart: monthChart
     }
   }
 

@@ -1,5 +1,4 @@
 export * from './Header/Header';
-export * from './InputField/InputField';
 export * from './Layout';
 export * from './Markdown/Markdown';
 export * from './StudyDeleteButton/StudyDeleteButton';

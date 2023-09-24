@@ -1,6 +1,7 @@
 import { AppDataSource } from '../config/data-source';
 import { Study, StudyHistory } from '../entity';
-import { Repository } from 'typeorm'
+import { Repository } from 'typeorm';
+import { tagColor } from '../utils/tagColor';
 
 type StudyType = {
   studyId?: number;
@@ -16,6 +17,24 @@ type StudyType = {
 type StudyTimeType = {
   time: number;
   minute: number
+}
+
+type StudyWeekChartType = {
+  label: string;
+  data: number[],
+  backgroundColor: string;
+}
+
+type StudyMonthChartReturnType = {
+  labels: string[],
+  monthChart: StudyMonthChartType[]
+}
+
+type StudyMonthChartType = {
+  data: number[],
+  backgroundColor: string[],
+  borderColor: string[],
+  borderWidth: number
 }
 
 class StudyModel {
@@ -200,8 +219,175 @@ class StudyModel {
     return studyTime;
   }
 
-  public async readGroupByStudyTag(userId: string, date: number) {
-    
+  /**
+   * 週間の学習時間をタグ別に取得する
+   * @param {stirng} userId ユーザーID
+   * @param {number} weekStart 週開始日
+   * @returns {Array} datasets
+   */
+  public async readStudyWeekChart(userId: string, weekStart: number): Promise<StudyWeekChartType[]> {
+
+    let datasets: StudyWeekChartType[] = [];
+
+    // 一週間分の学習情報を一括で取得する(タグ情報を取得)
+    // 事前に返却するための配列を作成することで、曜日ごとの学習時間の取得（後続処理）を簡単にする。
+    // 曜日ごとの取得時にタグの情報を設定することが望ましいが、可読性と保守性を考慮して分離。
+    const studyWeekTotal = await this.studyRepo.query(`
+      SELECT
+        ST.studyTagLabel as Study,
+        ST.show
+      FROM study AS S
+      LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
+      WHERE S.userId = '${userId}' AND S.studyDate >= ${weekStart} AND S.studyDate <= ${weekStart + 6}
+      GROUP BY S.studyTagId, ST.studyTagLabel, ST.show
+      ORDER BY S.studyTagId
+    `);
+
+    studyWeekTotal.map((data: any, index: number) => {
+      let studyDatasets: StudyWeekChartType = {
+        label: '',
+        data: [0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: tagColor[index]
+      };
+
+      // タグ名のみを設定
+      if (data.show != true) {
+        studyDatasets.label = 'タグ未設定'
+      } else {
+        studyDatasets.label = data.Study as string
+      };
+
+      datasets.push(studyDatasets)
+    })
+
+    // 曜日ごとの学習時間を取得
+    // 事前にタグ情報は設定済のため、タグ名に一致する情報のみを学習時間に設定する
+    for(let i = 0; i < 7; i++) {
+      const studyWeekCharts = await this.studyRepo.query(`
+        SELECT
+          ST.show,
+          ST.studyTagLabel as Study,
+          SUM(S.studyTime) AS time,
+          SUM(S.studyMinute) AS minute
+        FROM study AS S
+        LEFT JOIN study_tag AS ST ON S.studyTagId = ST.id
+        WHERE S.userId = '${userId}' AND S.studyDate = ${weekStart + i}
+        GROUP BY S.studyTagId, ST.studyTagLabel, ST.show
+        ORDER BY S.studyTagId
+      `);
+
+      // データが存在しない場合は曜日の学習時間に0を設定する
+      if (studyWeekCharts.length == 0) {
+        datasets.map((tags: StudyWeekChartType) => 
+          tags.label != ''
+          ? {
+            ...tags,
+            data: tags.data[i] = 0
+          }
+          : { ...tags }
+        )
+      } else {
+        studyWeekCharts.map((data: any) => {
+          // タグが設定されていないもしくはタグが非表示に設定されている場合はタグ未設定として扱う
+          if (data.Study == null || data.show != true) {
+            data.Study = 'タグ未設定'
+          };
+
+          // 時間に取りまとめする
+          const totalTime: number = data.time + data.minute / 60;
+
+          datasets.map((tags: StudyWeekChartType) => 
+            tags.label === data.Study
+              ? {
+                ...tags,
+                data: tags.data[i] = Number(totalTime)
+              }
+              : {
+                ...tags
+              }
+          )
+        })
+      }
+    }
+
+    return datasets;
+  }
+
+
+  /**
+   * 月刊の学習時間をタグ別に取得する
+   * @param userId 
+   * @param month 
+   */
+  public async readStudyMonthChart(userId: string, month: number): Promise<StudyMonthChartReturnType> {
+    let labels: string[] = [];
+    let monthChart: StudyMonthChartType[] = [{
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }];
+
+    try {
+      const monthStart = month * 100;
+      const monthEnd = month* 100 + 99;
+      const studies = await this.studyRepo.query(`
+        SELECT
+          ST.show,
+          ST.studyTagLabel AS Label,
+          SUM(S.studyTime) AS Time,
+          SUM(S.studyMinute) AS Minute
+        FROM study AS S
+        LEFT JOIN  study_tag AS ST ON S.studyTagId = ST.id
+        WHERE S.userId = '${userId}' AND studyDate >= ${monthStart} AND S.studyDate <= ${monthEnd}
+        GROUP BY S.studyTagId, ST.studyTagLabel, ST.show
+      `);
+
+      // はじめにラベル名の配列を作成する
+      studies.map((study: any, index: number) => {
+        console.log('study:', study)
+        if (study.Label == null || !study.show) {
+          labels.push('タグ未設定');
+        } else {
+          labels.push(study.Label);
+        };
+      })
+
+      // 重複しているタグ名（タグ未設定）は削除する
+      labels = labels.filter((value, index) => labels.indexOf(value) === index);
+
+      //フィルタ後にタグ未設定のインデックス値を取得
+      const noSettingTag: number = labels.indexOf('タグ未設定');
+
+      // 学習時間と配色を設定する
+      studies.map((study: any, index: number) => {
+
+        const totalTime: number = Number(study.Time) + Number(study.Minute / 60)
+
+        // タグ未設定の場合は加算する
+        if (study.Label == null || !study.show) {
+          // 現時点でタグ未設定の学習時間が登録されていない場合
+          if (monthChart[0].data[noSettingTag] == undefined) {
+            monthChart[0].data.push(totalTime);
+            monthChart[0].backgroundColor.push(tagColor[index]);
+            monthChart[0].borderColor.push(tagColor[index]);  
+          } else {
+            monthChart[0].data[noSettingTag] = monthChart[0].data[noSettingTag] + totalTime;
+          }
+        } else {
+          monthChart[0].data.push(totalTime);
+          monthChart[0].backgroundColor.push(tagColor[index]);
+          monthChart[0].borderColor.push(tagColor[index]);
+        }
+      })
+    } catch (e) {
+      console.error(e);
+    }
+
+    return {
+      labels,
+      monthChart
+    }
   };
 
   /**
