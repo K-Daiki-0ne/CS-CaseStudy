@@ -1,5 +1,5 @@
 export * from './Header/Header';
-export * from './Layout';
+export * from './Layout/Layout';
 export * from './Markdown/Markdown';
 export * from './StudyDeleteButton/StudyDeleteButton';
 export * from './StudyEditButton/StudyEditButton';
