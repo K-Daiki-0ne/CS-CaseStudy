@@ -5,8 +5,6 @@ export * from './StudyDeleteButton/StudyDeleteButton';
 export * from './StudyEditButton/StudyEditButton';
 export * from './StudyGrid/StudyGrid';
 export * from './StudyReport/StudyReport';
-export * from './StudySetting/StudySetting';
-export * from './UserInfo/UserInfo';
 export * from './UserProfile/UserProfile';
 export * from './StudyChart/StudyChart';
 export * from './StudyTotaltime/StudyTotaltime';
