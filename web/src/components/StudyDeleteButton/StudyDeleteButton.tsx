@@ -10,6 +10,9 @@ import {
   Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useMutation } from '@apollo/client';
+import { DELETE_STUDY } from '../../graphql/graphql';
+import { DeleteStudyMutation } from '../../generated/graphql';
 
 type Props = {
   studyId: number
@@ -18,8 +21,15 @@ type Props = {
 export const StudyDeleteButton: FC<Props> = ({ studyId }) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const deleteStudy = () => {
+  const [deleteStudy] = useMutation<DeleteStudyMutation>(DELETE_STUDY)
 
+  const handleClickDeleteStudy = async () => {
+    await deleteStudy({
+      variables: {
+        studyId: studyId
+      }
+    });
+    setOpen(false);
   };
 
   return (
@@ -49,7 +59,7 @@ export const StudyDeleteButton: FC<Props> = ({ studyId }) => {
           </Button>
           <Button
             variant='contained'
-            onClick={deleteStudy}
+            onClick={handleClickDeleteStudy}
           >
             削除
           </Button>

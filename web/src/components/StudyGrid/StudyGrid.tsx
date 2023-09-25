@@ -1,13 +1,8 @@
-import { useState, useEffect, FC } from 'react';
+import { FC } from 'react';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useQuery } from '@apollo/client';
-import { useRecoilValue } from 'recoil';
-import { MultiReadStudyQuery } from '../../generated/graphql';
-import { MULTI_READ_STUDY } from '../../graphql/graphql'
 import { StudyDeleteButton } from '../StudyDeleteButton/StudyDeleteButton';
 import { StudyEditButton } from '../StudyEditButton/StudyEditButton';
-import { userInfoState } from '../../store/selectors';
 
 const columns = [
   {
@@ -28,10 +23,11 @@ const columns = [
     disableClickEventBubbling: true,
     renderCell: (params: any) => <StudyEditButton  props={{ 
       studyId: params.id,
-      userId: params.userId,
-      studyDate: params.Date, 
-      studyTime: params.Time, 
-      studyTagId: params.Tagid 
+      userId: params.row.userId,
+      studyDate: params.row.Date, 
+      studyTime: params.row.Time, 
+      studyTagId: params.row.Tagid,
+      content: params.row.Content
     }} />
   },
   { 
@@ -101,8 +97,6 @@ export const StudyGrid: FC<Props> = ({ props }) => {
           },
         }}
         columnVisibilityModel={{ id: false, userId: false, Tagid: false }}
-        // pageSizeOptions={[5]}
-        // loading={loading}
         checkboxSelection={false}
         autoHeight
         autoPageSize

@@ -33,7 +33,6 @@ class UserModel {
         goal: '' 
       })
 
-      console.log('ユーザーの作成に成功しました')
     } catch (e) {
       // 入力されたemailがすでに存在する場合はエラーとする
       if (e.errno == 1062) {
@@ -59,7 +58,6 @@ class UserModel {
   }
 
   public async readUser(userId: string): Promise<boolean> {
-    console.log('readUser:', userId)
     const user = await this.userRepo.findOne({
       where: {
         userId: userId

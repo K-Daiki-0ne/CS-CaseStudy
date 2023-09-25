@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { Layuot } from '../components/Layout';
+import { Layuot } from '../components/Layout/Layout';
 import { Typography, Box, Link } from '@mui/material';
 import WarningAmberSharpIcon from '@mui/icons-material/WarningAmberSharp';
 

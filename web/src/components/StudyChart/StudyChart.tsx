@@ -23,8 +23,6 @@ ChartJS.register(
   Legend
 );
 
-
-
 type WeekChartType = {
   label: string;
   data: number[];
@@ -34,27 +32,6 @@ type WeekChartType = {
 type Props ={
   props: WeekChartType[]
 }
-
-// const data = {
-//   labels,
-//   datasets: [
-//     {
-//       label: "Dataset 1",
-//       data: [22.25, 24, 24, 24, 24, 24, 24],
-//       backgroundColor: "rgb(255, 99, 132)"
-//     },
-//     {
-//       label: "Dataset 2",
-//       data: [1.75, 0, 0, 0, 0, 0, 0],
-//       backgroundColor: "rgb(75, 192, 192)"
-//     },
-//     {
-//       label: "Dataset 3",
-//       data: [0, 0, 0, 0, 0, 0, 0],
-//       backgroundColor: "rgb(53, 162, 235)"
-//     }
-//   ]
-// };
 
 export const StudyChart: FC<Props> = ({ props }) => {
 

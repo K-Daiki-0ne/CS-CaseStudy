@@ -15,6 +15,7 @@ import { useMutation } from '@apollo/client';
 import { CREATE_STUDY } from '../../graphql/graphql';
 import { CreateStudyMutation } from '../../generated/graphql';
 import { userInfoState } from '../../store/selectors';
+import { studyTagState } from '../../store/atoms';
 
 const Create: NextPage = () => {
   const [date, setDate] = useState<Dayjs | null>(null);
@@ -25,6 +26,7 @@ const Create: NextPage = () => {
   const [timeError, setTimeError] = useState({ error: false, label: '' });
 
   const user = useRecoilValue(userInfoState);
+  const tags = useRecoilValue(studyTagState);
   const router = useRouter();
 
   const [create] = useMutation<CreateStudyMutation>(CREATE_STUDY);
@@ -114,12 +116,12 @@ const Create: NextPage = () => {
             onChange={handleTagChange}
             sx={{ width: '100%' }}
           >
-            <MenuItem value="">
-              <em>-</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            <MenuItem value={0}>　</MenuItem>
+            {
+              tags.map((tag) => tag.show ? (
+                <MenuItem value={tag.id} key={tag.key}>{tag.label}</MenuItem>
+              ) : undefined)
+            }
           </Select>
           <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-contet-input" size='normal'>
             学習内容
