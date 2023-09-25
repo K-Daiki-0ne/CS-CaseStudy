@@ -289,7 +289,7 @@ export type ReadTagsQueryVariables = Exact<{
 }>;
 
 
-export type ReadTagsQuery = { __typename?: 'Query', readTags: Array<{ __typename?: 'StudyTag', studyTagKey: string, studyTagLabel: string, show: boolean }> };
+export type ReadTagsQuery = { __typename?: 'Query', readTags: Array<{ __typename?: 'StudyTag', id: number, studyTagKey: string, studyTagLabel: string, show: boolean }> };
 
 export type IsUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -592,6 +592,7 @@ export type MultiReadStudyQueryResult = Apollo.QueryResult<MultiReadStudyQuery, 
 export const ReadTagsDocument = gql`
     query ReadTags($user: String!) {
   readTags(user: $user) {
+    id
     studyTagKey
     studyTagLabel
     show

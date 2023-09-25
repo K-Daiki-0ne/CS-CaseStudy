@@ -25,8 +25,8 @@ export const studyTagListSingleState = selector({
     const studyTagId = get(studyTagListState);
     const studyTagsList = get(studyTagState);
 
-    const studyTag = studyTagsList.filter((tag) => tag.tagId == studyTagId);
+    const studyTag = studyTagsList.filter((tag) => tag.id == studyTagId);
     
-    return studyTag[0].tagId, studyTag[0].tagLabel
+    return studyTag[0].id, studyTag[0].label
   }
 })

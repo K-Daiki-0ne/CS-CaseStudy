@@ -19,7 +19,7 @@ import {
   StudyChart,
   StudyTotaltime
 } from '../../components';
-import { userState } from '../../store/atoms';
+import { userState, studyTagState } from '../../store/atoms';
 
 type TabPanelProps = {
   children: ReactNode
@@ -38,6 +38,7 @@ type StudiesType = {
 }
 
 type StudyTagType = {
+  id: number;
   key: number;
   label: string;
   show: boolean;
@@ -103,6 +104,7 @@ function TabPanel(props: TabPanelProps) {
 const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthChart }) => {
   const [tabValue, setTabValue] = useState<number>(0);
   const [user, setUser] = useRecoilState(userState);
+  const [,setTags] = useRecoilState(studyTagState);
   const router = useRouter();
   const userId = useSearchParams().get('userId');
 
@@ -126,7 +128,9 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
         professionId: data?.readUserForUserId.user?.professionId != null ? data?.readUserForUserId.user?.professionId : '0',
         goal: data?.readUserForUserId.user?.goal != null ? data?.readUserForUserId.user?.goal : ''
       })
-    }
+    };
+
+    setTags(tags);
     getUserInfo();
   }, []);
 
@@ -309,6 +313,7 @@ export async function getServerSideProps(params: any) {
     data.readTags.map((studyTags: any) => {
       // __typenameを排除するためにデータを編集する
       let tagsValue = {
+        id: studyTags.id,
         key: Number(studyTags.studyTagKey),
         label: studyTags.studyTagLabel,
         show: studyTags.show
