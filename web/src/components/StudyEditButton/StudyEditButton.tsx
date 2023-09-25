@@ -1,5 +1,4 @@
-import { useState, FC, ChangeEvent, FormEvent } from 'react';
-import { useRouter } from 'next/router';
+import { useState, FC, ChangeEvent, FormEvent, useEffect } from 'react';
 import {
   Box,
   IconButton,
@@ -22,6 +21,9 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useMutation } from '@apollo/client';
 import { UPDATE_STUDY } from '../../graphql/graphql';
 import { UpdateStudyMutation } from '../../generated/graphql';
+import { useRouter } from 'next/router';
+import { useRecoilValue } from 'recoil';
+import { studyTagState } from '../../store/atoms';
 
 type StudyEditProps = {
   props: {
@@ -29,7 +31,8 @@ type StudyEditProps = {
     userId: string;
     studyDate: string;
     studyTime: string;
-    studyTagId: number;    
+    studyTagId: number;
+    content: string;
   }
 }
 
@@ -38,8 +41,41 @@ export const StudyEditButton: FC<StudyEditProps> = ({ props }) => {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [updateStudy, setUpdateStudy] = useState({ time: '', tagId: '', content: '' });
   const [dateError, setDateError] = useState({ error: false, label: '' });
+  const tags = useRecoilValue(studyTagState);
 
   const [update] = useMutation<UpdateStudyMutation>(UPDATE_STUDY);
+  const router = useRouter();
+
+  useEffect(() => {
+    // 年月日と時間をフォーマットする
+    const studyYear: number = Number(props.studyDate.substring(0, props.studyDate.indexOf('年'))); 
+    const studyDate = props.studyDate.substring(props.studyDate.indexOf('年') + 1);
+    const month: number = Number(studyDate.substring(0, studyDate.indexOf('月')))
+    const day: number = Number(studyDate.substring(studyDate.indexOf('月') + 1, studyDate.indexOf('日')))
+
+    setDate(
+      dayjs(String(studyYear * 10000 + month * 100 + day))
+    );
+
+    const time = props.studyTime.substring(0, props.studyTime.indexOf('時'));
+    const minute = props.studyTime.substring(props.studyTime.indexOf('間') + 1, props.studyTime.indexOf('分'));
+    let studyTime: string;
+
+    if (time.length == 1) {
+      studyTime = '0' + time;  
+    } else {
+      studyTime = time;
+    };
+
+    if (minute.length == 1) {
+      studyTime = studyTime + ':' + '0' + minute;
+    } else {
+      studyTime = studyTime + ':' + minute;
+    }
+
+    setUpdateStudy({ ...updateStudy, time: studyTime ,tagId: String(props.studyTagId), content: props.content });
+
+  }, [])
 
   const handleTagChange = (e: SelectChangeEvent) => {
     setUpdateStudy({ ...updateStudy, tagId: e.target.value });
@@ -54,7 +90,7 @@ export const StudyEditButton: FC<StudyEditProps> = ({ props }) => {
     if (date == null) {
       setDateError({ error: true, label: '学習日を入力してください' });
       return;
-    }
+    };
 
     try {
       await update({
@@ -63,13 +99,16 @@ export const StudyEditButton: FC<StudyEditProps> = ({ props }) => {
           userId: props.userId,
           studyYear: date?.year(),
           studyDate: (date?.year() * 10000) + ((date?.month() + 1) * 100) + date?.date(),
-          studyTime: Number(updateStudy.time.replace(':', '')),
+          studyTime: Number(updateStudy.time.replace(':', '').substring(0, 2)),
+          studyMinute: Number(updateStudy.time.replace(':', '').substring(2, 4)),
           studyTagId: Number(updateStudy.tagId),
           studyContent: updateStudy.content
         }
       })
 
       setOpen(false);
+      // 一覧を編集後の状態にする
+      router.push(`/main/${props.userId}`)
     } catch (e) {
       console.error(e);
     }
@@ -139,12 +178,12 @@ export const StudyEditButton: FC<StudyEditProps> = ({ props }) => {
               onChange={handleTagChange}
               sx={{ width: '100%' }}
             >
-              <MenuItem value="">
-                <em>-</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={0}></MenuItem>
+              {tags.map((tag) => 
+                tag.show ? (
+                  <MenuItem value={tag.id} key={tag.key}>{tag.label}</MenuItem>
+                ) : undefined
+              )}
             </Select>
             <InputLabel sx={{ mt:2 }} shrink htmlFor="update-study-day-input" size='normal'>
               学習内容

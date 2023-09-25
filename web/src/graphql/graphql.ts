@@ -92,6 +92,7 @@ export const MULTI_READ_STUDY = gql`
 export const READ_TAGS = gql`
   query ReadTags($user: String!) {
     readTags(user: $user) {
+      id,
       studyTagKey,
       studyTagLabel,
       show  

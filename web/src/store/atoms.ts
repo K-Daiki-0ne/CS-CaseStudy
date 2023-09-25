@@ -8,9 +8,9 @@ type UserState = {
 };
 
 type StudyTagState = {
-  tagId: number;
-  tagKey: string;
-  tagLabel: string;
+  id: number;
+  key: number;
+  label: string;
   show: boolean;
 };
 

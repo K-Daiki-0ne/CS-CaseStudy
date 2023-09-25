@@ -4,12 +4,8 @@ import {
   Button,
   Typography,
   AppBar,
-  Drawer,
-  IconButton,
   Link
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useRouter } from 'next/router';
 
 type HeaderProps = {
@@ -18,7 +14,6 @@ type HeaderProps = {
 }
 
 export const Header: FC<HeaderProps> = (props) => {
-  const [open, setOpen] = useState<boolean>(false);
   const [isView, setIsView] = useState<boolean>(false);
 
   const router = useRouter();
