@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Layuot, Header, Markdown } from '../components';
-import { Paper, Box, Grid, Typography } from '@mui/material';
+import { Paper, CardMedia } from '@mui/material';
 import { homePage } from '../markdown/homePage';
 
 const Home = () => {
@@ -19,34 +19,11 @@ const Home = () => {
           backgroundPosition: 'center',
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            right: 0,
-            left: 0,
-            backgroundColor: 'rgba(0,0,0,.3)',
-          }}
+        <CardMedia 
+          component="img"
+          image="https://github.com/K-Daiki-0ne/CS-CaseStudy/assets/51228144/7006f0fb-f91e-46d6-9a8b-c5cf107a2407"
+          alt='casestudy'
         />
-        <Grid container>
-          <Grid item md={6}>
-            <Box
-              sx={{
-                position: 'relative',
-                p: { xs: 3, md: 6 },
-                pr: { md: 0 },
-              }}
-            >
-              <Typography component="h1" variant="h3" color="inherit" gutterBottom>
-                aaa
-              </Typography>
-              <Typography variant="h5" color="inherit" paragraph>
-                bbb
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
       </Paper>
       <Markdown>
         { homePage }
