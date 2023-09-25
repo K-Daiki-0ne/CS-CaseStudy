@@ -345,7 +345,6 @@ class StudyModel {
 
       // はじめにラベル名の配列を作成する
       studies.map((study: any, index: number) => {
-        console.log('study:', study)
         if (study.Label == null || !study.show) {
           labels.push('タグ未設定');
         } else {
