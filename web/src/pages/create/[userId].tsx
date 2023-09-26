@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRecoilValue } from 'recoil';
-import { Layuot, Header } from '../../components';
+import { Layout, Header } from '../../components';
 import { Box, Typography, Input, InputLabel, Select, MenuItem, TextField , Fab, IconButton } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -75,7 +75,7 @@ const Create: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='create' />
       <Box component='form' onSubmit={createStudy}>
         <Box sx={{ mt: 10 }}>
@@ -142,7 +142,7 @@ const Create: NextPage = () => {
           </Fab>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 

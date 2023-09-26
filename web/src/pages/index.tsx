@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Layuot, Header, Markdown } from '../components';
+import { Layout, Header, Markdown } from '../components';
 import { Paper, CardMedia } from '@mui/material';
 import { homePage } from '../markdown/homePage';
 
 const Home = () => {
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='home' />
       <Paper 
         sx={{
@@ -28,7 +28,7 @@ const Home = () => {
       <Markdown>
         { homePage }
       </Markdown>
-    </Layuot>
+    </Layout>
   );
 }
 

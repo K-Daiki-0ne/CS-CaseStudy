@@ -11,7 +11,7 @@ import {
   IconButton,
   InputAdornment
 } from '@mui/material';
-import { Layuot, Header } from '../../components';
+import { Layout, Header } from '../../components';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useMutation } from '@apollo/client';
@@ -69,7 +69,7 @@ const ChangePassword: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='change-password' />
       <Box
         sx={{
@@ -136,7 +136,7 @@ const ChangePassword: NextPage = () => {
           </Button>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 

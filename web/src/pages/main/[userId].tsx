@@ -11,7 +11,7 @@ import { initializeApollo } from '../../libs/apolloClient';
 import { MULTI_READ_STUDY, READ_USER_FOR_USERID, READ_TAGS } from '../../graphql/graphql'
 import { MultiReadStudyQuery, ReadUserForUserIdQuery, ReadTagsQuery } from '../../generated/graphql';
 import { 
-  Layuot,
+  Layout,
   StudyGrid,
   StudyReport,
   UserProfile,
@@ -139,7 +139,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='create' />
       <Box sx={{ mt: 10 }}>
         <Box
@@ -197,7 +197,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
           <UserProfile userId={userId as string} tags={tags} />
         </TabPanel>
       </Box>
-    </Layuot>
+    </Layout>
   )
 }
 

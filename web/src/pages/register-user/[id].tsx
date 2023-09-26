@@ -28,7 +28,7 @@ import { IsUserQuery, RegisterMutation, CreateStudyTagMutation } from '../../gen
 import { IS_USER, REGISTER_USER, CREATE_STUDY_TAG } from '../../graphql/graphql';
 import { initializeApollo } from '../../libs/apolloClient';
 import {
-  Layuot,
+  Layout,
   Header
 } from '../../components'
 import { professionList } from '../../utils/professinList';
@@ -129,7 +129,7 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='register-user' />
       <Box component='form' onSubmit={handleSubmitRegisterUser}>
         <Box
@@ -271,7 +271,7 @@ const RegisterUser: NextPage<Props> = ({ isUser }) => {
           登録
         </Button>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 
