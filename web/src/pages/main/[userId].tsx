@@ -134,7 +134,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
     getUserInfo();
   }, []);
 
-  const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
+  const handleTagChange = (event: React.SyntheticEvent, newTabValue: number) => {
     setTabValue(newTabValue);
   }
 
@@ -173,7 +173,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
           </Fab>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
-          <Tabs value={tabValue} onChange={tabChanged} centered>
+          <Tabs value={tabValue} onChange={handleTagChange} centered>
             <Tab label='学習レポート' />
             <Tab label='学習一覧' />
             <Tab label='プロフィール' />

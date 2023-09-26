@@ -19,7 +19,7 @@ jest.mock("next/navigation", () => ({
 
 describe('ChangePassword page', () => {
   it('パスワード再発行画面のレンダリングテスト', () => {
-    mockRouter.push('/register-user/1');
+    mockRouter.push('/change-password/1');
     render(
       <ApolloProvider client={apolloClient}>
         <RecoilRoot>

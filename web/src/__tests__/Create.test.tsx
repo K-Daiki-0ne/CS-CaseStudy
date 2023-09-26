@@ -19,7 +19,7 @@ jest.mock("next/navigation", () => ({
 
 describe('Create page', () => {
   it('学習投稿画面のレンダリングテスト', () => {
-    mockRouter.push('/register-user/1');
+    mockRouter.push('/create/1');
     render(
       <ApolloProvider client={apolloClient}>
         <RecoilRoot>
