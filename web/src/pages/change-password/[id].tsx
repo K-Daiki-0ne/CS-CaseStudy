@@ -22,8 +22,6 @@ const ChangePassword: NextPage = () => {
   const [password, setPassword] = useState({ password: '', confirmPassword: '' })
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [isNotExit, setIsNotExit] = useState<boolean>(false);
-
   const [passwordError, setPasswordError] = useState({ error: false, label: '新しいパスワード' });
   const [confirmPasswordError, setConfirmPasswordError] = useState({ error: false, label: '確認用パスワード' });
 
