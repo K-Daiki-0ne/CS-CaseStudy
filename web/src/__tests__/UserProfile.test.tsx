@@ -5,7 +5,6 @@ import { render, screen } from '@testing-library/react';
 import { UserProfile } from '../components';
 import { ApolloProvider } from '@apollo/client';
 import { initializeApollo } from '../libs/apolloClient';
-import userEvent from '@testing-library/user-event';
 import { RecoilRoot } from 'recoil';
 
 const mockUserProfileProps = {
