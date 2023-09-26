@@ -9,7 +9,7 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { Layuot } from '../components';
+import { Layout } from '../components';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useMutation } from '@apollo/client';
@@ -51,7 +51,7 @@ const ForgotPassword: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Box
         sx={{
           marginTop: 8,
@@ -116,7 +116,7 @@ const ForgotPassword: NextPage = () => {
           </Button>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 

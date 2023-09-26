@@ -11,7 +11,7 @@ import {
   IconButton,
   InputAdornment
 } from '@mui/material';
-import { Layuot, Header } from '../../components';
+import { Layout, Header } from '../../components';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useMutation } from '@apollo/client';
@@ -22,8 +22,6 @@ const ChangePassword: NextPage = () => {
   const [password, setPassword] = useState({ password: '', confirmPassword: '' })
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [isNotExit, setIsNotExit] = useState<boolean>(false);
-
   const [passwordError, setPasswordError] = useState({ error: false, label: '新しいパスワード' });
   const [confirmPasswordError, setConfirmPasswordError] = useState({ error: false, label: '確認用パスワード' });
 
@@ -69,7 +67,7 @@ const ChangePassword: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='change-password' />
       <Box
         sx={{
@@ -136,7 +134,7 @@ const ChangePassword: NextPage = () => {
           </Button>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 
