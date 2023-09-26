@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { render } from '@testing-library/react';
-import ForgotPassword from '../pages/forgot-passwrod';
+import Register from '../pages/register';
 import { ApolloProvider } from '@apollo/client';
 import { initializeApollo } from '../libs/apolloClient';
 import { RecoilRoot } from 'recoil';
@@ -12,13 +12,13 @@ const apolloClient = initializeApollo();
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'))
 
-describe('ChangePassword page', () => {
-  it('パスワード再発行画面のレンダリングテスト', () => {
-    mockRouter.push('/forgot-password');
+describe('Register page', () => {
+  it('ユーザー登録画面のレンダリングテスト', () => {
+    mockRouter.push('/register');
     render(
       <ApolloProvider client={apolloClient}>
         <RecoilRoot>
-          <ForgotPassword  />
+          <Register  />
         </RecoilRoot>
       </ApolloProvider>
     )

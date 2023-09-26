@@ -14,7 +14,7 @@ jest.mock('next/router', () => jest.requireActual('next-router-mock'))
 
 describe('Login page', () => {
   it('ログイン画面のレンダリングテスト', () => {
-    mockRouter.push('/change-password/1');
+    mockRouter.push('/login');
     render(
       <ApolloProvider client={apolloClient}>
         <RecoilRoot>
