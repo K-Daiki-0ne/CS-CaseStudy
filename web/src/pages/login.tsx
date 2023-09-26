@@ -11,7 +11,7 @@ import {
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useLazyQuery } from '@apollo/client';
 import { useRecoilState } from 'recoil';
-import { Layuot, Header } from '../components';
+import { Layout, Header } from '../components';
 import { LoginQuery } from '../generated/graphql';
 import { LOGIN_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';
@@ -88,7 +88,7 @@ const Login: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='login' />
       <Box
         sx={{
@@ -154,7 +154,7 @@ const Login: NextPage = () => {
           </Grid>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 

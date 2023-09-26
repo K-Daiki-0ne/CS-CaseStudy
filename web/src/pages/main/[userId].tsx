@@ -11,7 +11,7 @@ import { initializeApollo } from '../../libs/apolloClient';
 import { MULTI_READ_STUDY, READ_USER_FOR_USERID, READ_TAGS } from '../../graphql/graphql'
 import { MultiReadStudyQuery, ReadUserForUserIdQuery, ReadTagsQuery } from '../../generated/graphql';
 import { 
-  Layuot,
+  Layout,
   StudyGrid,
   StudyReport,
   UserProfile,
@@ -134,12 +134,12 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
     getUserInfo();
   }, []);
 
-  const tabChanged = (event: React.SyntheticEvent, newTabValue: number) => {
+  const handleTagChange = (event: React.SyntheticEvent, newTabValue: number) => {
     setTabValue(newTabValue);
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='create' />
       <Box sx={{ mt: 10 }}>
         <Box
@@ -173,7 +173,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
           </Fab>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
-          <Tabs value={tabValue} onChange={tabChanged} centered>
+          <Tabs value={tabValue} onChange={handleTagChange} centered>
             <Tab label='学習レポート' />
             <Tab label='学習一覧' />
             <Tab label='プロフィール' />
@@ -197,7 +197,7 @@ const Main: NextPage<Props> = ({ studies, time, tags, weekChart, labels, monthCh
           <UserProfile userId={userId as string} tags={tags} />
         </TabPanel>
       </Box>
-    </Layuot>
+    </Layout>
   )
 }
 
