@@ -189,7 +189,10 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
                   />
                 </ListItem>
               );  
+            } else {
+              return undefined
             }
+
           })}
         </Paper>
         <OutlinedInput 
