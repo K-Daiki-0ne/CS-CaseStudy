@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 import { CreateUserMutation } from '../generated/graphql';
 import { CREATE_USER } from '../graphql/graphql';
 import { validateForm } from '../utils/validateForm';
-import { Layuot, Header } from '../components';
+import { Layout, Header } from '../components';
 import { Box, Typography, TextField, Link, Alert } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -43,7 +43,7 @@ const Register: NextPage = () => {
   }
 
   return (
-    <Layuot>
+    <Layout>
       <Header title='CaseStudy' page='register' />
       <Box
         sx={{
@@ -95,7 +95,7 @@ const Register: NextPage = () => {
           </Typography>
         </Box>
       </Box>
-    </Layuot>
+    </Layout>
   )
 };
 

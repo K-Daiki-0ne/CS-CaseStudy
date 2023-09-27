@@ -82,19 +82,5 @@ export const StudyReport: FC<Props> = ({ props }) => {
         <StudyTimebox text={`${props.month.time}時間${props.month.minute}分`} />
       </Grid>
     </Grid>
-
-
-      // {/* <Grid container spacing={0}>
-      //   <Grid xs={6}>
-      //     <Box sx={{ mt: 1 , border: '1px solid grey'}}>
-      //       <Typography>トータルの学習時間</Typography>
-      //     </Box>
-      //   </Grid>
-      //   <Grid xs={6}>
-      //     <Box sx={{ mt: 1 , border: '1px solid grey'}}>
-      //       <Typography>トータルの学習時間</Typography>
-      //     </Box>
-      //   </Grid>
-      // </Grid> */}
   )
 }
