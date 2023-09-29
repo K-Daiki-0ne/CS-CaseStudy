@@ -34,6 +34,7 @@ const Register: NextPage = () => {
         return;
       }
 
+      setLoading(false);
       setIsSuccess(true);
     } catch (e) {
       console.error(e);
