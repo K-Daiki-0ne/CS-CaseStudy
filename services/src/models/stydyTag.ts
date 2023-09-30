@@ -56,6 +56,22 @@ class StudyTagModel {
     }
   }
 
+  public async updateStudyTag(userId: string, key: string, label: string, show: boolean) {
+    console.log('model show:', show)
+    // ラベルと表示を更新する
+    try {
+      await this.studyTag.update({ userId: userId, studyTagKey: key }, {
+        studyTagLabel: label,
+        show: show
+      })
+    } catch (e) {
+      console.error('タグの更新に失敗', e);
+      return false;
+    }
+
+    return true;
+  }
+
   public async deleteStudyTag(id: number) {
     // 過去のデータを参照することができるように物理削除ではなく、論理削除にする
     try {

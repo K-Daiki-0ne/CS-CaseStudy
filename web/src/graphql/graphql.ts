@@ -219,6 +219,12 @@ export const CREATE_STUDY_TAG = gql`
   }
 `;
 
+export const UPDATE_STUDY_TAG = gql`
+  mutation UpdateStudyTag($userId: String!, $key: String!, $label: String!, $show: Boolean!) {
+    updateStudyTag(userId: $userId, key: $key, label: $label, show: $show)
+  }
+`
+
 export const DELETE_STUDY_TAG = gql`
   mutation DeleteStudyTag($id: Float!) {
     deleteStudyTag(id: $id)

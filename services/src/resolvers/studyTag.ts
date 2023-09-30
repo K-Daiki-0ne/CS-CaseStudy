@@ -19,6 +19,16 @@ export class StudyTagResolver {
     return  await StudyTagModel.createTag(userId, key, label);
   }
 
+  @Mutation(() => Boolean)
+  async updateStudyTag(
+    @Arg('userId') userId: string,
+    @Arg('key') key: string,
+    @Arg('label') label: string,
+    @Arg('show') show: boolean
+  ): Promise<boolean> {
+    console.log(show)
+    return await StudyTagModel.updateStudyTag(userId, key, label, show);
+  }
 
   @Mutation(() => Boolean)
   async deleteStudyTag(@Arg('id') id: number) {

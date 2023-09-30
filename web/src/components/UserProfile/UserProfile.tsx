@@ -13,6 +13,7 @@ import {
   InputAdornment,
   IconButton
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { SelectChangeEvent } from '@mui/material/Select';
 import SaveIcon from '@mui/icons-material/Save';
@@ -20,8 +21,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../store/atoms';
-import { RegisterMutation, CreateStudyTagMutation  } from '../../generated/graphql';
-import { REGISTER_USER, CREATE_STUDY_TAG } from '../../graphql/graphql';
+import { RegisterMutation, CreateStudyTagMutation, UpdateStudyTagMutation } from '../../generated/graphql';
+import { REGISTER_USER, CREATE_STUDY_TAG, UPDATE_STUDY_TAG } from '../../graphql/graphql';
 import { professionList } from '../../utils/professinList';
 
 type StudyTag = {
@@ -42,10 +43,12 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
   const [isEdit, setIsEdit] = useState<boolean>(true);
 
   const [user, setUser] = useRecoilState(userState);
-  // const user = useRecoilValue(userState);
 
   const [update] = useMutation<RegisterMutation>(REGISTER_USER);
   const [createStudyTag] = useMutation<CreateStudyTagMutation>(CREATE_STUDY_TAG);
+  const [updateStudyTag] = useMutation<UpdateStudyTagMutation>(UPDATE_STUDY_TAG);
+
+  const router = useRouter();
 
   useEffect(() => {
     setUpdateUser({
@@ -82,20 +85,31 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
           goal: updateUser.goal
         });
 
-        console.log('create-study-tag start')
-        console.log('studyTag:', studyTag)
-
-        await studyTag.map((tags: StudyTag) => {
-          createStudyTag({
-            variables: {
-              userId: userId,
-              key: String(tags.key),
-              label: tags.label
-            }
-          })
+        // 登録されているタグ情報が編集された場合は更新・存在しない場合は追加
+        await studyTag.map((currentTagValue: StudyTag) => {
+          const isMatch = tags.find((postTagValue: StudyTag) => postTagValue.key == currentTagValue.key);
+          if (isMatch == undefined) {
+            createStudyTag({
+              variables: {
+                userId: userId,
+                key: String(currentTagValue.key),
+                label: currentTagValue.label
+              }
+            })  
+          } else {
+            updateStudyTag({
+              variables: {
+                userId: userId,
+                key: String(currentTagValue.key),
+                label: currentTagValue.label,
+                show: currentTagValue.show
+              }
+            })
+          }
         })
 
         setIsEdit(true);  
+        router.push(`/main/${userId}`)
       } catch (e) {
         console.error(e)
       }
@@ -179,6 +193,7 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
           component="ul"
         >
           { studyTag.map((data: StudyTag) => {
+            console.log(data)
             if (data.show) {
               return (
                 <ListItem key={data.key}>

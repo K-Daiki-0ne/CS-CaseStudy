@@ -35,6 +35,7 @@ export type Mutation = {
   update: Scalars['Boolean']['output'];
   updatePassword: Scalars['Boolean']['output'];
   updateStudy: Scalars['Boolean']['output'];
+  updateStudyTag: Scalars['Boolean']['output'];
 };
 
 
@@ -88,6 +89,14 @@ export type MutationUpdatePasswordArgs = {
 
 export type MutationUpdateStudyArgs = {
   updateStudy: StudyInput;
+};
+
+
+export type MutationUpdateStudyTagArgs = {
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
+  show: Scalars['Boolean']['input'];
+  userId: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -380,6 +389,16 @@ export type CreateStudyTagMutationVariables = Exact<{
 
 
 export type CreateStudyTagMutation = { __typename?: 'Mutation', createStudyTag: boolean };
+
+export type UpdateStudyTagMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  label: Scalars['String']['input'];
+  show: Scalars['Boolean']['input'];
+}>;
+
+
+export type UpdateStudyTagMutation = { __typename?: 'Mutation', updateStudyTag: boolean };
 
 export type DeleteStudyTagMutationVariables = Exact<{
   id: Scalars['Float']['input'];
@@ -987,6 +1006,40 @@ export function useCreateStudyTagMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateStudyTagMutationHookResult = ReturnType<typeof useCreateStudyTagMutation>;
 export type CreateStudyTagMutationResult = Apollo.MutationResult<CreateStudyTagMutation>;
 export type CreateStudyTagMutationOptions = Apollo.BaseMutationOptions<CreateStudyTagMutation, CreateStudyTagMutationVariables>;
+export const UpdateStudyTagDocument = gql`
+    mutation UpdateStudyTag($userId: String!, $key: String!, $label: String!, $show: Boolean!) {
+  updateStudyTag(userId: $userId, key: $key, label: $label, show: $show)
+}
+    `;
+export type UpdateStudyTagMutationFn = Apollo.MutationFunction<UpdateStudyTagMutation, UpdateStudyTagMutationVariables>;
+
+/**
+ * __useUpdateStudyTagMutation__
+ *
+ * To run a mutation, you first call `useUpdateStudyTagMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStudyTagMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStudyTagMutation, { data, loading, error }] = useUpdateStudyTagMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      key: // value for 'key'
+ *      label: // value for 'label'
+ *      show: // value for 'show'
+ *   },
+ * });
+ */
+export function useUpdateStudyTagMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStudyTagMutation, UpdateStudyTagMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStudyTagMutation, UpdateStudyTagMutationVariables>(UpdateStudyTagDocument, options);
+      }
+export type UpdateStudyTagMutationHookResult = ReturnType<typeof useUpdateStudyTagMutation>;
+export type UpdateStudyTagMutationResult = Apollo.MutationResult<UpdateStudyTagMutation>;
+export type UpdateStudyTagMutationOptions = Apollo.BaseMutationOptions<UpdateStudyTagMutation, UpdateStudyTagMutationVariables>;
 export const DeleteStudyTagDocument = gql`
     mutation DeleteStudyTag($id: Float!) {
   deleteStudyTag(id: $id)
