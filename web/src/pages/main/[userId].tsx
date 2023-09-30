@@ -236,12 +236,14 @@ export async function getServerSideProps(params: any) {
   
     if (data.multiReadStudy.studies == undefined || data.multiReadStudy.studies == null) {
       return {
-        props: [],
-        time: studyTime,
-        tags: [],
-        weekChart: [],
-        labels: [],
-        monthChart: []
+        props: { 
+          studies: studiesArray, 
+          time: studyTime,
+          tags: studyTagsArray,
+          weekChart: weekChart,
+          labels: monthLabel,
+          monthChart: monthChart
+        }
       }
     }
 
@@ -301,12 +303,14 @@ export async function getServerSideProps(params: any) {
 
     if (data.readTags == undefined || data.readTags == null || data.readTags.length == 0) {
       return {
-        props: studiesArray,
-        time: studyTime,
-        tags: [],
-        weekChart: weekChart,
-        labels: monthLabel,
-        monthChart: monthChart
+        props: { 
+          studies: studiesArray, 
+          time: studyTime,
+          tags: studyTagsArray,
+          weekChart: weekChart,
+          labels: monthLabel,
+          monthChart: monthChart
+        }
       }
     };
 
@@ -319,7 +323,11 @@ export async function getServerSideProps(params: any) {
         show: studyTags.show
       };
       studyTagsArray.push(tagsValue);
-    })
+    });
+
+    if (data.readTags.length == 0) {
+      studyTagsArray.push({ id: 0, key: 0, label: '', show: false });
+    }
 
   } catch (e) {
     console.error(e);
