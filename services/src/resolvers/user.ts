@@ -55,7 +55,10 @@ export class UserResolver {
 
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/change-password/${user}">パスワード変更</a>`
+      `
+        <h2>パスワード再発行用のURLのお知らせ<h2/>
+        <a href="http://localhost:3000/change-password/${user}">パスワード変更</a>`,
+      'パスワード再発行のお知らせ'
     )
 
     return true;
@@ -114,7 +117,12 @@ export class UserResolver {
     const userId = await UserModel.readUserForEmail(email);
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/register-user/${userId}">ユーザー情報入力</a>`
+      `
+        <h2>CastuStudyにご登録いただき誠にありがとうございます。</h2>
+        <p>以下のリンクからユーザー情報の入力を行ってください</p>
+        <a href="http://localhost:3000/register-user/${userId}">ユーザー情報入力</a>
+      `,
+      '新規ユーザー登録'
     )
     // メール用のリンクを送付する
     return true;

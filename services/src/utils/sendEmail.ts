@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export async function sendEmail(to: string, html: string) {
+export async function sendEmail(to: string, html: string, subject: string) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
@@ -14,7 +14,7 @@ export async function sendEmail(to: string, html: string) {
   let info = await transporter.sendMail({
     from: '"CaseStudy" <CaseStudy@gmail.com>',
     to: to,
-    subject: "アカウント登録", // Subject line
+    subject: subject, // Subject line
     html,
   });
 
