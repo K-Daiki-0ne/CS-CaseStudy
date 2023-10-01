@@ -6,7 +6,7 @@
 
 ゲストユーザーログイン
 
-メール　demo@demo.com
+メール　demo2@demo.com
 
 パスワード　demo
 
