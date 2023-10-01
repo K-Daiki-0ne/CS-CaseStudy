@@ -14,9 +14,14 @@
 
 <img width="1273" alt="スクリーンショット 2023-09-25 12 23 15" src="https://github.com/K-Daiki-0ne/CS-CaseStudy/assets/51228144/7006f0fb-f91e-46d6-9a8b-c5cf107a2407">
 
-## Used techology
+## 開発環境
+- MacOS
+- NodeJS(v20.7.0)
+- Visual Studio Code
+
+## 使用技術
 - NextJS
-- Node
+- NodeJS
 - TypeScript
 - GraphQL
 - MySQL
