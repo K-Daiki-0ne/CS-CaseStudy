@@ -3,11 +3,13 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import { initialize, AppDataSource } from './config/data-source';
 import { UserResolver, StudyResolver, StudyTagResolver } from './resolvers';
 
 const main = async () => {
 
+  dotenv.config();
   // expressのバージョンをダウングレード
   const app = express();
 

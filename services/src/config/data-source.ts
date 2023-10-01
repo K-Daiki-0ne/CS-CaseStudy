@@ -4,7 +4,7 @@ import { User, Study, StudyTag, StudyHistory } from "../entity"
 
 export const AppDataSource = new DataSource({
     type: 'mysql',
-    host: 'localhost',
+    host: process.env.DATABASE_HOST,
     port: 3306,
     username: 'admin',
     password: 'casestudy',
@@ -17,12 +17,12 @@ export const AppDataSource = new DataSource({
 })
 
 export const initialize = () => {
-    AppDataSource.initialize()
-        .then(() => {
-            console.log('database connection ...OK');
-        })
-        .catch((err) => {
-            console.log('database connection ...NO');
-            console.error(err);
-        })
+  AppDataSource.initialize()
+    .then(() => {
+      console.log('database connection ...OK');
+    })
+    .catch((err) => {
+      console.log('database connection ...NO');
+      console.error(err);
+    })
 }
