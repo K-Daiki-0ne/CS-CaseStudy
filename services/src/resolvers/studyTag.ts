@@ -1,6 +1,6 @@
 import { Mutation, Arg, Resolver, Query } from 'type-graphql';
 import { StudyTag } from '../entity';
-import StudyTagModel from '../models/stydyTag';
+import StudyTagModel from '../models/studyTag';
 
 @Resolver(StudyTag)
 export class StudyTagResolver {
