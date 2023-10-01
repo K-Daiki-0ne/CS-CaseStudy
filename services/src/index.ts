@@ -8,7 +8,11 @@ import { initialize, AppDataSource } from './config/data-source';
 import { UserResolver, StudyResolver, StudyTagResolver } from './resolvers';
 
 const main = async () => {
-  const port = Number(!!process.env.PORT) || 3000;
+  let port = 4000;
+  if (process.env.PORT != undefined) {
+    port = Number(process.env.PORT);
+    console.log(port);
+  }
 
   dotenv.config();
   // expressのバージョンをダウングレード
