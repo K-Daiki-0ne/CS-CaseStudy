@@ -8,6 +8,7 @@ import { initialize, AppDataSource } from './config/data-source';
 import { UserResolver, StudyResolver, StudyTagResolver } from './resolvers';
 
 const main = async () => {
+  const port = Number(!!process.env.PORT) || 3000;
 
   dotenv.config();
   // expressのバージョンをダウングレード
@@ -38,7 +39,7 @@ const main = async () => {
 
   
 
-  app.listen(4000, () => console.log('Server listning ...OK'));
+  app.listen(port, () => console.log('Server listning ...OK'));
 };
 
 main().catch((err) => {
