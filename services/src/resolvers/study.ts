@@ -231,17 +231,13 @@ export class StudyResolver {
 
     // フロントで使用できるようデータ内容を変更する
     studies.map((data: any) => {
-      let minute = 0;
-      if (data.Minute != undefined) {
-        minute = data.Minute
-      };
       const setValue: ResStudiesType = {
         studyId: data.studyId,
         userId: data.userId,
         tagId: data.tagId != null ? data.tagId : 0,
         Study: data.Study != null ? data.Study : '',
         Date: formatDate(data.Date),
-        Time: String(data.Time) + '時間' + String(minute) + '分',
+        Time: String(data.Time) + '時間' + String(data.Minutes) + '分',
         Content: data.Content
       }
       resStudies.push(setValue);

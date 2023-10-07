@@ -56,12 +56,12 @@ const columns = [
   {
     field: 'Date',
     headerName: '学習日',
-    width: 120
+    width: 130
   },
   {
     field: 'Time',
     headerName: '学習時間',
-    width: 110
+    width: 100
   },
   {
     field: 'Content',

@@ -20,6 +20,8 @@ import {
   StudyTotaltime
 } from '../../components';
 import { userState, studyTagState } from '../../store/atoms';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 type TabPanelProps = {
   children: ReactNode
@@ -224,6 +226,11 @@ export async function getServerSideProps(params: any) {
     }
   };
 
+  // timezoneを日本固定にする
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  dayjs.tz.setDefault("America/Toronto");
+ 
   try {
     const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
     const { data } = await apolloClient.query<MultiReadStudyQuery>({
@@ -289,7 +296,6 @@ export async function getServerSideProps(params: any) {
 
 
   } catch (e) {
-    console.log('MultiReadStudy')
     console.error(e);
   };
 

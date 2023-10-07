@@ -26,7 +26,6 @@ export class StudyTagResolver {
     @Arg('label') label: string,
     @Arg('show') show: boolean
   ): Promise<boolean> {
-    console.log(show)
     return await StudyTagModel.updateStudyTag(userId, key, label, show);
   }
 

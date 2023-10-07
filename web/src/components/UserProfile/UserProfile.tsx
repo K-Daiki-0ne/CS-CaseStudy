@@ -193,7 +193,6 @@ export const UserProfile: FC<Props> = ({ userId, tags }) => {
           component="ul"
         >
           { studyTag.map((data: StudyTag) => {
-            console.log(data)
             if (data.show) {
               return (
                 <ListItem key={data.key}>

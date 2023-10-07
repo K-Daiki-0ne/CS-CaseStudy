@@ -152,11 +152,17 @@ class StudyModel {
     let studyTime: StudyTimeType = { time: 0, minute: 0 };
 
     dayOfStudyTime.map((data: any) => {
-      studyTime = {
-        time: data.time != null ? data.time : 0,
-        minute: data.minute != null ? data.time : 0
+      let additionalTime = 0;
+      if (data.minute <= 60) {
+        // 学習時間の合計分が60分を超える場合は合計時間に加算する。
+        additionalTime = Math.floor(data.minute / 60);
+        data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));
       }
-    });
+      studyTime = {
+        time: data.time != null ? Number(data.time) + additionalTime : 0,
+        minute: data.minute != null ? data.minute : 0
+      }
+  });
 
     return studyTime;
   };
@@ -165,7 +171,7 @@ class StudyModel {
     let studyTime: StudyTimeType = { time: 0, minute: 0 };
 
     try {
-      const dayOfStudyWeek = await this.studyRepo.query(`
+      const weekOfStudyWeek = await this.studyRepo.query(`
         SELECT
           SUM(studyTime) AS time,
           SUM(studyMinute) AS minute
@@ -173,10 +179,16 @@ class StudyModel {
         WHERE userId = '${userId}' AND studyDate >= ${weekStart} AND studyDate <= ${weekEnd}
       `);
 
-      dayOfStudyWeek.map((data: any) => {
+      weekOfStudyWeek.map((data: any) => {
+        let additionalTime = 0;
+        if (data.minute <= 60) {
+          // 学習時間の合計分が60分を超える場合は合計時間に加算する。
+          additionalTime = Math.floor(data.minute / 60);
+          data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));
+        }
         studyTime = {
-          time: data.time != null ? data.time : 0,
-          minute: data.minute != null ? data.time : 0
+          time: data.time != null ? Number(data.time) + additionalTime : 0,
+          minute: data.minute != null ? data.minute : 0
         }
       })
     } catch (e) {
@@ -198,7 +210,7 @@ class StudyModel {
       const monthStart = month * 100;
       const monthEnd = month* 100 + 99;
 
-      const dayOfStudyMonth = await this.studyRepo.query(`
+      const monthOfStudyMonth = await this.studyRepo.query(`
         SELECT
           SUM(studyTime) as time,
           SUM(studyMinute) as minute
@@ -206,9 +218,15 @@ class StudyModel {
         WHERE userId = '${userId}' AND studyDate >= ${monthStart} AND studyDate <= ${monthEnd}
       `);
 
-      dayOfStudyMonth.map((data: any) => {
+      monthOfStudyMonth.map((data: any) => {
+        let additionalTime = 0;
+        if (data.minute <= 60) {
+          // 学習時間の合計分が60分を超える場合は合計時間に加算する。
+          additionalTime = Math.floor(data.minute / 60);
+          data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));
+        }
         studyTime = {
-          time: data.time != null ? data.time : 0,
+          time: data.time != null ? Number(data.time) + additionalTime : 0,
           minute: data.minute != null ? data.minute : 0
         }
       });

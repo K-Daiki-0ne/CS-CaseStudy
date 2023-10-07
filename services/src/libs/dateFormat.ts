@@ -1,4 +1,6 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 type WeekStartEndType = {
   startWeekDay: number;
@@ -26,6 +28,10 @@ export const formatDate = (date: number): string => {
 };
 
 export const searchWeekStartEnd = (date: number): WeekStartEndType => {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  dayjs.tz.setDefault("Asia/Tokyo");
+
   const day: string = dayjs(String(date)).format('d');
 
   let startWeekDay = date;

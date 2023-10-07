@@ -11,7 +11,6 @@ const main = async () => {
   let port = 4000;
   if (process.env.PORT != undefined) {
     port = Number(process.env.PORT);
-    console.log(port);
   }
 
   dotenv.config();
@@ -20,7 +19,6 @@ const main = async () => {
 
   initialize();
 
-  console.log('ORIGIN_URL:', process.env.ORIGIN_URL);
   app.set("trust proxy", 1);
   app.use(
     cors({

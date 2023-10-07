@@ -67,7 +67,6 @@ const Create: NextPage = () => {
 
       router.push(`/main/${user.userId}`)
     } catch(e) {
-      console.log('error')
       console.error(e);
     }
     

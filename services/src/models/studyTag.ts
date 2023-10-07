@@ -57,7 +57,6 @@ class StudyTagModel {
   }
 
   public async updateStudyTag(userId: string, key: string, label: string, show: boolean) {
-    console.log('model show:', show)
     // ラベルと表示を更新する
     try {
       await this.studyTag.update({ userId: userId, studyTagKey: key }, {
