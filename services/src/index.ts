@@ -20,6 +20,7 @@ const main = async () => {
 
   initialize();
 
+  console.log('ORIGIN_URL:', process.env.ORIGIN_URL);
   app.set("trust proxy", 1);
   app.use(
     cors({
@@ -40,7 +41,10 @@ const main = async () => {
 
   apolloServer.applyMiddleware({
     app,
-    cors: false,
+    cors: {
+      origin: process.env.ORIGIN_URL,
+      credentials: true
+    },
   });
 
   
