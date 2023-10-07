@@ -153,10 +153,10 @@ class StudyModel {
 
     dayOfStudyTime.map((data: any) => {
       let additionalTime = 0;
-      if (data.minute <= 60) {
+      if (data.minute >= 60) {
         // 学習時間の合計分が60分を超える場合は合計時間に加算する。
         additionalTime = Math.floor(data.minute / 60);
-        data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));
+        data.minute = Math.floor(data.minute - (60 * Math.floor(data.minute / 60)));
       }
       studyTime = {
         time: data.time != null ? Number(data.time) + additionalTime : 0,
@@ -181,7 +181,7 @@ class StudyModel {
 
       weekOfStudyWeek.map((data: any) => {
         let additionalTime = 0;
-        if (data.minute <= 60) {
+        if (data.minute >= 60) {
           // 学習時間の合計分が60分を超える場合は合計時間に加算する。
           additionalTime = Math.floor(data.minute / 60);
           data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));
@@ -220,7 +220,7 @@ class StudyModel {
 
       monthOfStudyMonth.map((data: any) => {
         let additionalTime = 0;
-        if (data.minute <= 60) {
+        if (data.minute >= 60) {
           // 学習時間の合計分が60分を超える場合は合計時間に加算する。
           additionalTime = Math.floor(data.minute / 60);
           data.minute = Math.floor(data.minute - 60 * Math.floor(data.minute / 60));

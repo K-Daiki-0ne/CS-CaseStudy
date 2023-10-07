@@ -229,10 +229,11 @@ export async function getServerSideProps(params: any) {
   // timezoneを日本固定にする
   dayjs.extend(utc);
   dayjs.extend(timezone);
-  dayjs.tz.setDefault("America/Toronto");
+  dayjs.tz.setDefault("Asia/Tokyo");
  
   try {
     const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
+    console.log('today', today)
     const { data } = await apolloClient.query<MultiReadStudyQuery>({
       query: MULTI_READ_STUDY,
       variables: {
