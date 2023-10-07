@@ -32,8 +32,9 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [StudyResolver, UserResolver, StudyTagResolver],
-      validate: false,
+      validate: false
     }),
+    playground: true
   });
 
   apolloServer.applyMiddleware({
