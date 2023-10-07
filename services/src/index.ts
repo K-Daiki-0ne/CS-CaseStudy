@@ -34,7 +34,8 @@ const main = async () => {
       resolvers: [StudyResolver, UserResolver, StudyTagResolver],
       validate: false
     }),
-    playground: true
+    playground: true,
+    introspection: true,
   });
 
   apolloServer.applyMiddleware({
