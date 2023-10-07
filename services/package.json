@@ -4,8 +4,6 @@
    "description": "case study server",
    "scripts": {
       "start": "ts-node src/index.ts",
-      "build": "tsc",
-      "watch": "tsc -w",
       "dev": "nodemon src/index.ts",
       "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
       "migration": "mikro-orm migration:create",
