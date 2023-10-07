@@ -233,7 +233,6 @@ export async function getServerSideProps(params: any) {
  
   try {
     const today: number = (dayjs().year() * 10000) + ((dayjs().month() + 1) * 100) + dayjs().date();
-    console.log('today', today)
     const { data } = await apolloClient.query<MultiReadStudyQuery>({
       query: MULTI_READ_STUDY,
       variables: {
