@@ -1,24 +1,12 @@
 <h1 align="center">CaseStudy</h1>
 
-ポートフォリオですが、現在デプロイの準備中のため、EC2を使用したデプロイとなっております。
-
-デプロイは以下の構成で実施中です。
-
-**フロントエンド**：Amplify
-
-**バックエンド**：Hasura or render
-
-**DB**: EC2
-
-選定理由のドキュメントを作成中のため、今しばらくお待ちください。
-
 お試ししたい方はリンクからお願いします。
 
 ゲストユーザーログイン
 
-メール　demo2@demo.com
+メール demo2@demo.com
 
-パスワード　demo
+パスワード demo
 
 日々の学習を記録して振り返る。
 
@@ -41,6 +29,11 @@
 - TypeORM
 - TypeGrraphQL
 - recoil
+
+## 詳細
+バックエンドの詳細は services を参照
+
+フロントエンドの詳細は web を参照
 
 ## Author
 * Github: [@K-Daiki-0ne](https://github.com/K-Daiki-0ne)

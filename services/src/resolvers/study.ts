@@ -203,7 +203,6 @@ export class StudyResolver {
     @Arg('date') date: number
   ): Promise<StudyMultiResponse> {
 
-    console.log('date:', date)
     //データ取得回避を減らすためにタグ情報は随時取得しない
     const studies = await StudyModel.readStudy(userId);
 
