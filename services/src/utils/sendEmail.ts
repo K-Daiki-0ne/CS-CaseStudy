@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export async function sendEmail(to: string, html: string) {
+export async function sendEmail(to: string, html: string, subject: string) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -13,7 +13,7 @@ export async function sendEmail(to: string, html: string) {
   let info = await transporter.sendMail({
     from: '"CaseStudy" <kdaiki.pf.casestudy@gmail.com>',
     to: to,
-    subject: "アカウント登録", // Subject line
+    subject: subject,
     html,
   });
 
